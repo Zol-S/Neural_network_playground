@@ -23,12 +23,17 @@ define([
 			this.drawNeuralNetwork();
 		},
 		onSubmitClicked: function() {
+			// Redraw chart
+			$('#stage').empty();
+			this.drawNeuralNetwork();
+
+			// Calculate result
 			var input = math.matrix([[parseInt($('#input_1').val()), parseInt($('#input_2').val())]]);
 
-			var weight1 = math.matrix([[1, 1], [1, 1]]);
-			var bias1 = math.matrix([[0, -1]]);
+			var weight1 = math.matrix([[parseInt($('#weight1_1_1').val()), parseInt($('#weight1_1_2').val())], [parseInt($('#weight1_2_1').val()), parseInt($('#weight1_2_2').val())]]);
+			var bias1 = math.matrix([[parseInt($('#bias1_1').val()), parseInt($('#bias1_2').val())]]);
 
-			var weight2 = math.matrix([[1], [-2]]);
+			var weight2 = math.matrix([[parseInt($('#weight2_1').val())], [parseInt($('#weight2_2').val())]]);
 
 			var XW = math.multiply(input, weight1);
 			var XWC = math.add(XW, bias1);
@@ -54,8 +59,8 @@ define([
 			var nodes = [
 				{"id": 1, "label": "i1", "layer": 1},
 				{"id": 2, "label": "i2", "layer": 1},
-				{"id": 3, "label": "h1", "layer": 2, "bias": 0},
-				{"id": 4, "label": "h2", "layer": 2, "bias": -1},
+				{"id": 3, "label": "h1", "layer": 2, "bias": parseInt($('#bias1_1').val())},
+				{"id": 4, "label": "h2", "layer": 2, "bias": parseInt($('#bias1_2').val())},
 				{"id": 5, "label": "o", "layer": 3}
 			];
 
@@ -63,32 +68,32 @@ define([
 				{
 					'source_id': 1,
 					'target_id': 3,
-					'weight': 1
+					'weight': parseInt($('#weight1_1_1').val())
 				},
 				{
 					'source_id': 1,
 					'target_id': 4,
-					'weight': 1
+					'weight': parseInt($('#weight1_2_1').val())
 				},
 				{
 					'source_id': 2,
 					'target_id': 3,
-					'weight': 1
+					'weight': parseInt($('#weight1_2_1').val())
 				},
 				{
 					'source_id': 2,
 					'target_id': 4,
-					'weight': 1
+					'weight': parseInt($('#weight1_2_2').val())
 				},
 				{
 					'source_id': 3,
 					'target_id': 5,
-					'weight': 1
+					'weight': parseInt($('#weight2_1').val())
 				},
 				{
 					'source_id': 4,
 					'target_id': 5,
-					'weight': -2
+					'weight': parseInt($('#weight2_2').val())
 				},
 			];
 
@@ -119,9 +124,9 @@ define([
 				.domain([0, 10])
 				.range([d3.rgb('#FFF2F2'), d3.rgb('#FF0000')]);
 
-			/*var div = d3.select("body").append("div")
+			var div = d3.select("body").append("div")
 				.attr("class", "tooltip")
-				.style("opacity", 0);*/
+				.style("opacity", 0);
 
 			// Links
 			links.map(function(d, i) {
@@ -150,7 +155,7 @@ define([
 				})
 				.style('stroke-width', function(d) {
 					return Math.sqrt(Math.abs(d.weight)) + 'px';
-				})/*.on("mouseover", function(d) {
+				}).on("mouseover", function(d) {
 					div.transition()
 						.duration(200)
 						.style("opacity", .9);
@@ -162,7 +167,7 @@ define([
 					div.transition()
 						.duration(500)
 						.style("opacity", 0);
-				})*/;
+				});
 
 			function diagonal(d) {
 				return "M" + d.source.x + "," + d.source.y

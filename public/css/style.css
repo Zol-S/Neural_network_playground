@@ -23,6 +23,10 @@ text {
 	padding-top: 10px;
 }
 
+.form-group {
+	margin-bottom: 5px !important;
+}
+
 div.tooltip {
 	position: absolute;
 	text-align: center;

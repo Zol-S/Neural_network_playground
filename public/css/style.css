@@ -1,0 +1,37 @@
+@import url('bootstrap-4.0.0-beta.min.css');
+@import url('bootstrap-grid-4.0.0-beta.min.css');
+@import url('bootstrap-reboot-4.0.0-beta.min.css');
+
+body {
+	background-color: white;
+}
+
+text {
+	pointer-events: none;
+}
+
+.node {
+	fill: white;
+	stroke-width: 2px;
+}
+
+.node:hover {
+	stroke-width: 3px;
+}
+
+.left_pane {
+	padding-top: 10px;
+}
+
+div.tooltip {
+	position: absolute;
+	text-align: center;
+	width: 60px;
+	height: 24px;
+	padding: 2px;
+	font: 12px sans-serif;
+	background: lightsteelblue;
+	border: 0px;
+	border-radius: 8px;
+	pointer-events: none;
+}

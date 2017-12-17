@@ -8,7 +8,10 @@ require.config({
 		backbonejs: 'vendor/backbone-1.1.2.min',
 		text: 'vendor/require_text-2.0.12',
 		mathjs: 'vendor/math-3.17.0.min',
-		d3: 'vendor/d3.v4.min'
+		d3: 'vendor/d3.v4.min',
+		network: 'neural/network',
+		neuron: 'neural/neuron',
+		layer: 'neural/layer'
 	},
 	shim: {
 		jquery: {
@@ -27,6 +30,12 @@ require.config({
 		bootstrap: {
 			deps: [
 				'jquery'
+			]
+		},
+		neural: {
+			deps: [
+				'neuron',
+				'layer'
 			]
 		}
 	}

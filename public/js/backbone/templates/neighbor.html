@@ -1,0 +1,46 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5> k-Nearest Neighbor</h5>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-4">
+			<div class="form-group row">
+				<label for="num_class" class="col-sm-4 col-form-label col-form-label-sm">Number of classes:</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control form-control-sm" id="num_class">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="num_items" class="col-sm-4 col-form-label col-form-label-sm">Number of items within classes:</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control form-control-sm" id="num_items">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="num_neighbor" class="col-sm-4 col-form-label col-form-label-sm">Number of neighbors:</label>
+				<div class="btn-toolbar col-sm-3">
+					<input type="text" class="form-control form-control-sm" id="num_neighbor">
+					<!--div class="btn-group mr-2" role="group" aria-label="First group">
+						<button type="button" class="btn btn-secondary">1</button>
+						<button type="button" class="btn btn-secondary">2</button>
+						<button type="button" class="btn btn-secondary">3</button>
+						<button type="button" class="btn btn-secondary">4</button>
+					</div-->
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<button type="button" class="btn btn-primary" id="regenerate_btn">Regenerate</button>
+				<button type="button" class="btn btn-primary" id="change_btn">Change</button>
+			</div>
+		</div>
+
+		<div id="stage" class="col col-lg-8">
+			<canvas id="canvas" width="<%= width*scale %>" height="<%= height*scale %>"></canvas>
+		</div>
+	</div>
+</div>

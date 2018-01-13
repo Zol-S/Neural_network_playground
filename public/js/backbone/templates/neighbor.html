@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="col col-lg-12">
 			<h5> k-Nearest Neighbor</h5>
+			Generates cluster centers of different colors and some points around them. Colorize each pixel of the image according to the majority of the k-nearest neighbors. Click <i>regenerate</i> button to generate new cluster centers. Click <i>change</i> button to recolorize the pixels of the image.
 		</div>
 	</div>
 	<div class="row">
@@ -21,6 +22,10 @@
 			</div>
 
 			<div class="form-group row">
+				<button type="button" class="btn btn-primary" id="regenerate_btn">Regenerate</button>
+			</div>
+
+			<div class="form-group row">
 				<label for="num_neighbor" class="col-sm-4 col-form-label col-form-label-sm">Number of neighbors:</label>
 				<div class="btn-toolbar col-sm-3">
 					<input type="text" class="form-control form-control-sm" id="num_neighbor">
@@ -34,7 +39,6 @@
 			</div>
 
 			<div class="form-group row">
-				<button type="button" class="btn btn-primary" id="regenerate_btn">Regenerate</button>
 				<button type="button" class="btn btn-primary" id="change_btn">Change</button>
 			</div>
 		</div>

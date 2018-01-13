@@ -1,0 +1,38 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Classify 2D data</h5>
+			2D data classification with <a href="http://caza.la/synaptic" target="_blank">Synaptic.js</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-2 left_pane">
+			<div class="form-group row">
+				<label for="no_clusters" class="col-sm-8 col-form-label col-form-label-sm">Number of clusters:</label>
+				<div class="col-sm-4">
+					<input type="number" class="form-control form-control-sm" id="no_clusters" value="3" min="3" max="6">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="no_members" class="col-sm-8 col-form-label col-form-label-sm">Number of cluster members:</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control form-control-sm" id="no_members" value="3">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="max_distance" class="col-sm-8 col-form-label col-form-label-sm">Maximum distance from cluster centers:</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control form-control-sm" id="max_distance" value="5">
+				</div>
+			</div>
+
+			<button type="button" class="btn btn-primary" id="generate_btn">Generate clusters</button>
+			<button type="button" class="btn btn-primary" id="train_btn">Train</button>
+		</div>
+		<div id="stage" class="col col-lg-10">
+			<div id="canvas"></div>
+		</div>
+	</div>
+</div>

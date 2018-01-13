@@ -9,9 +9,11 @@ require.config({
 		text: 'vendor/require_text-2.0.12',
 		mathjs: 'vendor/math-3.17.0.min',
 		d3: 'vendor/d3.v4.min',
-		network: 'neural/network',
-		neuron: 'neural/neuron',
-		layer: 'neural/layer'
+		mathjs: 'vendor/math-3.17.0.min',
+		XOR_network: 'neural/XOR_network',
+		perceptron: 'neural/perceptron',
+		colorbrewer: 'vendor/colorbrewer-1.0.0.min',
+		synaptic: 'vendor/synaptic-1.1.4.min'
 	},
 	shim: {
 		jquery: {
@@ -32,11 +34,13 @@ require.config({
 				'jquery'
 			]
 		},
-		neural: {
+		XOR_network: {
 			deps: [
-				'neuron',
-				'layer'
+				'perceptron'
 			]
+		},
+		colorbrewer: {
+			exports: 'colorbrewer'
 		}
 	}
 });

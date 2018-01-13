@@ -3,8 +3,12 @@ define([
 	'backbonejs',
 	'backbone/views/backpropagate',
 	'backbone/views/xor',
-	'backbone/views/neighbor'
-], function ($, Backbone, BackpropagateView, XorView, NeighborView) {
+	'backbone/views/neighbor',
+	'backbone/views/nnc',
+	'backbone/views/classify_2d',
+	'backbone/views/max_pooler',
+	'backbone/views/number_recognizer'
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -12,6 +16,10 @@ define([
 			'backpropagate': 'backpropagate',
 			'xor': 'xor',
 			'neighbor': 'neighbor',
+			'nnc': 'nnc',
+			'classify_2d': 'classify_2d',
+			'max_pooler': 'max_pooler',
+			'number_recognizer': 'number_recognizer',
 			'*default': 'xor'
 		},
 
@@ -28,6 +36,23 @@ define([
 			var neighborView = new NeighborView();
 			this.changeView(neighborView);
 		},
+		nnc: function() {
+			var nncView = new NNCView();
+			this.changeView(nncView);
+		},
+		classify_2d: function() {
+			var classify2DView = new Classify2DView();
+			this.changeView(classify2DView);
+		},
+		max_pooler: function() {
+			var maxPoolerView = new MaxPoolerView();
+			this.changeView(maxPoolerView);
+		},
+		number_recognizer: function() {
+			var numberRecognizerView = new NumberRecognizerView();
+			this.changeView(numberRecognizerView);
+		},
+
 		changeView: function(view) {
 			if (this.currentView) {
 				this.currentView.destroy();

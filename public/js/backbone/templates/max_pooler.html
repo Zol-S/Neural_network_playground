@@ -1,0 +1,74 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Max pooler</h5>
+			
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-2">
+			<!--div class="form-group row">
+				<label for="spatial_extent" class="col-sm-8 col-form-label col-form-label-sm">Spatial extent:</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control form-control-sm" id="spatial_extent" value="2">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="stride" class="col-sm-8 col-form-label col-form-label-sm">Stride:</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control form-control-sm" id="stride" value="2">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="padding" class="col-sm-8 col-form-label col-form-label-sm">Padding:</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control form-control-sm" id="padding" value="0">
+				</div>
+			</div-->
+
+			<button type="button" class="btn btn-primary" id="change_btn">Change</button>
+		</div>
+		<div id="stage" class="col col-lg-10">
+			<p>
+				Input digit from MNIST (28x28):
+				<canvas id="input"></canvas>
+			</p>
+
+			<table class="table">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">&nbsp;</th>
+						<th scope="col">Single (14x14)</th>
+						<th scope="col">Double (7x7)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Max pooling (spatial extent: 2, stride: 2)</td>
+						<td><canvas id="output_2max14"></canvas></td>
+						<td><canvas id="output_2max7"></canvas></td>
+						
+					</tr>
+					<tr>
+						<td>Average pooling (spatial extent: 2, stride: 2)</td>
+						<td><canvas id="output_2avg14"></canvas></td>
+						<td><canvas id="output_2avg7"></canvas></td>
+					</tr>
+					<tr>
+						<td>Max pooling (spatial extent: 3, stride: 2)</td>
+						<td><canvas id="output_3max14"></canvas></td>
+						<td><canvas id="output_3max7"></canvas></td>
+						
+					</tr>
+					<tr>
+						<td>Average pooling (spatial extent: 3, stride: 2)</td>
+						<td><canvas id="output_3avg14"></canvas></td>
+						<td><canvas id="output_3avg7"></canvas></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

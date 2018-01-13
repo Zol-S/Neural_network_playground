@@ -1,61 +1,145 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col offset-lg-2 col-lg-8">
+		<div class="col col-lg-12">
 			<h5>Backpropagation</h5>
-		</div>
-	</div>
-	<!--div class="row">
-		<div class="col offset-lg-2 col-lg-8">
-			<div class="form-group row">
-				<label class="col-sm-4 col-form-label col-form-label-sm"><i>f(x,y)= ax + by + c</i></label>
-				<label class="col-sm-4 col-form-label col-form-label-sm">Accuracy: <span id="accuracy"></span></label>
-				<label class="col-sm-4 col-form-label col-form-label-sm">Iteration: <span id="iteration"></span></label>
-			</div>
-			<div class="form-group row">
-				<label for="a" class="col-sm-3 col-form-label col-form-label-sm">a:</label>
-				<div class="col-sm-3">
-					<input type="text" class="form-control form-control-sm" id="a" value="1">
-				</div>
-			</div>
-			<div class="form-group row">
-				<label for="b" class="col-sm-3 col-form-label col-form-label-sm">b:</label>
-				<div class="col-sm-3">
-					<input type="text" class="form-control form-control-sm" id="b" value="-2">
-				</div>
-			</div>
-			<div class="form-group row">
-				<label for="c" class="col-sm-3 col-form-label col-form-label-sm">c:</label>
-				<div class="col-sm-3">
-					<input type="text" class="form-control form-control-sm" id="c" value="-1">
-				</div>
-			</div>
+			XOR gate implemented by 3-layer neural network with sigmoid activation and MSE loss function using MathJS.
 		</div>
 	</div>
 	<div class="row">
-		<div class="col offset-lg-2 col-lg-8">
+		<!-- Settings -->
+		<div class="col col-lg-4 left_pane">
 			<div class="form-group row">
-				<label class="col-sm-6 col-form-label col-form-label-sm">input:</label>
-				<label class="col-sm-3 col-form-label col-form-label-sm">output:</label>
-				<label class="col-sm-3 col-form-label col-form-label-sm">expected output:</label>
+				<p class="h6">Usage</p>
 			</div>
 
 			<div class="form-group row">
+				<label for="input_1" class="col-sm-4 col-form-label col-form-label-sm">input<sub>1</sub>:</label>
 				<div class="col-sm-3">
-					<input type="text" class="form-control form-control-sm" id="input1" value="1.2">
-				</div>
-				<div class="col-sm-3">
-					<input type="text" class="form-control form-control-sm" id="input2" value="0.7">
-				</div>
-				<div class="col-sm-3">
-					<input type="text" class="form-control form-control-sm" id="output" readonly="readonly">
-				</div>
-				<div class="col-sm-3">
-					<input type="text" class="form-control form-control-sm" id="expected_output" value="1">
+					<input type="text" class="form-control form-control-sm" id="input_1" value="0">
 				</div>
 			</div>
 
-			<button type="button" class="btn btn-primary" id="train_btn">Train 50 iterations</button>
-			<button type="button" class="btn btn-primary" id="predict_btn">Predict</button>
+			<div class="form-group row">
+				<label for="input_2" class="col-sm-4 col-form-label col-form-label-sm">input<sub>2</sub>:</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control form-control-sm" id="input_2" value="1">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="output" class="col-sm-4 col-form-label col-form-label-sm">output:</label>
+				<div class="col-sm-6">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="output">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<button type="button" class="btn btn-primary" id="forward_btn">Forward</button>
+				<button type="button" class="btn btn-primary" id="backward_btn">Backward</button>
+			</div>
+
+			<div class="form-group row">
+				<p class="h6">Train</p>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label col-form-label-sm">weight<sub>1</sub>:</label>
+				<div class="col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="weight1_1_1" value="0.15">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="weight1_1_2" value="0.2">
+				</div>
+
+				<!-- New -->
+				<div class="col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="weight1_1_1_new">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="weight1_1_2_new">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="offset-md-4 col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="weight1_2_1" value="0.25">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="weight1_2_2" value="0.3">
+				</div>
+
+				<!-- New -->
+				<div class="col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="weight1_2_1_new">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="weight1_2_2_new">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label col-form-label-sm">bias<sub>1</sub>:</label>
+				<div class="col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="bias1_1" value="0.35">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="bias1_2" value="0.35">
+				</div>
+
+				<!-- New -->
+				<div class="col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="bias1_1_new">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="bias1_2_new">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label col-form-label-sm">weight<sub>2</sub>:</label>
+				<div class="col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="weight2_1" value="0.4">
+				</div>
+
+				<!-- New -->
+				<div class="offset-sm-2 col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="weight2_1_new">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="offset-md-4 col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="weight2_2" value="0.45">
+				</div>
+
+				<!-- New -->
+				<div class="offset-sm-2 col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="weight2_2_new">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label col-form-label-sm">bias<sub>2</sub>:</label>
+				<div class="col-sm-2">
+					<input type="text" class="form-control form-control-sm" id="bias2_1" value="0.6">
+				</div>
+
+				<!-- New -->
+				<div class="offset-sm-2 col-sm-2">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="bias2_1_new">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<button type="button" class="btn btn-primary" id="mse_btn">MSE</button>
+				<button type="button" class="btn btn-primary" id="train_btn">Train</button>
+			</div>
+
 		</div>
-	</div-->
+		<!-- Stage -->
+		<div id="stage" class="col col-lg-8">
+			<svg width="960" height="500"></svg>
+		</div>
+	</div>
+	<!-- Final weights, 3D -->
 </div>

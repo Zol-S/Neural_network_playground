@@ -1,0 +1,38 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Image recognizer</h5>
+			
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-2">
+			<h6>Properties</h6>
+			<img src="<%= base_url %><%= public_directory %>/img/ajax-loader.gif" class="ajax_loader">
+			<button type="button" class="btn btn-primary" id="clear_btn">Clear</button>
+			<button type="button" class="btn btn-primary" id="recognize_btn" disabled="disabled">Recognize</button>
+
+			<h6>Presets</h6>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-secondary digit">0</button>
+				<button type="button" class="btn btn-secondary digit">1</button>
+				<button type="button" class="btn btn-secondary digit">2</button>
+				<button type="button" class="btn btn-secondary digit">3</button>
+				<button type="button" class="btn btn-secondary digit">4</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-secondary digit">5</button>
+				<button type="button" class="btn btn-secondary digit">6</button>
+				<button type="button" class="btn btn-secondary digit">7</button>
+				<button type="button" class="btn btn-secondary digit">8</button>
+				<button type="button" class="btn btn-secondary digit">9</button>
+			</div>
+
+			<h6>Result</h6>
+			<div id="result"></div>
+		</div>
+		<div id="stage" class="col col-lg-10">
+			<div id="canvas"></div>
+		</div>
+	</div>
+</div>

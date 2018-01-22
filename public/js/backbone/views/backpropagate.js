@@ -3,16 +3,16 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/backpropagate.html',
-	'XOR_network',
+	'OR_network',
 	'd3',
 	'bootstrap'
-], function ($, _, Backbone, backpropagateTemplate, XOR_network, d3) {
+], function ($, _, Backbone, backpropagateTemplate, OR_network, d3) {
 	'use strict';
 
 	var view = Backbone.View.extend({
 		el: '#main',
 		initialize: function() {
-			this.XN = new XOR_network();
+			this.ON = new OR_network();
 			this.chartWidth = 0;
 			this.chartheight = 0;
 		},
@@ -31,15 +31,15 @@ define([
 			this.drawChart();
 		},
 		onForwardClicked: function() {
-			this.XN.forward($('#input_1').val(), $('#input_2').val());
-			$('#output').val(this.XN.getOutput());
+			this.ON.forward($('#input_1').val(), $('#input_2').val());
+			$('#output').val(this.ON.getOutput());
 		},
 		onBackwardClicked: function() {
-			this.XN.backward();
-			console.log('MSE: ' + this.XN.MSE());
+			this.ON.backward();
+			console.log('MSE: ' + this.ON.MSE());
 		},
 		onMSEClicked: function() {
-			console.log('MSE: ' + this.XN.MSE());
+			console.log('MSE: ' + this.ON.MSE());
 		},
 		onTrainClicked: function() {
 			this.chartData = [];
@@ -50,8 +50,9 @@ define([
 			this.iteration();
 		},
 		iteration: function() {
-			this.XN.backward();
-			this.mse = this.XN.MSE();
+			this.ON.backward();
+			this.mse = this.ON.MSE();
+			$('#mse').val(this.mse);
 			//console.log(this.iter + '. MSE: ' + this.mse);
 			this.iter++;
 
@@ -60,7 +61,7 @@ define([
 				value: this.mse
 			});
 
-			if (this.mse > 0.13) {
+			if (this.mse > $('#mse_threshold').val()) {
 				this.updateChart(this.chartData);
 
 				var _self = this;

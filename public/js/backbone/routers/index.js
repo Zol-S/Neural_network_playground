@@ -7,8 +7,9 @@ define([
 	'backbone/views/nnc',
 	'backbone/views/classify_2d',
 	'backbone/views/max_pooler',
-	'backbone/views/number_recognizer'
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView) {
+	'backbone/views/number_recognizer',
+	'backbone/views/face_detection',
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView, FaceDetectionView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -20,6 +21,7 @@ define([
 			'classify_2d': 'classify_2d',
 			'max_pooler': 'max_pooler',
 			'number_recognizer': 'number_recognizer',
+			'face_detection': 'face_detection',
 			'*default': 'xor'
 		},
 
@@ -51,6 +53,10 @@ define([
 		number_recognizer: function() {
 			var numberRecognizerView = new NumberRecognizerView();
 			this.changeView(numberRecognizerView);
+		},
+		face_detection: function() {
+			var faceDetectionView = new FaceDetectionView();
+			this.changeView(faceDetectionView);
 		},
 
 		changeView: function(view) {

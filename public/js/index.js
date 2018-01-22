@@ -11,6 +11,7 @@ require.config({
 		d3: 'vendor/d3.v4.min',
 		mathjs: 'vendor/math-3.17.0.min',
 		XOR_network: 'neural/XOR_network',
+		OR_network: 'neural/OR_network',
 		perceptron: 'neural/perceptron',
 		colorbrewer: 'vendor/colorbrewer-1.0.0.min',
 		synaptic: 'vendor/synaptic-1.1.4.min'

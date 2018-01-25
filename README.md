@@ -15,4 +15,4 @@ Max and average pooling MNIST 28x28 images down to 14x14 and 7x7 images using di
 ## Number recognizer
 Trained [Synaptic.js](http://caza.la/synaptic) neural network to recognize max pooled 14x14 pixel [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) digits.
 ## Loss functions
-Minimum search with [unnormalized gradient descent][http://caza.la/synaptic] algorithm.
+Minimum search with [unnormalized gradient descent](http://caza.la/synaptic) algorithm.

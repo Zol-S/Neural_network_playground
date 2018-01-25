@@ -46,9 +46,6 @@ define([
 			var img_2avg14 = this.avg_pooler_e2s2(image_data, this.mnist_digit_width);
 			this.drawImage('output_2max14', 14, img_2max14);
 			this.drawImage('output_2avg14', 14, img_2avg14);
-			console.log('Max pooling e2s2');
-			console.log(image_number);
-			console.log(JSON.stringify(img_2max14));
 
 			this.drawImage('output_2max7', 7, this.max_pooler_e2s2(img_2max14, 14));
 			this.drawImage('output_2avg7', 7, this.avg_pooler_e2s2(img_2avg14, 14));

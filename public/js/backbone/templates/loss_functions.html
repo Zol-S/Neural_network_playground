@@ -1,0 +1,59 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Loss functions</h5>
+			Minimum search with <a href="https://jermwatt.github.io/mlrefined/blog_posts/Mathematical_Optimization/Part_2_gradient_descent.html#Unnormalized-gradient-descent" target="_blank">unnormalized gradient descent</a> algorithm.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-2">
+			<div class="form-group row">
+				<label for="function" class="col-sm-3 col-form-label col-form-label-sm">Function:</label>
+				<div id="function" class="col-sm-9"></div>
+			</div>
+
+			<div class="form-group row">
+			<button type="button" class="btn btn-primary" id="regenerate_btn">Regenerate parameters</button>
+			</div>
+
+			<div class="form-group row">
+				<label for="start" class="col-sm-5 col-form-label col-form-label-sm">Start:</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control form-control-sm" id="start" value="-2">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="gradient" class="col-sm-5 col-form-label col-form-label-sm">Gradient:</label>
+				<div class="col-sm-7">
+					<input type="text" readonly class="form-control-plaintext form-control-sm" id="gradient">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<button type="button" class="btn btn-primary" id="ng_btn">Numerical gradient</button>
+			</div>
+
+			<div class="form-group row">
+				<label for="step_length" class="col-sm-5 col-form-label col-form-label-sm">Step length:</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control form-control-sm" id="step_length" value="0.1">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="max_steps" class="col-sm-5 col-form-label col-form-label-sm">Max steps:</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control form-control-sm" id="max_steps" value="1000">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<button type="button" class="btn btn-primary" id="sgd_btn">SGD</button>
+			</div>
+		</div>
+		<div id="stage" class="col col-lg-10">
+			<svg width="600" height="600"></svg>
+		</div>
+	</div>
+</div>

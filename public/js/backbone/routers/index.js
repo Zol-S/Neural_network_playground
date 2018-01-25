@@ -8,8 +8,8 @@ define([
 	'backbone/views/classify_2d',
 	'backbone/views/max_pooler',
 	'backbone/views/number_recognizer',
-	'backbone/views/face_detection',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView, FaceDetectionView) {
+	'backbone/views/loss_functions',
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView, LossFunctionsView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -21,7 +21,7 @@ define([
 			'classify_2d': 'classify_2d',
 			'max_pooler': 'max_pooler',
 			'number_recognizer': 'number_recognizer',
-			'face_detection': 'face_detection',
+			'loss_functions': 'loss_functions',
 			'*default': 'xor'
 		},
 
@@ -54,9 +54,9 @@ define([
 			var numberRecognizerView = new NumberRecognizerView();
 			this.changeView(numberRecognizerView);
 		},
-		face_detection: function() {
-			var faceDetectionView = new FaceDetectionView();
-			this.changeView(faceDetectionView);
+		loss_functions: function() {
+			var lossFunctionsView = new LossFunctionsView();
+			this.changeView(lossFunctionsView);
 		},
 
 		changeView: function(view) {

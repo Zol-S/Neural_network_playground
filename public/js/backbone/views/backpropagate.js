@@ -33,6 +33,7 @@ define([
 		onForwardClicked: function() {
 			this.ON.forward($('#input_1').val(), $('#input_2').val());
 			$('#output').val(this.ON.getOutput());
+			//console.log($('input[name=gate_type]:checked').attr('id'));
 		},
 		onBackwardClicked: function() {
 			this.ON.backward();

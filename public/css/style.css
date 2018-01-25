@@ -58,3 +58,15 @@ div.tooltip {
 .pixel_on {
 	background-color: black !important;
 }
+
+.line {
+	fill: none;
+	stroke: steelblue;
+	stroke-width: 2px;
+}
+
+.line_red {
+	fill: none;
+	stroke: red;
+	stroke-width: 2px;
+}

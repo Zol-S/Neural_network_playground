@@ -6,7 +6,7 @@ define([
 	var module = function() {
 		var inputs = [[0, 0], [0, 1], [1, 0], [1, 1]];
 		var expected_outputs = [0, 1, 1, 1];
-		var learning_rate = 0.25;
+		var learning_rate = 0.15;
 
 		var i1 = new Perceptron(1, 'input');
 		var i2 = new Perceptron(2, 'input');

@@ -7,10 +7,12 @@ Finds similar images in [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) 
 ## XOR gate
 XOR gate implemented by a neural network. Click Weights and biases button to edit the weight matrix and biases and view the value of the hidden layers. To calculate the output of the neural network, enter input values to the input fields and click Submit button. Hover any elements of the neural network to view its internal values. Demo implementation of [Deep Learning - Ian Goodfellow, Yoshua Bengio, Aaron Courville](http://www.deeplearningbook.org/contents/mlp.html) example on page 171.
 ## Backpropagation
-XOR gate implemented by 3-layer neural network with sigmoid activation and MSE loss function using MathJS.
+OR gate implemented by 3-layer neural network with sigmoid activation and MSE loss function using MathJS.
 ## 2D data classification
 2D data classification with [Synaptic.js](http://caza.la/synaptic)
 ## Max pooler
 Max and average pooling MNIST 28x28 images down to 14x14 and 7x7 images using different spatial striding.
 ## Number recognizer
 Trained [Synaptic.js](http://caza.la/synaptic) neural network to recognize max pooled 14x14 pixel [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) digits.
+## Loss functions
+Minimum search with [unnormalized gradient descent][http://caza.la/synaptic] algorithm.

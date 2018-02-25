@@ -15,6 +15,8 @@ OR gate implemented by 3-layer neural network with sigmoid activation and MSE lo
 2D data classification with [Synaptic.js](http://caza.la/synaptic) Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#classify_2d) for the demo.
 ### Loss functions ###
 Demonstrates minimum search with [unnormalized gradient descent](http://caza.la/synaptic) algorithm. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#loss_functions) for the demo.
+### PCA on MNIST digits ###
+PCA performed on MNIST digits. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#mnist_pca) for the demo.
 
 ## Convolutional networks ##
 ### Max pooler ###

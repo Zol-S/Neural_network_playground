@@ -26,7 +26,7 @@ define([
 			this.size = 14;
 
 			var _self = this;
-			$.getJSON('public/js/neural/mnist_digits_14x14.json', function(json) {
+			$.getJSON('public/js/neural/mnist_weights_14x14.json', function(json) {
 				_self.net = synaptic.Network.fromJSON(json);
 				$('#recognize_btn').removeAttr("disabled");
 

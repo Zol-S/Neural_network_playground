@@ -1,0 +1,66 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Principal Component Analysis on MNIST digits</h5>
+			Since PCA calculations are heavy, only the first best looking 10 digits of the MNIST database are used as the base of calculations. For the matrix and SVD calculations, I used <a href="http://numericjs.com" target="_blank">numeric.js</a>, <a href="http://mathjs.org/" target="_blank">mathjs</a> and <a href="https://d3js.org" target="_blank">D3.js</a> for the chart. The matrix containing the MNIST digits are normalized, as follows: <code>(mnist - np.mean(mnist, axis=0)) / np.std(mnist, axis=0)</code>. The singular value decomposition is about finding the <code>X = USV<sup>T</sup></code>. Since the sample is pretty small, the first 200 elements of the <code>U</code> matrix is kept and the recontrusted images are generated with their approximation. The eigenvectors are the elements of the <code>U</code> matrix. The covariance matrix is calculated as follows: <code>mnist_std.T.dot(mnist_std) / (mnist_std.shape[0]-1)</code>. The diagonal of the covariance matrix is extracted and shown on the chart:<ul><li>The <i style="color:blue;">blue line</i> is the variance explained by each pixel of the digits</li><li>The <i style="color:orange;">orange line</i> represents the cumulative variance explained by the pixels of the original digits in descending order.</li></ul>
+		</div>
+	</div>
+	<div class="row">
+		<!--div class="col col-lg-2">
+			<div class="form-group row">
+				<label for="pca_threshold" class="col-sm-6 col-form-label col-form-label-sm">PCA threshold:</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control form-control-sm" id="pca_threshold" value="0.95">
+				</div>
+			</div>
+
+			<button id="calc_btn" type="submit" class="btn btn-primary">Calculate</button>
+		</div-->
+		<div id="stage" class="col col-lg-12">
+			MNIST digits from 0-9 (28x28 pixels):
+			<canvas id="orig_0"></canvas>
+			<canvas id="orig_1"></canvas>
+			<canvas id="orig_2"></canvas>
+			<canvas id="orig_3"></canvas>
+			<canvas id="orig_4"></canvas>
+			<canvas id="orig_5"></canvas>
+			<canvas id="orig_6"></canvas>
+			<canvas id="orig_7"></canvas>
+			<canvas id="orig_8"></canvas>
+			<canvas id="orig_9"></canvas>
+			<br/>
+
+			Reconstructed images from the top 200 components:
+			<canvas id="rec_0" height="28" width="28"></canvas>
+			<canvas id="rec_1" height="28" width="28"></canvas>
+			<canvas id="rec_2" height="28" width="28"></canvas>
+			<canvas id="rec_3" height="28" width="28"></canvas>
+			<canvas id="rec_4" height="28" width="28"></canvas>
+			<canvas id="rec_5" height="28" width="28"></canvas>
+			<canvas id="rec_6" height="28" width="28"></canvas>
+			<canvas id="rec_7" height="28" width="28"></canvas>
+			<canvas id="rec_8" height="28" width="28"></canvas>
+			<canvas id="rec_9" height="28" width="28"></canvas>
+			<br/>
+
+			Top 10 eigenvectors:
+			<canvas id="eig_0" height="28" width="28"></canvas>
+			<canvas id="eig_1" height="28" width="28"></canvas>
+			<canvas id="eig_2" height="28" width="28"></canvas>
+			<canvas id="eig_3" height="28" width="28"></canvas>
+			<canvas id="eig_4" height="28" width="28"></canvas>
+			<canvas id="eig_5" height="28" width="28"></canvas>
+			<canvas id="eig_6" height="28" width="28"></canvas>
+			<canvas id="eig_7" height="28" width="28"></canvas>
+			<canvas id="eig_8" height="28" width="28"></canvas>
+			<canvas id="eig_9" height="28" width="28"></canvas>
+			<br/>
+
+			<!--Image drawn from covariance matrix:
+			<canvas id="red_cov" height="28" width="28"></canvas>
+			<br/-->
+
+			<svg id="variance_explained_chart" height="480" width="640"></svg>
+		</div>
+	</div>
+</div>

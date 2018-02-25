@@ -9,7 +9,8 @@ define([
 	'backbone/views/max_pooler',
 	'backbone/views/number_recognizer',
 	'backbone/views/loss_functions',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView, LossFunctionsView) {
+	'backbone/views/mnist_pca',
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView, LossFunctionsView, MnistPCAView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -22,6 +23,7 @@ define([
 			'max_pooler': 'max_pooler',
 			'number_recognizer': 'number_recognizer',
 			'loss_functions': 'loss_functions',
+			'mnist_pca': 'mnist_pca',
 			'*default': 'xor'
 		},
 
@@ -57,6 +59,10 @@ define([
 		loss_functions: function() {
 			var lossFunctionsView = new LossFunctionsView();
 			this.changeView(lossFunctionsView);
+		},
+		mnist_pca: function() {
+			var mnistPCAView = new MnistPCAView();
+			this.changeView(mnistPCAView);
 		},
 
 		changeView: function(view) {

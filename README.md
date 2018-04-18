@@ -23,3 +23,5 @@ PCA performed on MNIST digits. Click [here](https://rawgit.com/Zol-S/Neural_netw
 Max and average pooling MNIST 28x28 images down to 14x14 and 7x7 images using different spatial striding. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#max_pooler) for the demo.
 ### Number recognizer ###
 Trained [Synaptic.js](http://caza.la/synaptic) neural network to recognize max pooled 14x14 pixel [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) digits. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#number_recognizer) for the demo.
+### Face detector ###
+Trained a convolutional network with [Tensorflow](https://www.tensorflow.org)/[Keras](https://keras.io) on a very few samples of faces an other things, then exported the weights to [Tensorflow JS](https://github.com/tomasreimers/tensorflowjs).(https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#number_recognizer) for the demo.

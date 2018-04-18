@@ -1,0 +1,34 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Face detector</h5>
+			Trained a convolutional network with <a href="https://www.tensorflow.org/" target="_blank">Tensorflow</a>/<a href="https://keras.io/" target="_blank">Keras</a> on a very few samples of faces an other things, then exported the weights to <a href="https://github.com/tomasreimers/tensorflowjs" target="_blank">Tensorflow JS</a>. Click on any of the images below to see the prediction output.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-2 left_pane">
+			<div class="form-group row">
+				<span id="menu">
+					<p>Faces:<br/>
+						<img src="public/img/sample/face/face_1.jpg">
+						<img src="public/img/sample/face/face_2.jpg">
+						<img src="public/img/sample/face/face_3.jpg">
+						<img src="public/img/sample/face/face_4.jpg">
+					</p>
+
+					<p>Non-faces:<br/>
+						<img src="public/img/sample/non-face/nonface_41.jpg">
+						<img src="public/img/sample/non-face/nonface_45.jpg">
+						<img src="public/img/sample/non-face/nonface_46.jpg">
+						<!--img src="public/img/sample/non-face/nonface_4.jpg"-->
+						<img src="public/img/sample/non-face/nonface_49.jpg">
+						<img src="public/img/sample/non-face/nonface_57.jpg">
+					</p>
+				</span>
+			</div>
+
+
+		</div>
+		<div id="stage" class="col col-lg-10"></div>
+	</div>
+</div>

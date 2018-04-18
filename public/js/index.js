@@ -15,7 +15,8 @@ require.config({
 		perceptron: 'neural/perceptron',
 		colorbrewer: 'vendor/colorbrewer-1.0.0.min',
 		synaptic: 'vendor/synaptic-1.1.4.min',
-		numeric: 'vendor/numeric-1.2.6.min'
+		numeric: 'vendor/numeric-1.2.6.min',
+		tfjs: 'vendor/tfjs-0.6.1.min'
 	},
 	shim: {
 		jquery: {
@@ -46,6 +47,9 @@ require.config({
 		},
 		numeric: {
 			exports: 'numeric'
+		},
+		tfjs: {
+			exports: 'tf'
 		}
 	}
 });

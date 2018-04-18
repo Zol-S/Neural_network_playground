@@ -10,7 +10,8 @@ define([
 	'backbone/views/number_recognizer',
 	'backbone/views/loss_functions',
 	'backbone/views/mnist_pca',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView, LossFunctionsView, MnistPCAView) {
+	'backbone/views/face_detector',
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, NumberRecognizerView, LossFunctionsView, MnistPCAView, FaceDetectorView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -24,6 +25,7 @@ define([
 			'number_recognizer': 'number_recognizer',
 			'loss_functions': 'loss_functions',
 			'mnist_pca': 'mnist_pca',
+			'face_detector': 'face_detector',
 			'*default': 'xor'
 		},
 
@@ -63,6 +65,10 @@ define([
 		mnist_pca: function() {
 			var mnistPCAView = new MnistPCAView();
 			this.changeView(mnistPCAView);
+		},
+		face_detector: function() {
+			var faceDetectorView = new FaceDetectorView();
+			this.changeView(faceDetectorView);
 		},
 
 		changeView: function(view) {

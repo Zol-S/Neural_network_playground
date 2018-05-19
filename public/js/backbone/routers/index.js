@@ -7,11 +7,12 @@ define([
 	'backbone/views/nnc',
 	'backbone/views/classify_2d',
 	'backbone/views/max_pooler',
-	'backbone/views/digit_recognizer',
+	'backbone/views/digit_recognizer_basic',
+	'backbone/views/digit_recognizer_advanced',
 	'backbone/views/loss_functions',
 	'backbone/views/mnist_pca',
 	'backbone/views/face_detector',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, DigitRecognizerView, LossFunctionsView, MnistPCAView, FaceDetectorView) {
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, LossFunctionsView, MnistPCAView, FaceDetectorView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -22,7 +23,8 @@ define([
 			'nnc': 'nnc',
 			'classify_2d': 'classify_2d',
 			'max_pooler': 'max_pooler',
-			'digit_recognizer': 'digit_recognizer',
+			'digit_recognizer_basic': 'digit_recognizer_basic',
+			'digit_recognizer_advanced': 'digit_recognizer_advanced',
 			'loss_functions': 'loss_functions',
 			'mnist_pca': 'mnist_pca',
 			'face_detector': 'face_detector',
@@ -54,9 +56,13 @@ define([
 			var maxPoolerView = new MaxPoolerView();
 			this.changeView(maxPoolerView);
 		},
-		digit_recognizer: function() {
-			var digitRecognizerView = new DigitRecognizerView();
-			this.changeView(digitRecognizerView);
+		digit_recognizer_basic: function() {
+			var digitRecognizerBasicView = new DigitRecognizerBasicView();
+			this.changeView(digitRecognizerBasicView);
+		},
+		digit_recognizer_advanced: function() {
+			var digitRecognizerAdvancedView = new DigitRecognizerAdvancedView();
+			this.changeView(digitRecognizerAdvancedView);
 		},
 		loss_functions: function() {
 			var lossFunctionsView = new LossFunctionsView();

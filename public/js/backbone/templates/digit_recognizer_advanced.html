@@ -1,0 +1,94 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Digit recognizer - advanced</h5>
+			Description
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-2">
+			<h6>Properties</h6>
+			<img src="<%= base_url %><%= public_directory %>/img/ajax-loader.gif" class="ajax_loader">
+			<button type="button" class="btn btn-primary" id="clear_btn">Clear</button>
+			<button type="button" class="btn btn-primary" id="recognize_btn" disabled="disabled">Recognize</button>
+
+			<h6>Presets</h6>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-secondary digit">0</button>
+				<button type="button" class="btn btn-secondary digit">1</button>
+				<button type="button" class="btn btn-secondary digit">2</button>
+				<button type="button" class="btn btn-secondary digit">3</button>
+				<button type="button" class="btn btn-secondary digit">4</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-secondary digit">5</button>
+				<button type="button" class="btn btn-secondary digit">6</button>
+				<button type="button" class="btn btn-secondary digit">7</button>
+				<button type="button" class="btn btn-secondary digit">8</button>
+				<button type="button" class="btn btn-secondary digit">9</button>
+			</div>
+
+			<h6>Inference</h6>
+			Inference time: <i id="inference_time"></i>
+			<div id="inference"></div>
+		</div>
+		<div id="stage" class="col col-lg-1">
+			<div id="canvas"></div>
+		</div>
+		<div class="col col-lg-9">
+			<div class="card bg-light mb-3">
+				<div class="card-header">Convolutional layer 1<span></span></div>
+				<div class="card-body">
+					<p id="conv2d_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Max pooling layer 1<span></span></div>
+				<div class="card-body">
+					<p id="max_pooling2d_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Convolutional layer 2<span></span></div>
+				<div class="card-body">
+					<p id="conv2d_2" class="card-text"></p>
+				</div>
+			</div>
+	
+			<div class="card bg-light mb-3">
+				<div class="card-header">Max pooling layer 2<span></span></div>
+				<div class="card-body">
+					<p id="max_pooling2d_2" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Flatten 1<span></span></div>
+				<div class="card-body">
+					<p id="flatten_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Dense 1<span></span></div>
+				<div class="card-body">
+					<p id="dense_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Dense 2<span></span></div>
+				<div class="card-body">
+					<p id="dense_2" class="card-text"></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- https://transcranial.github.io/keras-js/#/mnist-cnn
+- class activation mapping
+- Reload bug
+-->

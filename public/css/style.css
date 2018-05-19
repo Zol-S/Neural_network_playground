@@ -74,3 +74,7 @@ div.tooltip {
 .ajax_loader {
 	display: none;
 }
+
+p.card-text canvas {
+	margin: 1px;
+}

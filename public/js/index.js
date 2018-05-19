@@ -16,7 +16,8 @@ require.config({
 		colorbrewer: 'vendor/colorbrewer-1.0.0.min',
 		synaptic: 'vendor/synaptic-1.1.4.min',
 		numeric: 'vendor/numeric-1.2.6.min',
-		tfjs: 'vendor/tfjs-0.6.1.min'
+		tfjs: 'vendor/tfjs-0.10.0.min',
+		KerasJS: 'vendor/keras-0.3.0.min'
 	},
 	shim: {
 		jquery: {
@@ -50,7 +51,10 @@ require.config({
 		},
 		tfjs: {
 			exports: 'tf'
-		}
+		},
+		KerasJS: {
+			exports: 'KerasJS'
+		} 
 	}
 });
 

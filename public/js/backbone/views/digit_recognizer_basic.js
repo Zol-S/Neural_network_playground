@@ -2,7 +2,7 @@ define([
 	'jquery',
 	'underscore',
 	'backbonejs',
-	'text!backbone/templates/digit_recognizer.html',
+	'text!backbone/templates/digit_recognizer_basic.html',
 	'tfjs',
 	'bootstrap'
 ], function ($, _, Backbone, digitRecognizerTemplate, tf) {
@@ -119,6 +119,7 @@ define([
 			this.undelegateEvents();
 			this.$el.empty();
 			this.stopListening();
+			delete document.model;
 			return this;
 		}
 	});

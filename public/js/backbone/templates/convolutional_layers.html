@@ -1,0 +1,112 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Convolutional layers</h5>
+			In this interactive tutorial, convolutional and pooling layers can be linked together. First select the type of layer, the type of predefined 3x3 kernels (only in case of convolutional layer) or the size of kernel (only in case of pooling layer), select the value of the stride, then click on <i>Add layer</i> button, to insert the layer to the end of the network. After adding at least one layer, click on any of the sample input images to send it to the network of layers.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-3">
+			<div class="card bg-light mb-3">
+				<div class="card-header">Settings</div>
+				<div class="card-body">
+					<p class="card-text">
+						<!-- Type -->
+						<div class="row">
+							<div class="col col-sm-4">
+								Layer type:
+							</div>
+							<div class="col col-sm-8">
+								<select id="type" class="form-control">
+									<option value="conv2d">Convolution</option>
+									<option value="max_pooling">Max pooling</option>
+									<option value="avg_pooling">Average pooling</option>
+									<!--option value="upscaler">Upscaler</option-->
+								</select>
+							</div>
+						</div>
+
+						<!-- Kernel size -->
+						<div class="row">
+							<div class="col col-sm-4">
+								Kernel size:
+							</div>
+							<div class="col col-sm-8">
+								<select id="kernel_size" class="form-control">
+									<option value="2">2x2</option>
+									<option value="3" selected>3x3</option>
+									<option value="4">4x4</option>
+									<option value="5">5x5</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Kernel type -->
+						<div class="row">
+							<div class="col col-sm-4">
+								Kernel type:
+							</div>
+							<div class="col col-sm-8">
+								<select id="kernel_type" class="form-control">
+									<option value="identity">Identity</option>
+									<option value="blur">Blur</option>
+									<option value="top_sobel">Top sobel</option>
+									<option value="right_sobel">Right sobel</option>
+									<option value="bottom_sobel">Bottom sobel</option>
+									<option value="left_sobel">Left sobel</option>
+									<option value="emboss">Emboss</option>
+									<option value="sharpen">Sharpen</option>
+									<option value="outline">Outline</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Stride -->
+						<div class="row">
+							<div class="col col-sm-4">
+								Stride:
+							</div>
+							<div class="col col-sm-8">
+								<input type="number" id="stride" class="form-control" value="1" min="1" max="4">
+							</div>
+						</div>
+
+						<!-- Padding -->
+						<div class="row">
+							<div class="col col-sm-4">
+								Padding:
+							</div>
+							<div class="col col-sm-8">
+								<input type="number" id="padding" class="form-control" value="0" min="0" max="3" disabled>
+							</div>
+						</div>
+
+						<button id="add_layer_btn" class="btn btn-primary">Add layer</button>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col col-lg-9" id="layers">
+			<div class="card bg-light mb-3">
+				<div class="card-header">Input</div>
+				<div class="card-body">
+					<p class="card-text">
+						<div class="row">
+							<div class="col col-sm-6">
+								<img class="input" src="public/img/sample/conv/cat_100x100.png" data-name="cat">
+								<img class="input" src="public/img/sample/conv/dog_100x100.png" data-name="dog">
+								<img class="input" src="public/img/sample/conv/painting_100x100.png" data-name="painting">
+								<img class="input" src="public/img/sample/conv/flamboyant_100x100.png" data-name="flamboyant">
+							</div>
+							<div class="col col-sm-6">
+								Click on any of the images to send it to the convolutional network. Note that a grayscale version of the image is sent to the network.
+							</div>
+						</div>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- padding, upscaler -->

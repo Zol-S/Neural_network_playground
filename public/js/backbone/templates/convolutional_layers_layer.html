@@ -1,0 +1,34 @@
+<div class="card bg-light mb-3">
+	<div class="card-header">
+		<%= {'conv2d': 'Convolutional', 'max_pooling': 'Max pooling', 'avg_pooling': 'Average pooling', 'upscaler': 'Upscaler'}[type] %>
+		<button type="button" class="close">
+			<span aria-hidden="true" data-id="<%= counter %>">&times;</span>
+		</button>
+	</div>
+
+	<div class="card-body">
+		<p class="card-text">
+			<div class="row">
+				<div class="col col-sm-3">
+					Red:
+					<canvas id="canvas_r_<%= id %>"></canvas>
+				</div>
+				<div class="col col-sm-3">
+					Green:
+					<canvas id="canvas_g_<%= id %>"></canvas>
+				</div>
+				<div class="col col-sm-3">
+					Blue:
+					<canvas id="canvas_b_<%= id %>"></canvas>
+				</div>
+				<div class="col col-sm-3">
+					Input: <i><%= input + 'x' + input %>px</i><br/>
+					Kernel: <i><%= kernel_size + 'x' + kernel_size %><%= (type == 'conv2d'?' (' + kernel_type + ')':'') %></i><br/>
+					Stride: <i><%= stride %></i><br/>
+					Padding: <i><%= padding %></i><br/>
+					Output: <i><%= output + 'x' + output %>px</i>
+				</div>
+			</div>
+		</p>
+	</div>
+</div>

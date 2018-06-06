@@ -78,3 +78,7 @@ div.tooltip {
 p.card-text canvas {
 	margin: 1px;
 }
+
+.close, .input {
+	cursor: pointer;
+}

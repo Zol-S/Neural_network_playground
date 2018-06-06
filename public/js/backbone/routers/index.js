@@ -9,10 +9,11 @@ define([
 	'backbone/views/max_pooler',
 	'backbone/views/digit_recognizer_basic',
 	'backbone/views/digit_recognizer_advanced',
+	'backbone/views/convolutional_layers',
 	'backbone/views/loss_functions',
 	'backbone/views/mnist_pca',
 	'backbone/views/face_detector',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, LossFunctionsView, MnistPCAView, FaceDetectorView) {
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -25,6 +26,7 @@ define([
 			'max_pooler': 'max_pooler',
 			'digit_recognizer_basic': 'digit_recognizer_basic',
 			'digit_recognizer_advanced': 'digit_recognizer_advanced',
+			'convolutional_layers': 'convolutional_layers',
 			'loss_functions': 'loss_functions',
 			'mnist_pca': 'mnist_pca',
 			'face_detector': 'face_detector',
@@ -63,6 +65,10 @@ define([
 		digit_recognizer_advanced: function() {
 			var digitRecognizerAdvancedView = new DigitRecognizerAdvancedView();
 			this.changeView(digitRecognizerAdvancedView);
+		},
+		convolutional_layers: function() {
+			var convolutionalLayerView = new ConvolutionalLayerView();
+			this.changeView(convolutionalLayerView);
 		},
 		loss_functions: function() {
 			var lossFunctionsView = new LossFunctionsView();

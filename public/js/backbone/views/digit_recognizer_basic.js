@@ -119,7 +119,6 @@ define([
 			this.undelegateEvents();
 			this.$el.empty();
 			this.stopListening();
-			delete document.model;
 			return this;
 		}
 	});

@@ -34,7 +34,7 @@ define([
 
 			for (var i=0;i<this.map_width;i++) {
 				for (var k=0;k<this.map_height;k++) {
-					$('#canvas').append('<div id="rect_' + k + '_' + i + '" class="small_rectangle" style="top:' + (k*10) + 'px;left:' + (i*10) + 'px;"></div>');
+					$('#canvas').append('<div id="rect_' + k + '_' + i + '" class="small_rectangle" style="top:' + (k*5) + 'px;left:' + (i*5) + 'px;"></div>');
 				}
 			}
 		},

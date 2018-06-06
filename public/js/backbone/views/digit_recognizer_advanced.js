@@ -243,7 +243,6 @@ define([
 			this.undelegateEvents();
 			this.$el.empty();
 			this.stopListening();
-			document.model.dispose();
 			return this;
 		}
 	});

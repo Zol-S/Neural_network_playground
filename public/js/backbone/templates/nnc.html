@@ -11,7 +11,7 @@
 				<label for="master_image">Select from the images below to find a similar image for:</label>
 				<p>
 				<% _.each(images, function(item, key) { %>
-					<img class="image_btn" data-id="<%= item %>" src="public/img/cifar-10/<%= item %>.png">
+					<img class="image_btn" data-id="<%= item %>" src="public/img/cifar-10/<%= item %>.png" crossorigin="Anonymous">
 				<% }); %>
 				</p>
 			</div>

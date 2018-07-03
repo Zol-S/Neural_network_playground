@@ -5,6 +5,8 @@ Neural network tests, applications implemented in Javascript.
 Generates cluster centers of different colors and some points around them. Colorize each pixel of the image according to the majority of the k-nearest neighbors. Click regenerate button to generate new cluster centers. Click change button to recolorize the pixels of the image. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#neighbor) for the demo.
 ### Nearest neighbor classifier ###
 Finds similar images in [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) dataset using Nearest Neighbor Algorithm (L1 & L2 distances). Click on any of the randomly selected images below to search for a visually similar image. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#nnc) for the demo.
+### Clustering algorithms ###
+Implemented the clustering algorithms mentioned in [George Seif - The 5 Clustering Algorithms Data Scientists Need to Know](https://towardsdatascience.com/the-5-clustering-algorithms-data-scientists-need-to-know-a36d136ef68).
 
 ## Neural networks ##
 ### XOR gate ###

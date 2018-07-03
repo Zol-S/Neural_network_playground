@@ -1,0 +1,96 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Clustering algorithms</h5>
+			Implemented the clustering algorithms mentioned in <a href="https://towardsdatascience.com/the-5-clustering-algorithms-data-scientists-need-to-know-a36d136ef68" target="_blank">George Seif - The 5 Clustering Algorithms Data Scientists Need to Know</a>.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-3 left_pane">
+			<div class="card bg-light mb-3">
+				<div class="card-header">Data</div>
+				<div class="card-body">
+					<p class="card-text">
+						<!-- Type -->
+						<div class="row">
+							<div class="col col-sm-5">
+								Type:
+							</div>
+							<div class="col col-sm-7">
+								<select id="data_type" class="form-control">
+									<option value="random">Random</option>
+									<option value="clusters">Clusters</option>
+									<option value="circular">Circular</option>
+									<option value="tangential">Tangential</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Cardinality -->
+						<div class="row">
+							<div class="col col-sm-5">
+								Cardinality:
+							</div>
+							<div class="col col-sm-7">
+								<input type="number" id="data_cardinality" class="form-control" value="200" min="1" max="500">
+							</div>
+						</div>
+
+						<!-- Number of clusters -->
+						<div class="row">
+							<div class="col col-sm-5">
+								Number of clusters:
+							</div>
+							<div class="col col-sm-7">
+								<input type="number" id="data_cluster_number" class="form-control" value="3" min="1" max="5" disabled="disabled">
+							</div>
+						</div>
+
+						<button id="generate_btn" class="btn btn-primary">Generate</button>
+					</p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Clustering</div>
+				<div class="card-body">
+					<p class="card-text">
+						<!-- Type -->
+						<div class="row">
+							<div class="col col-sm-5">
+								Type:
+							</div>
+							<div class="col col-sm-7">
+								<select id="cluster_type" class="form-control">
+									<option value="k-means">K-Means</option>
+									<option value="mean_shift_clustering">Mean Shift Clustering</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Number of desired clusters -->
+						<div class="row">
+							<div class="col col-sm-5">
+								Number of desired clusters:
+							</div>
+							<div class="col col-sm-7">
+								<input type="number" id="cluster_cluster_number" class="form-control" value="3" min="1" max="5">
+							</div>
+						</div>
+
+						<button id="start_btn" class="btn btn-primary">Start</button>
+						<button id="step_btn" class="btn btn-primary" disabled="disabled">Step</button>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="stage" class="col col-lg-6"></div>
+
+		<div class="col col-lg-3">
+			<div id="right_pane"></div>
+			Log:
+			<textarea class="form-control" id="log" rows="10"></textarea>
+		</div>
+	</div>
+</div>

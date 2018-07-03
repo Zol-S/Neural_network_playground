@@ -13,7 +13,8 @@ define([
 	'backbone/views/loss_functions',
 	'backbone/views/mnist_pca',
 	'backbone/views/face_detector',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView) {
+	'backbone/views/clustering',
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -30,6 +31,7 @@ define([
 			'loss_functions': 'loss_functions',
 			'mnist_pca': 'mnist_pca',
 			'face_detector': 'face_detector',
+			'clustering': 'clustering',
 			'*default': 'xor'
 		},
 
@@ -81,6 +83,10 @@ define([
 		face_detector: function() {
 			var faceDetectorView = new FaceDetectorView();
 			this.changeView(faceDetectorView);
+		},
+		clustering: function() {
+			var clusteringView = new ClusteringView();
+			this.changeView(clusteringView);
 		},
 
 		changeView: function(view) {

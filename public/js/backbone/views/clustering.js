@@ -176,7 +176,7 @@ define([
 				case 'mean_shift_clustering':
 						for (var i=0;i<this.nodes.length;i++) {
 							this.centers.push({
-								cluster: 0,
+								cluster: i,
 								x: this.nodes[i].x,
 								y: this.nodes[i].y
 							});
@@ -187,7 +187,7 @@ define([
 			// Draw cluster center crosses
 			d3.select("#stage svg")
 				.selectAll("path")
-				.data(this.centers)
+				.data(this.centers, function(d) { return d.cluster; })
 				.enter()
 				.append("svg:path")
 				.attr("d", function(d) {
@@ -237,7 +237,7 @@ define([
 							for (var k=0;k<this.nodes.length;k++) {
 								var distance = Math.sqrt(Math.pow(this.nodes[k].x - this.centers[i].x, 2) + Math.pow(this.nodes[k].y - this.centers[i].y, 2));
 								if (distance < 100) {
-									var weight = this.calculateGaussianKernel(distance, 10);
+									var weight = this.calculateGaussianKernel(distance, 100);
 									cx_num+= weight*this.nodes[k].x;
 									cx_denom+= weight;
 									cy_num+= weight*this.nodes[k].y;
@@ -258,22 +258,27 @@ define([
 						break;
 				}
 
-				stage.selectAll("path")
-					.data(this.centers)
-					.transition()
+				var crosses = stage.selectAll("path").data(this.centers, function(d) { return d.cluster; });
+				crosses.exit().remove();
+
+				crosses.transition()
 					.duration(500)
 					.attr("d", function(d) {
 						return "M" + d.x + "," + d.y +"L" + (d.x+10) + "," + (d.y+10) + "M" + (d.x+10) + "," + d.y + "L" + d.x + "," + (d.y+10);
 					});
 
-				switch (type) { // Generalize these functions
-					case 'k-means':
+				if (type == 'k-means') {
 						this.colorizeNodes();
-						this.initializeStats();
+						this.updateStats();
 				}
 
 				// Log
 				if (isFinished) {
+					if (type == 'mean_shift_clustering') {
+						this.colorizeNodes();
+						this.initializeStats();
+					}
+
 					var dt = new Date();
 
 					$('#log').append(dt.getFullYear() + "/" + (dt.getMonth()>9?"":"0") + dt.getMonth() + "/" + (dt.getDay()>9?"":"0") + dt.getDay() + " " + (dt.getHours()>9?"":"0") + dt.getHours() + ":" + (dt.getMinutes()>9?"":"0") + dt.getMinutes() + ":" + (dt.getSeconds()>9?"":"0") + dt.getSeconds() + ' - Cluster centers are found after ' + this.counter + ' steps\n');
@@ -313,19 +318,22 @@ define([
 			return (1/bandwidth*Math.sqrt(2*Math.PI))*Math.exp(-0.5*Math.pow((distance/bandwidth), 2));
 		},
 		getUniqueCenters: function() {
-			var seen = {}, out = [], j = 0;
+			var output = [], threshold = 10;
 
 			for (var i=0;i<this.centers.length;i++) {
-				var item = this.centers[i];
-				if (seen[item] !== 1) {
-					seen[item] = 1;
-					out[j++] = item;
+				var isUnique = true;
+				for (var k=0;k<output.length;k++) {
+					if (Math.abs(this.centers[i].x - output[k].x) < threshold && Math.abs(this.centers[i].y - output[k].y) < threshold) {
+						isUnique = false;
+					}
+				}
+
+				if (isUnique) {
+					output.push(this.centers[i]);
 				}
 			}
 
-			console.log(this.centers);
-			this.centers = out;
-			console.log(this.centers);
+			this.centers = output;
 		},
 
 		// Statistics

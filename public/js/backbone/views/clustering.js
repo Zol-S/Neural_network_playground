@@ -11,10 +11,12 @@ define([
 	var view = Backbone.View.extend({
 		el: '#main',
 		events: {
-			'click #generate_btn': 'onGenerateClicked',
 			'click #start_btn': 'onStartClicked',
+			'click #generate_btn': 'onGenerateClicked',
 			'click #step_btn': 'onStepClicked',
-			'change #data_type': 'onDataTypeChanged'
+			'change #cluster_type': 'onClusterTypeChanged',
+			'change #data_type': 'onDataTypeChanged',
+			'click #cleat_log_btn': 'onLogClearClicked'
 		},
 		initialize: function() {
 			this.width = 600;
@@ -23,6 +25,7 @@ define([
 			this.colorize = d3.scaleOrdinal(d3.schemeCategory10);
 			this.counter = 0;
 			this.isFinished = false;
+
 			this.nodes = [];
 			this.centers = [];
 		},
@@ -32,6 +35,14 @@ define([
 			var template = _.template(similarTemplate);
 			this.$el.append(template());
 		},
+		destroy: function() {
+			this.undelegateEvents();
+			this.$el.empty();
+			this.stopListening();
+			return this;
+		},
+
+		// Event handlers
 		onDataTypeChanged: function(e) {
 			switch($(e.target).val()) {
 				case 'random':
@@ -42,6 +53,18 @@ define([
 				case 'tangential':
 						$('#data_cluster_number').removeAttr('disabled');
 			}
+		},
+		onClusterTypeChanged: function(e) {
+			switch($(e.target).val()) {
+				case 'k-means':
+						$('#cluster_cluster_number').removeAttr('disabled');
+					break;
+				case 'mean_shift_clustering':
+						$('#cluster_cluster_number').attr('disabled', 'disabled');
+			}
+		},
+		onLogClearClicked: function() {
+			$('#log').empty();
 		},
 		onGenerateClicked: function() {
 			// Initialize
@@ -139,12 +162,10 @@ define([
 		onStartClicked: function() { // Add new functions here
 			$('#step_btn').removeAttr('disabled');
 			$('#start_btn').attr('disabled', 'disabled');
-			var cluster_number = $('#cluster_cluster_number').val(), type = $('#cluster_type').val(),
-				_self = this;
+			var cluster_number = $('#cluster_cluster_number').val(), type = $('#cluster_type').val(), _self = this;
 
 			switch (type) {
 				case 'k-means':
-						// Generate cluster centers
 						this.centers = d3.range(cluster_number).map(function(i) { return {
 								cluster: i,
 								x: Math.floor(Math.random()*(_self.width-2*_self.padding)+_self.padding),
@@ -153,20 +174,17 @@ define([
 						});
 					break;
 				case 'mean_shift_clustering':
-						var r = 100;
-						for (var i=0;i<this.width/r;i++) {
-							for (var k=0;k<this.height/r;k++) {
-								this.centers.push({
-									cluster: 0,
-									x: i*r,
-									y: k*r
-								});
-							}
+						for (var i=0;i<this.nodes.length;i++) {
+							this.centers.push({
+								cluster: 0,
+								x: this.nodes[i].x,
+								y: this.nodes[i].y
+							});
 						}
 					break;
 			}
 
-			// Draw cluster centers
+			// Draw cluster center crosses
 			d3.select("#stage svg")
 				.selectAll("path")
 				.data(this.centers)
@@ -182,11 +200,88 @@ define([
 
 			switch (type) { // Generalize these functions
 				case 'k-means':
-					this.updateNodes();
+					this.colorizeNodes();
 					this.initializeStats();
 			}
 		},
-		updateNodes: function() {
+		onStepClicked: function() {
+			if (!this.isFinished) {
+				var type = $('#cluster_type').val(), stage = d3.select("#stage svg"), isFinished = true, _self = this;
+				this.counter++;
+
+				switch (type) {
+					case 'k-means':
+						for (var i=0;i<this.centers.length;i++) {
+							var cx = 0, cy = 0, count = 0;
+							for (var k=0;k<this.nodes.length;k++) {
+								if (this.nodes[k].cluster == i) {
+									cx+= this.nodes[k].x;
+									cy+= this.nodes[k].y;
+									count++;
+								}
+							}
+
+							if (this.centers[i].x != Math.floor(cx/count) && this.centers[i].y != Math.floor(cy/count)) {
+								isFinished = false;
+							}
+
+							this.centers[i].x = Math.floor(cx/count);
+							this.centers[i].y = Math.floor(cy/count);
+						}
+
+						break;
+					case 'mean_shift_clustering':
+						// http://www.chioka.in/meanshift-algorithm-for-the-rest-of-us-python/
+						for (var i=0;i<this.centers.length;i++) {
+							var cx_num = 0, cx_denom = 0, cy_num = 0, cy_denom = 0;
+							for (var k=0;k<this.nodes.length;k++) {
+								var distance = Math.sqrt(Math.pow(this.nodes[k].x - this.centers[i].x, 2) + Math.pow(this.nodes[k].y - this.centers[i].y, 2));
+								if (distance < 100) {
+									var weight = this.calculateGaussianKernel(distance, 10);
+									cx_num+= weight*this.nodes[k].x;
+									cx_denom+= weight;
+									cy_num+= weight*this.nodes[k].y;
+									cy_denom+= weight;
+								}
+							}
+
+							if (this.centers[i].x != Math.floor(cx_num/cx_denom) && this.centers[i].y != Math.floor(cy_num/cy_denom)) {
+								isFinished = false;
+							}
+
+							this.centers[i].x = Math.floor(cx_num/cx_denom);
+							this.centers[i].y = Math.floor(cy_num/cy_denom);
+
+							// Remove duplicates
+							this.getUniqueCenters();
+						}
+						break;
+				}
+
+				stage.selectAll("path")
+					.data(this.centers)
+					.transition()
+					.duration(500)
+					.attr("d", function(d) {
+						return "M" + d.x + "," + d.y +"L" + (d.x+10) + "," + (d.y+10) + "M" + (d.x+10) + "," + d.y + "L" + d.x + "," + (d.y+10);
+					});
+
+				switch (type) { // Generalize these functions
+					case 'k-means':
+						this.colorizeNodes();
+						this.initializeStats();
+				}
+
+				// Log
+				if (isFinished) {
+					var dt = new Date();
+
+					$('#log').append(dt.getFullYear() + "/" + (dt.getMonth()>9?"":"0") + dt.getMonth() + "/" + (dt.getDay()>9?"":"0") + dt.getDay() + " " + (dt.getHours()>9?"":"0") + dt.getHours() + ":" + (dt.getMinutes()>9?"":"0") + dt.getMinutes() + ":" + (dt.getSeconds()>9?"":"0") + dt.getSeconds() + ' - Cluster centers are found after ' + this.counter + ' steps\n');
+					this.isFinished = true;
+				}
+			}
+		},
+		colorizeNodes: function() {
 			var _self = this;
 
 			// Put nodes into clusters
@@ -195,6 +290,8 @@ define([
 					return _self.colorize(_self.getClosestClusterCenter(d, i));
 				});
 		},
+
+		// Algorithm helpers
 		getClosestClusterCenter: function(node, k) {
 			var closestClusterCenter = {
 				cluster: 0,
@@ -212,48 +309,25 @@ define([
 			this.nodes[k].cluster = closestClusterCenter.cluster;
 			return closestClusterCenter.cluster;
 		},
-		onStepClicked: function() { // Add new functions here
-			if (!this.isFinished) {
-				var stage = d3.select("#stage svg"), isFinished = true, _self = this;
-				this.counter++;
+		calculateGaussianKernel: function(distance, bandwidth) {
+			return (1/bandwidth*Math.sqrt(2*Math.PI))*Math.exp(-0.5*Math.pow((distance/bandwidth), 2));
+		},
+		getUniqueCenters: function() {
+			var seen = {}, out = [], j = 0;
 
-				for (var i=0;i<this.centers.length;i++) {
-					var cx = 0, cy = 0, count = 0;
-					for (var k=0;k<this.nodes.length;k++) {
-						if (this.nodes[k].cluster == i) {
-							cx+= this.nodes[k].x;
-							cy+= this.nodes[k].y;
-							count++;
-						}
-					}
-
-					if (this.centers[i].x != Math.floor(cx/count) && this.centers[i].y != Math.floor(cy/count)) {
-						isFinished = false;
-					}
-
-					this.centers[i].x = Math.floor(cx/count);
-					this.centers[i].y = Math.floor(cy/count);
-				}
-
-				stage.selectAll("path")
-					.data(this.centers)
-					.transition()
-					.duration(500)
-					.attr("d", function(d) {
-						return "M" + d.x + "," + d.y +"L" + (d.x+10) + "," + (d.y+10) + "M" + (d.x+10) + "," + d.y + "L" + d.x + "," + (d.y+10);
-					});
-
-				this.updateNodes();
-				this.updateStats();
-
-				if (isFinished) {
-					var dt = new Date();
-
-					$('#log').append(dt.getFullYear() + "/" + (dt.getMonth()>9?"":"0") + dt.getMonth() + "/" + (dt.getDay()>9?"":"0") + dt.getDay() + " " + (dt.getHours()>9?"":"0") + dt.getHours() + ":" + (dt.getMinutes()>9?"":"0") + dt.getMinutes() + ":" + (dt.getSeconds()>9?"":"0") + dt.getSeconds() + ' - Cluster centers are found after ' + this.counter + ' steps\n');
-					this.isFinished = true;
+			for (var i=0;i<this.centers.length;i++) {
+				var item = this.centers[i];
+				if (seen[item] !== 1) {
+					seen[item] = 1;
+					out[j++] = item;
 				}
 			}
+
+			console.log(this.centers);
+			this.centers = out;
+			console.log(this.centers);
 		},
+
 		// Statistics
 		initializeStats: function() {
 			var data = [], cluster_number = $('#cluster_cluster_number').val(), cardinality = $('#data_cardinality').val(), _self = this;
@@ -339,12 +413,6 @@ define([
 				.text(function(d) {
 					return d;
 				});
-		},
-		destroy: function() {
-			this.undelegateEvents();
-			this.$el.empty();
-			this.stopListening();
-			return this;
 		}
 	});
 

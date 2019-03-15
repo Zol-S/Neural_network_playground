@@ -106,8 +106,8 @@ define([
 		},
 		loadCifarImgData: function(key, _callback) {
 			var image = new Image();
-			image.src = 'public/img/cifar-10/' + key + '.png';
 			image.crossOrigin = "Anonymous";
+			image.src = 'public/img/cifar-10/' + key + '.png';
 			image.onload = function() {
 				var context = document.getElementById('canvas').getContext('2d');
 				context.clearRect(0, 0, 32, 32);

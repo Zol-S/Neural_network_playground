@@ -108,6 +108,7 @@ define([
 			var image = new Image();
 			image.crossOrigin = "Anonymous";
 			image.src = 'public/img/cifar-10/' + key + '.png';
+			image.setAttribute('crossOrigin', '');
 			image.onload = function() {
 				var context = document.getElementById('canvas').getContext('2d');
 				context.clearRect(0, 0, 32, 32);

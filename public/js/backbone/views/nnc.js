@@ -16,7 +16,6 @@ define([
 		},
 		initialize: function() {
 			this.numberOfImagesToShow = 10;
-			this.numberOfImagesLoaded = 0;
 			this.imagesToSelect = ['9.8'];
 
 			for (var i=0;i<9;i++) {
@@ -44,24 +43,24 @@ define([
 			// Main image
 			this.loadCifarImgData(target_id, function(k, d) {
 				_self.selected_image = d;
-			});
 
-			// Other images
-			for (var i in this.images) {
-				if (this.images[i] != target_id) {
-					this.loadCifarImgData(this.images[i], function(k, d) {
-						_self.image_array.push({
-							id: k,
-							l1: _self.calculateDistanceL1(d),
-							l2: _self.calculateDistanceL2(d)
+				// Other images
+				for (var i in _self.images) {
+					if (_self.images[i] != target_id) {
+						_self.loadCifarImgData(_self.images[i], function(k, d) {
+							_self.image_array.push({
+								id: k,
+								l1: _self.calculateDistanceL1(d),
+								l2: _self.calculateDistanceL2(d)
+							});
+
+							if (++_self.iter == (_self.images.length-1)) {
+								_self.showTopDistances();
+							}
 						});
-
-						if (++_self.iter == (_self.images.length-1)) {
-							_self.showTopDistances();
-						}
-					});
+					}
 				}
-			}
+			});
 		},
 		calculateDistanceL1: function(d) {
 			var distance = 0;
@@ -108,7 +107,7 @@ define([
 			var image = new Image();
 			image.crossOrigin = "Anonymous";
 			image.src = 'public/img/cifar-10/' + key + '.png';
-			image.setAttribute('crossOrigin', '');
+			//image.setAttribute('crossOrigin', '');
 			image.onload = function() {
 				var context = document.getElementById('canvas').getContext('2d');
 				context.clearRect(0, 0, 32, 32);

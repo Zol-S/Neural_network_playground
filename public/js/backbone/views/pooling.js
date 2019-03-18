@@ -2,9 +2,9 @@ define([
 	'jquery',
 	'underscore',
 	'backbonejs',
-	'text!backbone/templates/max_pooler.html',
+	'text!backbone/templates/pooling.html',
 	'bootstrap'
-], function ($, _, Backbone, maxPoolerTemplate) {
+], function ($, _, Backbone, PoolingTemplate) {
 	'use strict';
 
 	var view = Backbone.View.extend({
@@ -28,7 +28,7 @@ define([
 		render: function() {
 			this.$el.empty();
 
-			var template = _.template(maxPoolerTemplate);
+			var template = _.template(PoolingTemplate);
 			this.$el.append(template());
 
 			this.drawImages();
@@ -59,6 +59,52 @@ define([
 
 			this.drawImage('output_3max7', 7, this.max_pooler_e3s2(img_3max14, 14));
 			this.drawImage('output_3avg7', 7, this.avg_pooler_e3s2(img_3avg14, 14));
+
+			this.updateZoomedImages();
+		},
+		updateZoomedImages: function() {
+			var _self = this, ids = $('.digit').map(function() {
+				//return this.id;
+				var output = document.getElementById(this.id + "_big");
+				_self.drawZoomedImage(this.getContext("2d"), 14, 14, output.getContext("2d"), 140, 140)
+			}); //.get();
+			
+			//var input = document.getElementById("output_2max14"), output = document.getElementById("zoom");
+			//this.drawZoomedImage(input.getContext("2d"), 14, 14, output.getContext("2d"), 140, 140);
+		},
+		drawZoomedImage: function(source_ctx, sw, sh, target_ctx, tw, th) {
+			var source = source_ctx.getImageData(0, 0, sw, sh);
+			var sdata = source.data;
+
+			var target = target_ctx.createImageData(tw, th);
+			var tdata = target.data;
+
+			var mapx = [];
+			var ratiox = sw / tw, px = 0;
+			for (var i = 0; i < tw; ++i) {
+				mapx[i] = 4 * Math.floor(px);
+				px += ratiox;
+			}
+
+			var mapy = [];
+			var ratioy = sh / th, py = 0;
+			for (var i = 0; i < th; ++i) {
+				mapy[i] = 4 * sw * Math.floor(py);
+				py += ratioy;
+			}
+
+			var tp = 0;
+			for (py = 0; py < th; ++py) {
+				for (px = 0; px < tw; ++px) {
+					var sp = mapx[px] + mapy[py];
+					tdata[tp++] = sdata[sp++];
+					tdata[tp++] = sdata[sp++];
+					tdata[tp++] = sdata[sp++];
+					tdata[tp++] = sdata[sp++];
+				}
+			}
+
+			target_ctx.putImageData(target, 0, 0);
 		},
 		max_pooler_e3s2: function(img_in, img_in_width) {
 			var img_dum = [], img_out = [];

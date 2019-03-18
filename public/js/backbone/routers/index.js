@@ -6,7 +6,7 @@ define([
 	'backbone/views/neighbor',
 	'backbone/views/nnc',
 	'backbone/views/classify_2d',
-	'backbone/views/max_pooler',
+	'backbone/views/pooling',
 	'backbone/views/digit_recognizer_basic',
 	'backbone/views/digit_recognizer_advanced',
 	'backbone/views/convolutional_layers',
@@ -14,7 +14,7 @@ define([
 	'backbone/views/mnist_pca',
 	'backbone/views/face_detector',
 	'backbone/views/clustering',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, MaxPoolerView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView) {
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -24,7 +24,7 @@ define([
 			'neighbor': 'neighbor',
 			'nnc': 'nnc',
 			'classify_2d': 'classify_2d',
-			'max_pooler': 'max_pooler',
+			'pooling': 'pooling',
 			'digit_recognizer_basic': 'digit_recognizer_basic',
 			'digit_recognizer_advanced': 'digit_recognizer_advanced',
 			'convolutional_layers': 'convolutional_layers',
@@ -56,9 +56,9 @@ define([
 			var classify2DView = new Classify2DView();
 			this.changeView(classify2DView);
 		},
-		max_pooler: function() {
-			var maxPoolerView = new MaxPoolerView();
-			this.changeView(maxPoolerView);
+		pooling: function() {
+			var poolingView = new PoolingView();
+			this.changeView(poolingView);
 		},
 		digit_recognizer_basic: function() {
 			var digitRecognizerBasicView = new DigitRecognizerBasicView();

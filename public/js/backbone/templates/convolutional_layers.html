@@ -3,6 +3,7 @@
 		<div class="col col-lg-12">
 			<h5>Convolutional layers</h5>
 			In this interactive tutorial, convolutional and pooling layers can be linked together. First select the type of layer, the type of predefined 3x3 kernels (only in case of convolutional layer) or the size of kernel (only in case of pooling layer), select the value of the stride, then click on <i>Add layer</i> button, to insert the layer to the end of the network. After adding at least one layer, click on any of the sample input images to send it to the network of layers.
+			<blockquote cite="https://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.convolve.html">With border mode <strong>valid</strong> you get an output that is smaller than the input because the convolution is only computed where the input and the filter fully overlap. With border mode <strong>same</strong> you get an output that is the <code>same</code> size as the input. That means that the filter has to go outside the bounds of the input by <code>filter size / 2</code> - the area outside of the input is normally padded with zeros. Note that some libraries also support the border mode <strong>full</strong> where the filter goes even further outside the bounds of the input - up to <code>filter size - 1</code>. This results in an output shape larger than the input.</blockquote>
 		</div>
 	</div>
 	<div class="row">
@@ -77,7 +78,10 @@
 								Padding:
 							</div>
 							<div class="col col-sm-8">
-								<input type="number" id="padding" class="form-control" value="0" min="0" max="3" disabled>
+								<select id="padding" class="form-control">
+									<option value="valid" selected>Valid</option>
+									<option value="same">Same</option>
+								</select>
 							</div>
 						</div>
 
@@ -109,4 +113,4 @@
 		</div>
 	</div>
 </div>
-<!-- padding, upscaler -->
+<!-- upscaler -->

@@ -94,7 +94,7 @@ define([
 
 		// UI handling
 		onInputClicked: function(e) {
-			var input = $(e.target).data('name'), feature_maps = {r: this._createArray(100, 100), g: this._createArray(100, 100), b: this._createArray(100, 100)};
+			var input = $(e.target).data('name'), feature_maps = {r: this._createArray(100, 0), g: this._createArray(100, 0), b: this._createArray(100, 0)};
 
 			for (var i=0;i<this.layers.length;i++) {
 				switch (this.layers[i].type) {
@@ -121,6 +121,7 @@ define([
 							feature_maps.r = this._convolve2d(feature_maps.r, this.layers[i].kernel_size, this.layers[i].stride, this.layers[i].padding, this.layers[i].type);
 							feature_maps.g = this._convolve2d(feature_maps.g, this.layers[i].kernel_size, this.layers[i].stride, this.layers[i].padding, this.layers[i].type);
 							feature_maps.b = this._convolve2d(feature_maps.b, this.layers[i].kernel_size, this.layers[i].stride, this.layers[i].padding, this.layers[i].type);
+							console.log(feature_maps);
 							this._displayImage('canvas_r_' + this.layers[i].id, feature_maps.r, this.layers[i].output, 1);
 							this._displayImage('canvas_g_' + this.layers[i].id, feature_maps.g, this.layers[i].output, 1);
 							this._displayImage('canvas_b_' + this.layers[i].id, feature_maps.b, this.layers[i].output, 1);
@@ -149,7 +150,7 @@ define([
 		onAddLayerClicked: function() {
 			var input = this.layers[this.layers.length-1].output,
 				kernel_size = parseInt($('#kernel_size').val()),
-				padding = parseInt($('#padding').val()),
+				padding = ($('#padding').val()=='same'?Math.floor(kernel_size/2):0),
 				stride = parseInt($('#stride').val()),
 				output = Math.floor((input+2*padding-kernel_size)/stride) + 1,
 				template = _.template(layerTemplate),
@@ -173,7 +174,7 @@ define([
 
 		// layer functions
 		_convolve2d: function(i, k, s, p, t) {
-			var k_size = (typeof k == 'number'?k:k.length), o_size = Math.floor((i.length+2*p-k_size)/s) + 1, o = this._createArray(o_size, o_size);
+			var k_size = (typeof k == 'number'?k:k.length), o_size = Math.floor((i.length+2*p-k_size)/s) + 1, o = this._createArray(o_size, 0);
 
 			for (var lx=-p, mx=0;lx<=(i.length-k_size);lx+=s, mx++) {
 				for (var ly=-p, my=0;ly<=(i.length-k_size);ly+=s, my++) {
@@ -181,7 +182,7 @@ define([
 
 					for (var kx=0;kx<k_size;kx++) {
 						for (var ky=0;ky<k_size;ky++) {
-							if (typeof i[lx+kx][ly+ky] != 'undefined') {
+							if ((lx+kx)>0 && (ly+ky)>0 && typeof i[lx+kx][ly+ky] != 'undefined') {
 								switch (t) {
 									case 'conv2d':
 											value+= i[lx+kx][ly+ky] * k[kx][ky];
@@ -209,15 +210,12 @@ define([
 		},
 
 		// array functions
-		_createArray: function(length) {
-			var arr = new Array(length || 0), i = length;
-
-			if (arguments.length > 1) {
-				var args = Array.prototype.slice.call(arguments, 1);
-				while(i--) arr[length-1 - i] = this._createArray.apply(this, args);
-			}
-
-			return arr;
+		_range: function(n) {
+			return Array(n).fill(0);
+		},
+		_createArray: function(dim, value) {
+			var _self = this;
+			return this._range(dim).map(function(v) { return _self._range(dim).map(function(v) { return value;})});
 		},
 
 		// color functions

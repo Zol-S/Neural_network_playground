@@ -14,7 +14,8 @@ define([
 	'backbone/views/mnist_pca',
 	'backbone/views/face_detector',
 	'backbone/views/clustering',
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView) {
+	'backbone/views/CNN_layer_visualizer'
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -32,6 +33,7 @@ define([
 			'mnist_pca': 'mnist_pca',
 			'face_detector': 'face_detector',
 			'clustering': 'clustering',
+			'cnn_layer_visualizer': 'cnn_layer_visualizer',
 			'*default': 'xor'
 		},
 
@@ -87,6 +89,10 @@ define([
 		clustering: function() {
 			var clusteringView = new ClusteringView();
 			this.changeView(clusteringView);
+		},
+		cnn_layer_visualizer: function() {
+			var cnnLayerVisualizerView = new CNNLayerVisualizerView();
+			this.changeView(cnnLayerVisualizerView);
 		},
 
 		changeView: function(view) {

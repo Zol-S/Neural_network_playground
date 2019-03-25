@@ -21,8 +21,8 @@ Demonstrates minimum search with [unnormalized gradient descent](http://caza.la/
 PCA performed on MNIST digits. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#mnist_pca) for the demo.
 
 ## Convolutional networks ##
-### Max pooler ###
-Max and average pooling MNIST 28x28 images down to 14x14 and 7x7 images using different spatial striding. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#max_pooler) for the demo.
+### Pooling ###
+Max and average pooling MNIST 28x28 images down to 14x14 and 7x7 images using different spatial striding. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#pooling) for the demo.
 ### Digit recognizer - basic ###
 Draw a digit to a square of 28x28 pixels or click on any of the buttons below to show a nice digit of the MNIST dataset to feed the data of the drawn image to the convolutional network. The top 3 results will be shown below with the probability percentages. The application is implemented by using <a href="https://js.tensorflow.org/" target="_blank">Tensorflow.js</a>. The model has an accuracy of 98.96% and the size of the model and the weights are as little as 725 kB. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#digit_recognizer_basic) for the demo.
 ### Digit recognizer - advanced ###

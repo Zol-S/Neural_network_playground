@@ -14,7 +14,7 @@ define([
 	'backbone/views/mnist_pca',
 	'backbone/views/face_detector',
 	'backbone/views/clustering',
-	'backbone/views/CNN_layer_visualizer'
+	'backbone/views/cnn_layer_visualizer'
 ], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView) {
 	'use strict';
 

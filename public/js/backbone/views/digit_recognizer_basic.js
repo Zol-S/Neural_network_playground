@@ -3,7 +3,7 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/digit_recognizer_basic.html',
-	'tfjs',
+	'tfjs10',
 	'bootstrap'
 ], function ($, _, Backbone, digitRecognizerTemplate, tf) {
 	'use strict';

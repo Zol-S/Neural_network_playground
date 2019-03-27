@@ -3,7 +3,7 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/face_detector.html',
-	'tfjs',
+	'tfjs10',
 	'bootstrap'
 ], function ($, _, Backbone, faceDetectorTemplate, tf) {
 	'use strict';

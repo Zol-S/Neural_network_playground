@@ -16,7 +16,8 @@ require.config({
 		colorbrewer: 'vendor/colorbrewer-1.0.0.min',
 		synaptic: 'vendor/synaptic-1.1.4.min',
 		numeric: 'vendor/numeric-1.2.6.min',
-		tfjs: 'vendor/tfjs-0.14.0.min',
+		tfjs10: 'vendor/tfjs-0.10.0.min',
+		//tfjs14: 'vendor/tfjs-0.14.0.min',
 		KerasJS: 'vendor/keras-0.3.0.min'
 	},
 	shim: {
@@ -49,9 +50,12 @@ require.config({
 		numeric: {
 			exports: 'numeric'
 		},
-		tfjs: {
+		tfjs10: {
 			exports: 'tf'
 		},
+		//tfjs14: {
+		//	exports: 'tf'
+		//},
 		KerasJS: {
 			exports: 'KerasJS'
 		} 

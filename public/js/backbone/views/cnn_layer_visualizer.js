@@ -3,9 +3,9 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/cnn_layer_visualizer.html',
-	'tfjs',
+	//'tfjs14',
 	'bootstrap'
-], function ($, _, Backbone, CNNLayerVisualizerTemplate, tf) {
+], function ($, _, Backbone, CNNLayerVisualizerTemplate/*, tf*/) {
 	'use strict';
 
 	var view = Backbone.View.extend({

@@ -57,13 +57,6 @@ define([
 					$('#canvas').append('<div id="rect_' + i + '_' + k + '" class="small_rectangle" style="top:' + (i*5) + 'px;left:' + (k*5) + 'px;"></div>');
 				}
 			}
-
-			// Output
-			for (var i=0;i<this.size;i++) {
-				for (var k=0;k<this.size;k++) {
-					$('#activation').append('<div id="out_' + i + '_' + k + '"  class="small_rectangle" style="top:' + (i*5) + 'px;left:' + (k*5) + 'px;"></div>');
-				}
-			}
 		},
 		onPixelClicked: function(e) {
 			this.draw_state = ($(e.target).hasClass('pixel_on')?2:1);
@@ -169,7 +162,7 @@ define([
 
 			// Title
 			var layerOutputShape = model.getLayer(layer).output.shape;
-			var kernelShape = document.model.getLayer(layer).kernelSize;
+			var kernelShape = model.getLayer(layer).kernelSize;
 			var is_flattened = false;
 			var titleText = (typeof kernelShape!='undefined'?layerOutputShape[3] + ' ' + kernelShape[0] + 'x' + kernelShape[1] + ' kernel, ':'');
 			if (typeof layerOutputShape[2] == 'undefined') {

@@ -2,15 +2,93 @@
 	<div class="row">
 		<div class="col col-lg-12">
 			<h5>CNN layer visualizer</h5>
-			
+			Inspired by <a href="https://github.com/yosinski/deep-visualization-toolbox" target="_blank">Deep visualization toolbox</a>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col col-lg-12">
-			<video autoplay="true" id="videoElement" width="320" height="240"></video>
-			<canvas id="canvas" width="64" height="48"></canvas>
-			<button id="snap_btn">Snap Photo</button>
+		<div class="col col-lg-2">
+			<h6>Properties</h6>
+			<img src="<%= base_url %><%= public_directory %>/img/ajax-loader.gif" class="ajax_loader">
+			
+			<button type="button" class="btn btn-primary" id="start_btn" disabled="disabled">Start</button>
+			<button type="button" class="btn btn-primary" id="stop_btn" disabled="disabled">Stop</button>
+
+			<label for="fps_selector">Sampling frequency:</label>
+			<select class="form-control" id="fps_selector">
+				<option value="1">1 fps</option>
+				<option value="2">2 fps</option>
+				<option value="10">10 fps</option>
+				<option value="25">25 fps</option>
+			</select>
+
+			<h6>Inference</h6>
+			Inference time: <i id="inference_time"></i>
+			<div id="inference"></div>
 		</div>
-		<div id="stage" class="col col-lg-10"></div>
+		<div id="stage" class="col col-lg-1">
+			<div id="canvas"></div>
+		</div>
+		<div class="col col-lg-9">
+			<div class="card bg-light mb-3">
+				<div class="card-header">Input stream<span></span></div>
+				<div class="card-body">
+					<p class="card-text">
+
+						<video autoplay="true" id="camera_stream" width="320" height="240"></video>
+						<canvas id="input_grayscale" width="28" height="28"></canvas>
+						<canvas id="input_bw" width="28" height="28"></canvas>
+
+					</p>
+				</div>
+			</div>
+			<div class="card bg-light mb-3">
+				<div class="card-header">Convolutional layer 1<span></span></div>
+				<div class="card-body">
+					<p id="conv2d_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Max pooling layer 1<span></span></div>
+				<div class="card-body">
+					<p id="max_pooling2d_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Convolutional layer 2<span></span></div>
+				<div class="card-body">
+					<p id="conv2d_2" class="card-text"></p>
+				</div>
+			</div>
+	
+			<div class="card bg-light mb-3">
+				<div class="card-header">Max pooling layer 2<span></span></div>
+				<div class="card-body">
+					<p id="max_pooling2d_2" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Flatten 1<span></span></div>
+				<div class="card-body">
+					<p id="flatten_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Dense 1<span></span></div>
+				<div class="card-body">
+					<p id="dense_1" class="card-text"></p>
+				</div>
+			</div>
+
+			<div class="card bg-light mb-3">
+				<div class="card-header">Dense 2<span></span></div>
+				<div class="card-body">
+					<p id="dense_2" class="card-text"></p>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

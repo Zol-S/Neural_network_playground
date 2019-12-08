@@ -82,3 +82,9 @@ p.card-text canvas {
 .close, .input {
 	cursor: pointer;
 }
+
+/* CNN layer visualizer */
+#camera_stream {
+	margin: 0;
+	padding: 0;
+}

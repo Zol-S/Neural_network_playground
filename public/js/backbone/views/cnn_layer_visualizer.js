@@ -40,10 +40,9 @@ define([
 				navigator.mediaDevices.getUserMedia({video: true})
 					.then(function (stream) {
 						_self.video.srcObject = stream;
-						console.log('Video stream started');
 					})
 					.catch(function (error) {
-						console.log("Something went wrong!");
+						alert("Something went wrong: " + error);
 					});
 			}
 

@@ -22,7 +22,8 @@ define([
 		events: {
 			'click #start_btn': 'onStartClicked',
 			'click #stop_btn': 'onStopClicked',
-			'change #fps_selector': 'onFPSChanged'
+			'change #fps_selector': 'onFPSChanged',
+			'change #camera_selector': 'onCameraChanged'
 		},
 		render: function() {
 			this.$el.empty();
@@ -30,14 +31,29 @@ define([
 			var template = _.template(CNNLayerVisualizerTemplate);
 			this.$el.append(template());
 
-			this.embedCameraVideo();
+			// Populate camera select
+			navigator.mediaDevices.enumerateDevices().then(this.onMediaDevicesDetected)
+		},
+		onMediaDevicesDetected: function(mediaDevices) {
+			mediaDevices.forEach(mediaDevice => {
+				if (mediaDevice.kind == 'videoinput') {
+					$('#camera_selector').append('<option value="' + mediaDevice.deviceId + '">' + mediaDevice.label + '</option>');
+				}
+			});
 		},
 		embedCameraVideo: function() {
 			var _self = this;
 			this.video = document.querySelector("#camera_stream");
 
 			if (navigator.mediaDevices.getUserMedia) {
-				navigator.mediaDevices.getUserMedia({video: true})
+				navigator.mediaDevices.getUserMedia({
+						video: {
+							deviceId: {
+								exact: $('#camera_selector').children("option:selected").val()
+							}
+						},
+						audio: false
+					})
 					.then(function (stream) {
 						_self.video.srcObject = stream;
 					})
@@ -56,6 +72,8 @@ define([
 			$('#stop_btn').removeAttr('disabled');
 
 			var _self = this;
+
+			this.embedCameraVideo();
 			this.interval = setInterval(function() {
 				_self.captureImage();
 			}, 1000/_self.fps);
@@ -64,6 +82,10 @@ define([
 		onStopClicked: function() {
 			$('#start_btn').removeAttr('disabled');
 			$('#stop_btn').attr('disabled', 'disabled');
+			
+			/*if (this.currentStream !== 'undefined') {
+				this.stopMediaTracks(this.currentStream);
+			}*/
 
 			clearInterval(this.interval);
 		},
@@ -71,6 +93,14 @@ define([
 			this.onStopClicked()
 			this.fps = $('#fps_selector').children("option:selected").val();
 		},
+		onCameraChanged: function() {
+			console.log('Camera: ' + $('#camera_selector').children("option:selected").val());
+		},
+		/*stopMediaTracks: function(stream) {
+			stream.getTracks().forEach(track => {
+				track.stop();
+			});
+		},*/
 		captureImage: async function() {
 			var start_time = performance.now();
 

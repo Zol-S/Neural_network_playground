@@ -21,6 +21,9 @@
 				<option value="25">25 fps</option>
 			</select>
 
+			<label for="camera_selector">Camera:</label>
+			<select class="form-control" id="camera_selector"></select>
+
 			<h6>Inference</h6>
 			Inference time: <i id="inference_time"></i>
 			<div id="inference"></div>
@@ -33,11 +36,9 @@
 				<div class="card-header">Input stream<span></span></div>
 				<div class="card-body">
 					<p class="card-text">
-
 						<video autoplay="true" id="camera_stream" width="320" height="240"></video>
 						<canvas id="input_grayscale" width="28" height="28"></canvas>
 						<canvas id="input_bw" width="28" height="28"></canvas>
-
 					</p>
 				</div>
 			</div>

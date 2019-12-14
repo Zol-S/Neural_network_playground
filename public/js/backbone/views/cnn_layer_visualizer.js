@@ -12,8 +12,9 @@ define([
 		el: '#main',
 		initialize: async function() {
 			this.size = 28;
-			this.fps = 1;
 
+			// Load layers from model
+			// Load models
 			document.model = await tf.loadModel('public/js/neural/mnist_28x28/model.json');
 			$('#start_btn').removeAttr('disabled');
 			console.log('MNIST 28x28 model is loaded');
@@ -22,8 +23,9 @@ define([
 		events: {
 			'click #start_btn': 'onStartClicked',
 			'click #stop_btn': 'onStopClicked',
-			'change #fps_selector': 'onFPSChanged',
-			'change #camera_selector': 'onCameraChanged'
+			'change #fps_selector': 'onStopClicked',
+			'change #camera_selector': 'onStopClicked',
+			'change #model_selector': 'onStopClicked'
 		},
 		render: function() {
 			this.$el.empty();
@@ -41,6 +43,13 @@ define([
 				}
 			});
 		},
+		onStartClicked: function() {
+			$('.ajax_loader').show();
+			$('#start_btn').attr('disabled', 'disabled');
+			$('#stop_btn').removeAttr('disabled');
+
+			this.embedCameraVideo();
+		},
 		embedCameraVideo: function() {
 			var _self = this;
 			this.video = document.querySelector("#camera_stream");
@@ -56,51 +65,76 @@ define([
 					})
 					.then(function (stream) {
 						_self.video.srcObject = stream;
+						
+						$('.ajax_loader').hide();
+
+						_self.startImageCapture();
 					})
 					.catch(function (error) {
 						alert("Something went wrong: " + error);
 					});
 			}
-
-			this.video.addEventListener('loadedmetadata', function() {
-				canvas.width = 28;
-				canvas.height = 28;
-			},false);
-		},
-		onStartClicked: function() {
-			$('#start_btn').attr('disabled', 'disabled');
-			$('#stop_btn').removeAttr('disabled');
-
-			var _self = this;
-
-			this.embedCameraVideo();
-			this.interval = setInterval(function() {
-				_self.captureImage();
-			}, 1000/_self.fps);
-			console.log('Sampling in ' + 1000/_self.fps)
 		},
 		onStopClicked: function() {
-			$('#start_btn').removeAttr('disabled');
-			$('#stop_btn').attr('disabled', 'disabled');
-			
-			/*if (this.currentStream !== 'undefined') {
-				this.stopMediaTracks(this.currentStream);
-			}*/
+			if (typeof this.interval !== 'undefined') {
+				$('#start_btn').removeAttr('disabled');
+				$('#stop_btn').attr('disabled', 'disabled');
 
-			clearInterval(this.interval);
+				var tracks = this.video.srcObject.getTracks();
+
+				for (var i = 0; i < tracks.length; i++) {
+					var track = tracks[i];
+					track.stop();
+				}
+
+				this.video.srcObject = null;
+
+				clearInterval(this.interval);
+				delete this.interval;
+			}
 		},
-		onFPSChanged: function() {
-			this.onStopClicked()
-			this.fps = $('#fps_selector').children("option:selected").val();
+		drawZoomedImage: function(source_ctx, sw, sh, target_ctx, tw, th) {
+			var source = source_ctx.getImageData(0, 0, sw, sh);
+			var sdata = source.data;
+
+			var target = target_ctx.createImageData(tw, th);
+			var tdata = target.data;
+
+			var mapx = [];
+			var ratiox = sw / tw, px = 0;
+			for (var i = 0; i < tw; ++i) {
+				mapx[i] = 4 * Math.floor(px);
+				px += ratiox;
+			}
+
+			var mapy = [];
+			var ratioy = sh / th, py = 0;
+			for (var i = 0; i < th; ++i) {
+				mapy[i] = 4 * sw * Math.floor(py);
+				py += ratioy;
+			}
+
+			var tp = 0;
+			for (py = 0; py < th; ++py) {
+				for (px = 0; px < tw; ++px) {
+					var sp = mapx[px] + mapy[py];
+					tdata[tp++] = sdata[sp++];
+					tdata[tp++] = sdata[sp++];
+					tdata[tp++] = sdata[sp++];
+					tdata[tp++] = sdata[sp++];
+				}
+			}
+
+			target_ctx.putImageData(target, 0, 0);
 		},
-		onCameraChanged: function() {
-			console.log('Camera: ' + $('#camera_selector').children("option:selected").val());
+		startImageCapture: function() {
+			var _self = this, fps = $('#fps_selector').children("option:selected").val();
+			console.log('Sampling at every ' + 1000/fps + ' ms');
+
+			this.interval = setInterval(function() {
+				_self.captureImage();
+			}, 1000/fps);
 		},
-		/*stopMediaTracks: function(stream) {
-			stream.getTracks().forEach(track => {
-				track.stop();
-			});
-		},*/
 		captureImage: async function() {
 			var start_time = performance.now();
 
@@ -117,7 +151,7 @@ define([
 			var imgDataArray = new Array(784);
 			for (var i=0, k=0; i < imgDataGS.data.length; i+=4,k++) {
 				var grayscale = imgDataGS.data[i] * .3 + imgDataGS.data[i+1] * .59 + imgDataGS.data[i+2] * .11;
-				imgDataArray[k] = (grayscale>128?1:0);
+				imgDataArray[k] = grayscale/255;//(grayscale>128?1:0);
 
 				imgDataGS.data[i] = grayscale;
 				imgDataGS.data[i+1] = grayscale;
@@ -131,9 +165,20 @@ define([
 			}
 			input_context_GS.putImageData(imgDataGS, 0, 0);
 			input_context_BW.putImageData(imgDataBW, 0, 0);
+			
+			// Zoomed image
+			this.drawZoomedImage(
+				document.getElementById('input_grayscale').getContext("2d"), 28, 28,
+				document.getElementById('input_grayscale_big').getContext("2d"), 200, 200
+			);
+
+			this.drawZoomedImage(
+				document.getElementById('input_bw').getContext("2d"), 28, 28,
+				document.getElementById('input_bw_big').getContext("2d"), 200, 200
+			);
 
 			// Prediction
-			let image2D = tf.tensor1d(imgDataArray).reshape([28, 28, 1]);
+			/*let image2D = tf.tensor1d(imgDataArray).reshape([28, 28, 1]);
 			let prediction = document.model.predict(image2D.expandDims(0));
 			//prediction.argMax().print();
 			let probabilities = await prediction.as1D().data();
@@ -155,18 +200,18 @@ define([
 			$('#inference').empty();
 			for (var i=0;i<3;i++) {
 				$('#inference').append(probabilities_array[i].number + ': ' + parseInt(probabilities_array[i].probability*1000000)/10000 +'%<br/>');
-			}
+			}*/
 
 			var end_time = performance.now();
 			$('#inference_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
 
-			this.displayActivationMaps(document.model, "conv2d_1", imgDataArray, "conv2d_1", 1);
+			/*this.displayActivationMaps(document.model, "conv2d_1", imgDataArray, "conv2d_1", 1);
 			this.displayActivationMaps(document.model, "max_pooling2d_1", imgDataArray, "max_pooling2d_1", 2);
 			this.displayActivationMaps(document.model, "conv2d_2", imgDataArray, "conv2d_2", 2);
 			this.displayActivationMaps(document.model, "max_pooling2d_2", imgDataArray, "max_pooling2d_2", 5);
 			this.displayActivationMaps(document.model, "flatten_1", imgDataArray, "flatten_1", [1, 10]);
 			this.displayActivationMaps(document.model, "dense_1", imgDataArray, "dense_1", [4, 10]);
-			this.displayActivationMaps(document.model, "dense_2", imgDataArray, "dense_2", [10, 10]);
+			this.displayActivationMaps(document.model, "dense_2", imgDataArray, "dense_2", [10, 10]);*/
 
 			/*
 			conv2d_1

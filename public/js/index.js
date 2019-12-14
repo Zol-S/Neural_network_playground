@@ -18,6 +18,7 @@ require.config({
 		numeric: 'vendor/numeric-1.2.6.min',
 		tfjs10: 'vendor/tfjs-0.10.0.min',
 		tfjs112: 'vendor/tfjs-1.1.2.min',
+		tfjs132: 'vendor/tfjs-1.3.2.min',
 		KerasJS: 'vendor/keras-0.3.0.min'
 	},
 	shim: {

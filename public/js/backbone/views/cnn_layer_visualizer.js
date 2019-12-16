@@ -11,14 +11,16 @@ define([
 	var view = Backbone.View.extend({
 		el: '#main',
 		initialize: async function() {
-			this.size = 28;
+			this.magnification_size = 50;
+			// Todo
+			// - Load models
 
-			// Load layers from model
-			// Load models
-			document.model = await tf.loadModel('public/js/neural/mnist_28x28/model.json');
-			$('#start_btn').removeAttr('disabled');
+			// Loading model
+			$('#start_btn').attr('disabled', 'disabled');
+			this.CNN_model = await tf.loadModel(window.public_directory + '/js/neural/mnist_28x28/model.json');
 			console.log('MNIST 28x28 model is loaded');
-			//console.log('Olivetti faces 64x64 model is loaded');
+
+			this.buildLayers(this.CNN_model);
 		},
 		events: {
 			'click #start_btn': 'onStartClicked',
@@ -30,11 +32,50 @@ define([
 		render: function() {
 			this.$el.empty();
 
-			var template = _.template(CNNLayerVisualizerTemplate);
+			let template = _.template(CNNLayerVisualizerTemplate);
 			this.$el.append(template());
 
 			// Populate camera select
 			navigator.mediaDevices.enumerateDevices().then(this.onMediaDevicesDetected)
+		},
+		buildLayers: function(model) {
+			this.CNN_layers = [];
+
+			for (let i in model.layers) {
+				let layer = model.layers[i], u_pos = layer.name.lastIndexOf('_');
+				let layer_title = '', layer_input_shape = [], layer_magnify_level;
+				
+				switch (layer.name.substring(0, u_pos)) {
+					case 'conv2d':
+							layer_title = 'Convolutional layer ' + layer.name.substring(u_pos+1);
+							layer_input_shape = [model.layers[i].input.shape[1], model.layers[i].input.shape[2]];
+							layer_magnify_level = Math.floor(this.magnification_size/model.layers[i].input.shape[1]);
+						break;
+					case 'max_pooling2d':
+							layer_title = 'Max pooling layer ' + layer.name.substring(u_pos+1);
+							layer_input_shape = [model.layers[i].input.shape[1], model.layers[i].input.shape[2]];
+							layer_magnify_level = Math.floor(this.magnification_size/model.layers[i].input.shape[1]);
+						break;
+					case 'flatten':
+							layer_title = 'Flatten ' + layer.name.substring(u_pos+1);
+							layer_magnify_level = [1, 10];
+						break;
+					case 'dense':
+							layer_title = 'Dense ' + layer.name.substring(u_pos+1);
+							layer_magnify_level = [[5, 10][layer.name.substring(u_pos+1)-1], 10];
+				}
+
+				if (layer_title != '') {
+					this.CNN_layers.push({
+						'name': layer.name,
+						'input_shape': layer_input_shape,
+						'magnify_level': layer_magnify_level
+					});
+					$('#layer_container').append('<div class="card bg-light mb-3"><div class="card-header">' + layer_title + '<span></span></div><div class="card-body"><p id="' + layer.name + '" class="card-text"></p></div></div>');
+				}
+			};
+
+			$('#start_btn').removeAttr('disabled');
 		},
 		onMediaDevicesDetected: function(mediaDevices) {
 			mediaDevices.forEach(mediaDevice => {
@@ -51,7 +92,7 @@ define([
 			this.embedCameraVideo();
 		},
 		embedCameraVideo: function() {
-			var _self = this;
+			let _self = this;
 			this.video = document.querySelector("#camera_stream");
 
 			if (navigator.mediaDevices.getUserMedia) {
@@ -80,10 +121,10 @@ define([
 				$('#start_btn').removeAttr('disabled');
 				$('#stop_btn').attr('disabled', 'disabled');
 
-				var tracks = this.video.srcObject.getTracks();
+				let tracks = this.video.srcObject.getTracks();
 
-				for (var i = 0; i < tracks.length; i++) {
-					var track = tracks[i];
+				for (let i = 0; i < tracks.length; i++) {
+					let track = tracks[i];
 					track.stop();
 				}
 
@@ -94,30 +135,30 @@ define([
 			}
 		},
 		drawZoomedImage: function(source_ctx, sw, sh, target_ctx, tw, th) {
-			var source = source_ctx.getImageData(0, 0, sw, sh);
-			var sdata = source.data;
+			let source = source_ctx.getImageData(0, 0, sw, sh);
+			let sdata = source.data;
 
-			var target = target_ctx.createImageData(tw, th);
-			var tdata = target.data;
+			let target = target_ctx.createImageData(tw, th);
+			let tdata = target.data;
 
-			var mapx = [];
-			var ratiox = sw / tw, px = 0;
-			for (var i = 0; i < tw; ++i) {
+			let mapx = [];
+			let ratiox = sw / tw, px = 0;
+			for (let i = 0; i < tw; ++i) {
 				mapx[i] = 4 * Math.floor(px);
 				px += ratiox;
 			}
 
-			var mapy = [];
-			var ratioy = sh / th, py = 0;
-			for (var i = 0; i < th; ++i) {
+			let mapy = [];
+			let ratioy = sh / th, py = 0;
+			for (let i = 0; i < th; ++i) {
 				mapy[i] = 4 * sw * Math.floor(py);
 				py += ratioy;
 			}
 
-			var tp = 0;
+			let tp = 0;
 			for (py = 0; py < th; ++py) {
 				for (px = 0; px < tw; ++px) {
-					var sp = mapx[px] + mapy[py];
+					let sp = mapx[px] + mapy[py];
 					tdata[tp++] = sdata[sp++];
 					tdata[tp++] = sdata[sp++];
 					tdata[tp++] = sdata[sp++];
@@ -128,7 +169,7 @@ define([
 			target_ctx.putImageData(target, 0, 0);
 		},
 		startImageCapture: function() {
-			var _self = this, fps = $('#fps_selector').children("option:selected").val();
+			let _self = this, fps = $('#fps_selector').children("option:selected").val();
 			console.log('Sampling at every ' + 1000/fps + ' ms');
 
 			this.interval = setInterval(function() {
@@ -136,21 +177,21 @@ define([
 			}, 1000/fps);
 		},
 		captureImage: async function() {
-			var start_time = performance.now();
+			let start_time = performance.now();
 
-			var input_canvas_GS = document.querySelector('#input_grayscale');
-			var input_context_GS = input_canvas_GS.getContext('2d');
-			var input_context_BW = document.querySelector('#input_bw').getContext('2d');
+			let input_canvas_GS = document.querySelector('#input_grayscale');
+			let input_context_GS = input_canvas_GS.getContext('2d');
+			let input_context_BW = document.querySelector('#input_bw').getContext('2d');
 
 			input_context_GS.drawImage(this.video, 0, 0, input_canvas_GS.width, input_canvas_GS.height);
 			input_context_BW.drawImage(this.video, 0, 0, input_canvas_GS.width, input_canvas_GS.height);
 
-			var imgDataGS = input_context_GS.getImageData(0, 0, input_canvas_GS.width, input_canvas_GS.height);
-			var imgDataBW = input_context_BW.getImageData(0, 0, input_canvas_GS.width, input_canvas_GS.height);
+			let imgDataGS = input_context_GS.getImageData(0, 0, input_canvas_GS.width, input_canvas_GS.height);
+			let imgDataBW = input_context_BW.getImageData(0, 0, input_canvas_GS.width, input_canvas_GS.height);
 
-			var imgDataArray = new Array(784);
-			for (var i=0, k=0; i < imgDataGS.data.length; i+=4,k++) {
-				var grayscale = imgDataGS.data[i] * .3 + imgDataGS.data[i+1] * .59 + imgDataGS.data[i+2] * .11;
+			let imgDataArray = new Array(this.CNN_layers[0].input_shape[0]*this.CNN_layers[0].input_shape[1]);
+			for (let i=0, k=0; i < imgDataGS.data.length; i+=4,k++) {
+				let grayscale = imgDataGS.data[i] * .3 + imgDataGS.data[i+1] * .59 + imgDataGS.data[i+2] * .11;
 				imgDataArray[k] = grayscale/255;//(grayscale>128?1:0);
 
 				imgDataGS.data[i] = grayscale;
@@ -165,26 +206,26 @@ define([
 			}
 			input_context_GS.putImageData(imgDataGS, 0, 0);
 			input_context_BW.putImageData(imgDataBW, 0, 0);
-			
+
 			// Zoomed image
 			this.drawZoomedImage(
-				document.getElementById('input_grayscale').getContext("2d"), 28, 28,
+				document.getElementById('input_grayscale').getContext("2d"), this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1],
 				document.getElementById('input_grayscale_big').getContext("2d"), 200, 200
 			);
 
 			this.drawZoomedImage(
-				document.getElementById('input_bw').getContext("2d"), 28, 28,
+				document.getElementById('input_bw').getContext("2d"), this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1],
 				document.getElementById('input_bw_big').getContext("2d"), 200, 200
 			);
 
 			// Prediction
-			/*let image2D = tf.tensor1d(imgDataArray).reshape([28, 28, 1]);
-			let prediction = document.model.predict(image2D.expandDims(0));
+			let image2D = tf.tensor1d(imgDataArray).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]);
+			let prediction = this.CNN_model.predict(image2D.expandDims(0));
 			//prediction.argMax().print();
 			let probabilities = await prediction.as1D().data();
 
 			let probabilities_array = new Array();
-			for (var i=0;i<probabilities.length;i++) {
+			for (let i=0;i<probabilities.length;i++) {
 				probabilities_array.push({
 					number: i,
 					probability: probabilities[i]
@@ -198,34 +239,16 @@ define([
 			);
 
 			$('#inference').empty();
-			for (var i=0;i<3;i++) {
+			for (let i=0;i<3;i++) {
 				$('#inference').append(probabilities_array[i].number + ': ' + parseInt(probabilities_array[i].probability*1000000)/10000 +'%<br/>');
-			}*/
+			}
 
-			var end_time = performance.now();
+			let end_time = performance.now();
 			$('#inference_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
 
-			/*this.displayActivationMaps(document.model, "conv2d_1", imgDataArray, "conv2d_1", 1);
-			this.displayActivationMaps(document.model, "max_pooling2d_1", imgDataArray, "max_pooling2d_1", 2);
-			this.displayActivationMaps(document.model, "conv2d_2", imgDataArray, "conv2d_2", 2);
-			this.displayActivationMaps(document.model, "max_pooling2d_2", imgDataArray, "max_pooling2d_2", 5);
-			this.displayActivationMaps(document.model, "flatten_1", imgDataArray, "flatten_1", [1, 10]);
-			this.displayActivationMaps(document.model, "dense_1", imgDataArray, "dense_1", [4, 10]);
-			this.displayActivationMaps(document.model, "dense_2", imgDataArray, "dense_2", [10, 10]);*/
-
-			/*
-			conv2d_1
-			max_pooling2d_1
-			conv2d_2
-			max_pooling2d_2
-			dropout_1
-			flatten_1
-			dense_1
-			activation_1
-			dropout_2
-			dense_2
-			activation_2  
-			*/
+			for (let i in this.CNN_layers) {
+				this.displayActivationMaps(this.CNN_model, this.CNN_layers[i].name, imgDataArray, this.CNN_layers[i].name, this.CNN_layers[i].magnify_level);
+			}
 		},
 		displayActivationMaps: function(model, layer, imageData, outputDiv, scale) {
 			// https://medium.com/tensorflow/a-gentle-introduction-to-tensorflow-js-dba2e5257702
@@ -255,7 +278,7 @@ define([
 
 			// Create a new NN
 			var am_model = tf.model({inputs: model.inputs, outputs: model.getLayer(layer).output});
-			var image2D = tf.tensor1d(imageData).reshape([28, 28, 1]).expandDims(0).toFloat();
+			var image2D = tf.tensor1d(imageData).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]).expandDims(0);
 			var activations = am_model.predict(image2D).dataSync();
 			var ac_min = activations.reduce(function(a, b) { return Math.min(a, b);}), ac_max = activations.reduce(function(a, b) { return Math.max(a, b);});
 			var spread = Math.abs(ac_max - ac_min);
@@ -318,6 +341,7 @@ define([
 			return accumulator;
 		},
 		destroy: function() {
+			this.onStopClicked();
 			this.undelegateEvents();
 			this.$el.empty();
 			this.stopListening();

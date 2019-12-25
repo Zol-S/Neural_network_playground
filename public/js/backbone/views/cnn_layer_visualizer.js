@@ -3,31 +3,35 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/cnn_layer_visualizer.html',
-	'tfjs10',
+	'tfjs132',
 	'bootstrap'
 ], function ($, _, Backbone, CNNLayerVisualizerTemplate, tf) {
 	'use strict';
 
 	var view = Backbone.View.extend({
 		el: '#main',
-		initialize: async function() {
-			this.magnification_size = 50;
-			// Todo
-			// - Load models
+		models: {
+			'mnist_28x28': {
+				title: 'MNIST 28x28',
+				description: 'Model trained on MNIST digit recognition dataset, so it is not suitable for face recognition. Note that it was trained on black and white input, that\'s why it gives a better prediction for the black and white input.'
+			},
+			'olivetti_faces_64x64': {
+				title: 'Olivetti faces 64x64',
+				description: 'Model trained on Olivetti faces dataset with a terrible accuracy. Note that the model is heavy as it has 21 layers, as drawing the 5,571 activation maps might take 30-60 seonds.'
+			}
+		},
+		initialize: function() {
+			this.magnification_size = 64; // set magnification level automatically, get the face recognizer layer
 
-			// Loading model
 			$('#start_btn').attr('disabled', 'disabled');
-			this.CNN_model = await tf.loadModel(window.public_directory + '/js/neural/mnist_28x28/model.json');
-			console.log('MNIST 28x28 model is loaded');
-
-			this.buildLayers(this.CNN_model);
 		},
 		events: {
 			'click #start_btn': 'onStartClicked',
 			'click #stop_btn': 'onStopClicked',
 			'change #fps_selector': 'onStopClicked',
 			'change #camera_selector': 'onStopClicked',
-			'change #model_selector': 'onStopClicked'
+			'change #model_selector': 'onModelSelected',
+			'click .input_canvas': 'onInputCanvasClicked'
 		},
 		render: function() {
 			this.$el.empty();
@@ -38,8 +42,28 @@ define([
 			// Populate camera select
 			navigator.mediaDevices.enumerateDevices().then(this.onMediaDevicesDetected)
 		},
+		onModelSelected: async function() {
+			this.onStopClicked();
+			$('.ajax_loader').show();
+			$('.cnn_layer').remove();
+
+			let selected_model = $('#model_selector').children("option:selected").val();
+
+			if (selected_model != '') {
+				this.CNN_model = await tf.loadLayersModel(window.public_directory + '/js/neural/' + selected_model + '/model.json');
+				$('#model_description').text(this.models[selected_model].description);
+				console.log(this.models[selected_model].title + ' model is loaded');
+
+				this.buildLayers(this.CNN_model);
+			}
+		},
 		buildLayers: function(model) {
 			this.CNN_layers = [];
+
+			$('#input_grayscale').attr('height', model.layers[0].input.shape[1]);
+			$('#input_grayscale').attr('width', model.layers[0].input.shape[2]);
+			$('#input_bw').attr('height', model.layers[0].input.shape[1]);
+			$('#input_bw').attr('width', model.layers[0].input.shape[2]);
 
 			for (let i in model.layers) {
 				let layer = model.layers[i], u_pos = layer.name.lastIndexOf('_');
@@ -62,7 +86,7 @@ define([
 						break;
 					case 'dense':
 							layer_title = 'Dense ' + layer.name.substring(u_pos+1);
-							layer_magnify_level = [[5, 10][layer.name.substring(u_pos+1)-1], 10];
+							layer_magnify_level = [[5, 10], [15, 15]][layer.name.substring(u_pos+1)-1];
 				}
 
 				if (layer_title != '') {
@@ -71,11 +95,12 @@ define([
 						'input_shape': layer_input_shape,
 						'magnify_level': layer_magnify_level
 					});
-					$('#layer_container').append('<div class="card bg-light mb-3"><div class="card-header">' + layer_title + '<span></span></div><div class="card-body"><p id="' + layer.name + '" class="card-text"></p></div></div>');
+					$('#layer_container').append('<div class="card bg-light mb-3 cnn_layer"><div class="card-header">' + layer_title + '<span></span></div><div class="card-body"><p id="' + layer.name + '" class="card-text"></p></div></div>');
 				}
 			};
 
 			$('#start_btn').removeAttr('disabled');
+			$('.ajax_loader').hide();
 		},
 		onMediaDevicesDetected: function(mediaDevices) {
 			mediaDevices.forEach(mediaDevice => {
@@ -90,6 +115,59 @@ define([
 			$('#stop_btn').removeAttr('disabled');
 
 			this.embedCameraVideo();
+		},
+		onInputCanvasClicked: async function(e) {
+			let start_time = performance.now(), input_source = '', input_canvas;
+
+			switch ($(e.target).attr('id')) {
+				case 'input_grayscale_big':
+						input_source = 'Grayscale';
+						input_canvas = document.querySelector('#input_grayscale');
+					break;
+				case 'input_bw_big':
+					input_source = 'Black and white';
+					input_canvas = document.querySelector('#input_bw');
+			}
+			$('#prediction_input').text(input_source);
+
+			let input_image_data = input_canvas.getContext('2d').getImageData(0, 0, input_canvas.width, input_canvas.height), input_image_processed_data = [];
+			for (let i=0, k=0; i < input_image_data.data.length; i+=4,k++) {
+				input_image_processed_data[k] = input_image_data.data[i]/255;
+			}
+
+			// Prediction
+			let image2D = tf.tensor1d(input_image_processed_data).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]);
+			let prediction = this.CNN_model.predict(image2D.expandDims(0));
+			let probabilities = await prediction.as1D().data();
+
+			let probabilities_array = new Array();
+			for (let i=0;i<probabilities.length;i++) {
+				probabilities_array.push({
+					number: i,
+					probability: probabilities[i]
+				});
+			}
+
+			probabilities_array.sort(
+				function(a, b) {
+					return b.probability - a.probability;
+				}
+			);
+
+			$('#prediction').empty();
+			for (let i=0;i<3;i++) {
+				$('#prediction').append(probabilities_array[i].number + ': ' + parseInt(probabilities_array[i].probability*1000000)/10000 +'%<br/>');
+			}
+
+			let end_time = performance.now();
+			$('#prediction_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
+
+			start_time = performance.now();
+			for (let i in this.CNN_layers) {
+				this.displayActivationMaps(this.CNN_model, this.CNN_layers[i].name, input_image_processed_data, this.CNN_layers[i].name, this.CNN_layers[i].magnify_level);
+			}
+			end_time = performance.now();
+			$('#draw_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
 		},
 		embedCameraVideo: function() {
 			let _self = this;
@@ -177,8 +255,6 @@ define([
 			}, 1000/fps);
 		},
 		captureImage: async function() {
-			let start_time = performance.now();
-
 			let input_canvas_GS = document.querySelector('#input_grayscale');
 			let input_context_GS = input_canvas_GS.getContext('2d');
 			let input_context_BW = document.querySelector('#input_bw').getContext('2d');
@@ -189,10 +265,8 @@ define([
 			let imgDataGS = input_context_GS.getImageData(0, 0, input_canvas_GS.width, input_canvas_GS.height);
 			let imgDataBW = input_context_BW.getImageData(0, 0, input_canvas_GS.width, input_canvas_GS.height);
 
-			let imgDataArray = new Array(this.CNN_layers[0].input_shape[0]*this.CNN_layers[0].input_shape[1]);
 			for (let i=0, k=0; i < imgDataGS.data.length; i+=4,k++) {
 				let grayscale = imgDataGS.data[i] * .3 + imgDataGS.data[i+1] * .59 + imgDataGS.data[i+2] * .11;
-				imgDataArray[k] = grayscale/255;//(grayscale>128?1:0);
 
 				imgDataGS.data[i] = grayscale;
 				imgDataGS.data[i+1] = grayscale;
@@ -218,37 +292,8 @@ define([
 				document.getElementById('input_bw_big').getContext("2d"), 200, 200
 			);
 
-			// Prediction
-			let image2D = tf.tensor1d(imgDataArray).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]);
-			let prediction = this.CNN_model.predict(image2D.expandDims(0));
-			//prediction.argMax().print();
-			let probabilities = await prediction.as1D().data();
-
-			let probabilities_array = new Array();
-			for (let i=0;i<probabilities.length;i++) {
-				probabilities_array.push({
-					number: i,
-					probability: probabilities[i]
-				});
-			}
-
-			probabilities_array.sort(
-				function(a, b) {
-					return b.probability - a.probability;
-				}
-			);
-
-			$('#inference').empty();
-			for (let i=0;i<3;i++) {
-				$('#inference').append(probabilities_array[i].number + ': ' + parseInt(probabilities_array[i].probability*1000000)/10000 +'%<br/>');
-			}
-
-			let end_time = performance.now();
-			$('#inference_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
-
-			for (let i in this.CNN_layers) {
-				this.displayActivationMaps(this.CNN_model, this.CNN_layers[i].name, imgDataArray, this.CNN_layers[i].name, this.CNN_layers[i].magnify_level);
-			}
+			// Remove
+			//this.onInputCanvasClicked();
 		},
 		displayActivationMaps: function(model, layer, imageData, outputDiv, scale) {
 			// https://medium.com/tensorflow/a-gentle-introduction-to-tensorflow-js-dba2e5257702
@@ -303,6 +348,7 @@ define([
 					this.drawPixels(act_array, i, outputDiv + '_act_' + i, [layerOutputShape[1], layerOutputShape[2]], scale, is_flattened);
 				}
 			}
+			//console.log(outputDiv, layerOutputShape[1], layerOutputShape[2], scale);
 		},
 		draw1DPixels: function(color_array, id, scale) {
 			var ctx = document.getElementById(id).getContext("2d");

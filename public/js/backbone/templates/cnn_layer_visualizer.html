@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col col-lg-12">
 			<h5>CNN layer visualizer</h5>
-			Inspired by <a href="https://github.com/yosinski/deep-visualization-toolbox" target="_blank">Deep visualization toolbox</a>. Select the model that you wish to load, select a camera and sampling frequency, then hit the Start button to start capturing grayscale images from your webcam and send it through the layers of the CNN.</a>
+			Inspired by <a href="https://github.com/yosinski/deep-visualization-toolbox" target="_blank">Deep visualization toolbox</a>. First select the model from the dropdown that you wish to load, tselect a camera and sampling frequency, then hit the <i>Start</i> button to start capturing images from your webcam. Then click either the black and white or grayscale magnified image to predict the output and visualize the activation maps of the layers of the CNN. <span id="model_description"></span>
 		</div>
 	</div>
 	<div class="row">
@@ -11,7 +11,9 @@
 
 			<label for="fps_selector">Model:</label>
 			<select class="form-control" id="model_selector">
-				<option value="mnist">MNIST (725 kB)</option>
+				<option></option>
+				<option value="mnist_28x28">MNIST (725 kB)</option>
+				<option value="olivetti_faces_64x64">Olivetti faces (60,3 MB)</option>
 			</select>
 
 			<label for="camera_selector">Camera:</label>
@@ -19,7 +21,9 @@
 
 			<label for="fps_selector">Sampling frequency:</label>
 			<select class="form-control" id="fps_selector">
-				<option value="1">1 fps</option>
+				<option value="0.25">0.25 fps</option>
+				<option value="0.5">0.5 fps</option>
+				<option value="1" selected="selected">1 fps</option>
 				<option value="2">2 fps</option>
 				<option value="5">5 fps</option>
 				<option value="10">10 fps</option>
@@ -31,9 +35,12 @@
 			<button type="button" class="btn btn-primary" id="start_btn" disabled="disabled">Start</button>
 			<button type="button" class="btn btn-primary" id="stop_btn" disabled="disabled">Stop</button>
 
-			<h6>Inference</h6>
-			Inference time: <i id="inference_time"></i>
-			<div id="inference"></div>
+			<h6>Prediction</h6>
+			Input source: <i id="prediction_input"></i><br/>
+			Prediction time: <i id="prediction_time"></i><br/>
+			Drawing time: <i id="draw_time"></i><br/>
+			Output:<br/>
+			<div id="prediction"></div>
 		</div>
 		<div id="stage" class="col col-lg-1">
 			<div id="canvas"></div>
@@ -45,11 +52,11 @@
 					<p class="card-text">
 						<video autoplay="true" id="camera_stream" width="320" height="240"></video>
 
-						<canvas id="input_grayscale" width="28" height="28"></canvas>
-						<canvas id="input_grayscale_big" width="200" height="200"></canvas>
+						<canvas id="input_grayscale"></canvas>
+						<canvas id="input_grayscale_big" width="200" height="200" class="input_canvas"></canvas>
 
-						<canvas id="input_bw" width="28" height="28"></canvas>
-						<canvas id="input_bw_big" width="200" height="200"</canvas>
+						<canvas id="input_bw"></canvas>
+						<canvas id="input_bw_big" width="200" height="200" class="input_canvas"></canvas>
 					</p>
 				</div>
 			</div>

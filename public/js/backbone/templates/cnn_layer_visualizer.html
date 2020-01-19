@@ -2,59 +2,140 @@
 	<div class="row">
 		<div class="col col-lg-12">
 			<h5>CNN layer visualizer</h5>
-			Inspired by <a href="https://github.com/yosinski/deep-visualization-toolbox" target="_blank">Deep visualization toolbox</a>. First select the model from the dropdown that you wish to load, tselect a camera and sampling frequency, then hit the <i>Start</i> button to start capturing images from your webcam. Then click either the black and white or grayscale magnified image to predict the output and visualize the activation maps of the layers of the CNN. <span id="model_description"></span>
+			Inspired by <a href="https://github.com/yosinski/deep-visualization-toolbox" target="_blank">Deep visualization toolbox</a>.  Usage instructions:
+			<ol>
+				<li>Select a model from the dropdown that you wish to load
+					<ul>
+						<li>MNIST (725 kB): A lightweight model, trained on handwritten digits and accepts black/white input.</li>
+						<li>Olivetti faces (60,3 MB): A big and resource heavy model trained on Olivetti faces dataset, accepts grayscale input.</li>
+					</ul>
+				</li>
+				<li>Click on the <i>Camera</i> section, optionally select a camera and sampling frequency, then hit the <i>Start</i> button to start capturing images from your webcam</li>
+				<li>Click either the black/white or grayscale magnified images to predict the output and visualize the activation maps of the layers of the CNN. Click on the <i>Prediction</i> section to see the output of the model.
+				</li>
+				<li>Click on any of the activation maps of the convolutional or pooling layers, then click on the <i>Activation map</i> section to see the magnified version of it</li>
+			</ol>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col col-lg-2">
-			<h6>Properties</h6>
+		<div class="col col-lg-3">
+			<!--img src="<%= public_directory %>/img/ajax-loader.gif" class="ajax_loader"-->
 
-			<label for="fps_selector">Model:</label>
-			<select class="form-control" id="model_selector">
-				<option></option>
-				<option value="mnist_28x28">MNIST (725 kB)</option>
-				<option value="olivetti_faces_64x64">Olivetti faces (60,3 MB)</option>
-			</select>
+			<div id="accordion">
+				<!-- Model -->
+				<div class="card">
+					<div class="card-header" id="heading_model">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#collapse_model">Model</button>
+						</h5>
+					</div>
 
-			<label for="camera_selector">Camera:</label>
-			<select class="form-control" id="camera_selector"></select>
+					<div id="collapse_model" class="collapse show" data-parent="#accordion">
+						<div class="card-body">
 
-			<label for="fps_selector">Sampling frequency:</label>
-			<select class="form-control" id="fps_selector">
-				<option value="0.25">0.25 fps</option>
-				<option value="0.5">0.5 fps</option>
-				<option value="1" selected="selected">1 fps</option>
-				<option value="2">2 fps</option>
-				<option value="5">5 fps</option>
-				<option value="10">10 fps</option>
-				<option value="25">25 fps</option>
-			</select><br/>
+							<label for="fps_selector">Model:</label>
+							<select class="form-control" id="model_selector">
+								<option></option>
+								<option value="mnist_28x28">MNIST (725 kB)</option>
+								<option value="olivetti_faces_64x64">Olivetti faces (60,3 MB)</option>
+							</select><br/>
 
-			<img src="<%= public_directory %>/img/ajax-loader.gif" class="ajax_loader">
+							<p id="model_description"></p>
 
-			<button type="button" class="btn btn-primary" id="start_btn" disabled="disabled">Start</button>
-			<button type="button" class="btn btn-primary" id="stop_btn" disabled="disabled">Stop</button>
+						</div>
+					</div>
+				</div>
 
-			<h6>Prediction</h6>
-			Input source: <i id="prediction_input"></i><br/>
-			Prediction time: <i id="prediction_time"></i><br/>
-			Drawing time: <i id="draw_time"></i><br/>
-			Output:<br/>
-			<div id="prediction"></div>
+				<!-- Camera -->
+				<div class="card">
+					<div class="card-header" id="heading_camera">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_camera">Camera</button>
+						</h5>
+					</div>
+
+					<div id="collapse_camera" class="collapse" data-parent="#accordion">
+						<div class="card-body">
+
+							<label for="camera_selector">Camera:</label>
+							<select class="form-control" id="camera_selector"></select>
+
+							<label for="fps_selector">Sampling frequency:</label>
+							<select class="form-control" id="fps_selector">
+								<option value="0.25">0.25 fps</option>
+								<option value="0.5">0.5 fps</option>
+								<option value="1" selected="selected">1 fps</option>
+								<option value="2">2 fps</option>
+								<option value="5">5 fps</option>
+								<option value="10">10 fps</option>
+								<option value="25">25 fps</option>
+							</select>
+							
+							<!-- Camera live stream -->
+							<video autoplay="true" id="camera_stream" width="0" height="0"></video>
+
+							<p>
+								<button type="button" class="btn btn-primary" id="start_btn" disabled="disabled">Start</button>
+								<button type="button" class="btn btn-primary" id="stop_btn" disabled="disabled">Stop</button>
+							</p>
+
+						</div>
+					</div>
+				</div>
+
+				<!-- Prediction -->
+				<div class="card">
+					<div class="card-header" id="heading_prediction">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_prediction">Prediction</button>
+						</h5>
+					</div>
+
+					<div id="collapse_prediction" class="collapse" data-parent="#accordion">
+						<div class="card-body">
+
+							Input source: <i id="prediction_input"></i><br/>
+							Prediction time: <i id="prediction_time"></i><br/>
+							Drawing time: <i id="draw_time"></i><br/>
+							Output:<br/>
+							<div id="prediction"></div>
+
+						</div>
+					</div>
+				</div>
+
+				<!-- Activation map -->
+				<div class="card">
+					<div class="card-header" id="heading_activation_map">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_activation_map">Activation map</button>
+						</h5>
+					</div>
+
+					<div id="collapse_activation_map" class="collapse" data-parent="#accordion">
+						<div class="card-body">
+
+							<p>
+								Selected activation map: <i id="activation_map_name"></i>
+							</p>
+							<canvas id="activation_map_canvas" width="100" height="100"></canvas>
+
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div id="stage" class="col col-lg-1">
-			<div id="canvas"></div>
-		</div>
+
 		<div class="col col-lg-9" id="layer_container">
 			<div class="card bg-light mb-3">
-				<div class="card-header">Input stream<span></span></div>
+				<div class="card-header">Input stream<span id="input_stream_header"></span></div>
 				<div class="card-body">
 					<p class="card-text">
-						<video autoplay="true" id="camera_stream" width="320" height="240"></video>
-
+						<!-- Grayscale canvas -->
 						<canvas id="input_grayscale"></canvas>
 						<canvas id="input_grayscale_big" width="200" height="200" class="input_canvas"></canvas>
 
+						<!-- Black and White canvas -->
 						<canvas id="input_bw"></canvas>
 						<canvas id="input_bw_big" width="200" height="200" class="input_canvas"></canvas>
 					</p>

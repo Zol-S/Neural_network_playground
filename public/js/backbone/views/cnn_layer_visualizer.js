@@ -13,11 +13,11 @@ define([
 		models: {
 			'mnist_28x28': {
 				title: 'MNIST 28x28',
-				description: 'Model trained on MNIST digit recognition dataset, so it is not suitable for face recognition. Note that it was trained on black and white input, that\'s why it gives a better prediction for the black and white input.'
+				description: 'Model trained on MNIST digit recognition dataset, it is not suitable for face recognition. Note that it was trained on black and white input, that\'s why it gives a better prediction for the black and white input.'
 			},
 			'olivetti_faces_64x64': {
 				title: 'Olivetti faces 64x64',
-				description: 'Model trained on Olivetti faces dataset with a terrible accuracy. Note that the model is heavy as it has 21 layers, as drawing the 5,571 activation maps might take 30-60 seonds.'
+				description: 'Model trained on Olivetti faces dataset with a terrible accuracy. Note that the model is heavy as it has 21 layers,  drawing the 5,571 activation maps might take 30-60 seonds.'
 			}
 		},
 		initialize: function() {
@@ -31,7 +31,8 @@ define([
 			'change #fps_selector': 'onStopClicked',
 			'change #camera_selector': 'onStopClicked',
 			'change #model_selector': 'onModelSelected',
-			'click .input_canvas': 'onInputCanvasClicked'
+			'click .input_canvas': 'onInputCanvasClicked',
+			'click .act_map': 'onActivationMapClicked'
 		},
 		render: function() {
 			this.$el.empty();
@@ -114,12 +115,23 @@ define([
 			$('#start_btn').attr('disabled', 'disabled');
 			$('#stop_btn').removeAttr('disabled');
 
+			$('#camera_stream').attr('width', 320);
+			$('#camera_stream').attr('height', 240);
+
+			let titleText = 'Sampling rate: ' + 1000/$('#fps_selector').children("option:selected").val() + 'ms, ' + this.CNN_layers[0].input_shape[0] +'x' + this.CNN_layers[0].input_shape[1] + 'px';
+			$('#input_stream_header').text(' - ' + titleText);
+
 			this.embedCameraVideo();
 		},
-		onInputCanvasClicked: async function(e) {
-			let start_time = performance.now(), input_source = '', input_canvas;
-
-			switch ($(e.target).attr('id')) {
+		onActivationMapClicked: function(e) {
+			$('#activation_map_name').text($(e.target).attr('id'));
+			this.selected_activation_map = $(e.target).attr('id');
+			this.selected_layer_id = $(e.target).data('layer');
+			console.log('Selected activation map: ' + this.selected_activation_map + ' (' + this.selected_layer_id + ')');
+		},
+		getSelectedImageData: function(selected_image) {
+			let input_source = '', input_canvas;
+			switch (selected_image) {
 				case 'input_grayscale_big':
 						input_source = 'Grayscale';
 						input_canvas = document.querySelector('#input_grayscale');
@@ -130,10 +142,16 @@ define([
 			}
 			$('#prediction_input').text(input_source);
 
-			let input_image_data = input_canvas.getContext('2d').getImageData(0, 0, input_canvas.width, input_canvas.height), input_image_processed_data = [];
+			let input_image_data = input_canvas.getContext('2d').getImageData(0, 0, input_canvas.width, input_canvas.height), output = [];
 			for (let i=0, k=0; i < input_image_data.data.length; i+=4,k++) {
-				input_image_processed_data[k] = input_image_data.data[i]/255;
+				output[k] = input_image_data.data[i]/255;
 			}
+
+			return output;
+		},
+		onInputCanvasClicked: async function(e) {
+			$('.ajax_loader').show();
+			let start_time = performance.now(), input_image_processed_data = this.getSelectedImageData($(e.target).attr('id'));
 
 			// Prediction
 			let image2D = tf.tensor1d(input_image_processed_data).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]);
@@ -166,8 +184,10 @@ define([
 			for (let i in this.CNN_layers) {
 				this.displayActivationMaps(this.CNN_model, this.CNN_layers[i].name, input_image_processed_data, this.CNN_layers[i].name, this.CNN_layers[i].magnify_level);
 			}
+
 			end_time = performance.now();
 			$('#draw_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
+			$('.ajax_loader').hide();
 		},
 		embedCameraVideo: function() {
 			let _self = this;
@@ -198,6 +218,9 @@ define([
 			if (typeof this.interval !== 'undefined') {
 				$('#start_btn').removeAttr('disabled');
 				$('#stop_btn').attr('disabled', 'disabled');
+
+				$('#camera_stream').attr('width', 0);
+				$('#camera_stream').attr('height', 0);
 
 				let tracks = this.video.srcObject.getTracks();
 
@@ -292,8 +315,24 @@ define([
 				document.getElementById('input_bw_big').getContext("2d"), 200, 200
 			);
 
-			// Remove
-			//this.onInputCanvasClicked();
+			// Show activation map
+			if (this.selected_activation_map) {
+				this.displayActivationMap(this.selected_activation_map, this.selected_layer_id);
+			}
+		},
+		displayActivationMap: function(current_activation_map, l) {
+			//let i = 9, target = 'max_pooling2d_3_act_2';
+			let input_image_processed_data = this.getSelectedImageData('input_grayscale_big');
+			this.displayActivationMaps(this.CNN_model, this.CNN_layers[l].name, input_image_processed_data, this.CNN_layers[l].name, this.CNN_layers[l].magnify_level);
+
+			this.drawZoomedImage(
+				document.getElementById(current_activation_map).getContext("2d"),
+				$('#' + current_activation_map).height(),
+				$('#' + current_activation_map).width(),
+				document.getElementById('activation_map_canvas').getContext("2d"),
+				100,
+				100
+			);
 		},
 		displayActivationMaps: function(model, layer, imageData, outputDiv, scale) {
 			// https://medium.com/tensorflow/a-gentle-introduction-to-tensorflow-js-dba2e5257702
@@ -340,10 +379,13 @@ define([
 				$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act" height="' + scale[1] + '" width="1024"></canvas>');
 				this.draw1DPixels(activations_flattened, outputDiv + '_act', scale);
 			} else {
-				var act_array = this._reshape(activations_flattened, [layerOutputShape[1], layerOutputShape[2], layerOutputShape[3]]);
+				let act_array = this._reshape(activations_flattened, [layerOutputShape[1], layerOutputShape[2], layerOutputShape[3]]);
+				let layer_index = this.CNN_layers.findIndex(function(l) {
+					return l.name == outputDiv
+				});
 
 				for (var i=0;i<layerOutputShape[3];i++) {
-					$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act_' + i + '" height="' + layerOutputShape[2]*scale + '" width="' + layerOutputShape[1]*scale + '"></canvas>');
+					$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act_' + i + '" height="' + layerOutputShape[2]*scale + '" width="' + layerOutputShape[1]*scale + '" class="act_map" data-layer="' + layer_index + '"></canvas>');
 
 					this.drawPixels(act_array, i, outputDiv + '_act_' + i, [layerOutputShape[1], layerOutputShape[2]], scale, is_flattened);
 				}

@@ -17,7 +17,7 @@ define([
 			},
 			'olivetti_faces_64x64': {
 				title: 'Olivetti faces 64x64',
-				description: 'Model trained on Olivetti faces dataset with a terrible accuracy. Note that the model is heavy as it has 21 layers,  drawing the 5,571 activation maps might take 30-60 seonds.'
+				description: 'Model trained on Olivetti faces dataset with a terrible accuracy. Note that the model is heavy as it has 21 layers,  drawing the 5,571 activation maps might take 30-60 seconds.'
 			}
 		},
 		initialize: function() {

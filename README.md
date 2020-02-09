@@ -1,3 +1,6 @@
+### CNN layer visualizer (2020.02.09) ###
+The live stream of your webcam is sent to a CNN, then the output of the layers are printed out. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#cnn_layer_visualizer) for the demo.
+
 # Neural network playground
 Neural network tests, applications implemented in Javascript.
 ## Nearest neighbor applications
@@ -31,6 +34,3 @@ Does everything as the basic digit recognizer plus shows the activation maps for
 In this interactive tutorial, convolutional and pooling layers can be linked together and send them colourful images. Convolutional and pooling layers can be inserted to the end of the network. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#convolutional_layers) for the demo.
 ### Face detector ###
 Trained a convolutional network with [Tensorflow](https://www.tensorflow.org)/[Keras](https://keras.io) on a very few samples of faces an other things, then exported the weights to [Tensorflow JS](https://github.com/tomasreimers/tensorflowjs).Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#face_detector) for the demo.
-
-### CNN layer visualizer ###
-The live stream of your webcam is sent to a CNN, then the output of the layers are printed out. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#cnn_layer_visualizer) for the demo.

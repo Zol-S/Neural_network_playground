@@ -1,0 +1,52 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>Text learning capabilities of LSTM</h5>
+			Paste some text into the training textbox, then click on the <i>train</i> button to start training the LSTM. The neural network uses Word-in, word-out sequences.
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col col-lg-6">
+			<label class="col-form-label col-form-label-sm">Training text:</label>
+			<textarea type="text" class="form-control form-control-sm" id="training_text" cols="50" rows="5"></textarea>
+
+			<button class="btn btn-primary btn-sm" id="sample1_btn">Sample text 1</button>
+			<button class="btn btn-primary btn-sm" id="sample2_btn">Sample text 2</button>
+
+			<div class="form-group row">
+				<label for="input_word_counter" class="col-sm-6 col-form-label">Input word counter:</label>
+				<div class="col-sm-6">
+					<input type="number" class="form-check-input" id="input_word_counter" min="1" max="5" value="3">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="epochs" class="col-sm-6 col-form-label">Number of epochs:</label>
+				<div class="col-sm-6">
+					<input type="number" class="form-check-input" id="epochs" min="1" max="1000" value="50">
+				</div>
+			</div>
+
+			<button class="btn btn-primary btn-sm" id="train_btn">Train</button>
+
+			<div class="form-group row">
+				<label for="prediction_input" class="col-sm-6 col-form-label">Prediction input:</label>
+				<div class="col-sm-6">
+					<input class="form-check-input" id="prediction_input" value="Jack and Jill">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-sm-6 col-form-label" for="prediction_output">Prediction output:</label>
+				<div class="col-sm-6">
+					<input class="form-check-input" id="prediction_output" readonly="readonly">
+				</div>
+			</div>
+
+			<button class="btn btn-primary btn-sm" id="predict_btn">Predict</button>
+		</div>
+		<div class="col col-lg-6">
+			<svg width="640" height="480"></svg>
+		</div>
+	</div>
+</div>

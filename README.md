@@ -1,5 +1,5 @@
-### LSTM (2020.07.12) ###
-Train LSTM with custom text to predict the next word of it. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#lstm) for the demo.
+### LSTM (2020.07.14) ###
+Train LSTM with custom texts to predict the next word in it. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#lstm) for the demo.
 
 # Neural network playground
 Neural network tests, applications implemented in Javascript.

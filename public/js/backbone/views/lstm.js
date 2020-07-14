@@ -40,9 +40,10 @@ define([
 		},
 		onWordCounterChanged: function() {
 			this.input_words_counter = parseInt($('#input_word_counter').val());
-			console.log('onChanged: ' + $('#input_word_counter').val());
 		},
 		onTrainClicked: async function() {
+			$('.ajax_loader').show();
+
 			console.log('Tokenizing text');
 			var tokens = this.tokenize($("#training_text").val());
 
@@ -116,17 +117,18 @@ define([
 			return tokens.map(word => this.token_dictionary[word] || 0);
 		},
 		train_model: async function(inputs, outputs, batch_size, n_epochs, learning_rate) {
+			let acc = 0;
 			const xs = tf.tensor2d(inputs, [inputs.length, inputs[0].length]);
 			const ys = tf.tensor1d(outputs);
 
 			let model = tf.sequential();
 			model.add(tf.layers.embedding({
 				inputDim: this.vocabulary_size,
-				outputDim: 10,
+				outputDim: parseInt($('#embedding_dimension').val()),
 				inputLength: this.input_words_counter,
 				trainable: true
 			}));
-			model.add(tf.layers.lstm({units: 50}));
+			model.add(tf.layers.lstm({units: parseInt($('#lstm_cells').val())}));
 			model.add(tf.layers.dense({units: this.vocabulary_size, activation: 'softmax'}));
 
 			model.compile({
@@ -146,14 +148,17 @@ define([
 					'onEpochEnd': async (epoch, log) => {
 						this.chartData.push({
 							epoch: epoch,
-							acc: log.acc,
+							acc: log.acc*100,
 							loss: log.loss
 						});
 
 						this.updateChart(this.chartData);
+						acc = log.acc;
 					},
-					'onTrainEnd': async () => {
+					'onTrainEnd': async (logs) => {
+						console.log('Final accuracy: ' + (parseInt(acc*10000)/100) + '%');
 						$('#predict_btn').prop('disabled', false);
+						$('.ajax_loader').hide();
 					}
 				}
 			});
@@ -174,49 +179,54 @@ define([
 			g.append("path").attr("class", "line_loss");
 
 			g.append("g")
-				.attr("transform", "translate(0," + this.chartHeight + ")")
 				.attr("class", "x_axis")
-				//.call(d3.axisBottom(x))
+				.attr("transform", "translate(0," + this.chartHeight + ")")
 				.append("text")
 				.attr("fill", "#000")
 				.attr("transform", "rotate(0)")
 				.attr("y", -5)
-				.attr("x", this.chartWidth)
+				.attr("x", this.chartWidth-5)
 				.attr("text-anchor", "end")
 				.text("Epoch");
 
 			g.append("g")
-				.attr("class", "y_axis")
-				//.call(d3.axisLeft(y))
+				.attr("class", "y_acc_axis")
 				.append("text")
-				.attr("fill", "#000")
+				.attr("fill", "orange")
 				.attr("transform", "rotate(-90)")
-				.attr("y", 6)
-				.attr("dy", "0.71em")
+				.attr("y", 15)
+				.attr("x", 0)
 				.attr("text-anchor", "end")
 				.text("Percentage");
+
+			g.append("g")
+				.attr("class", "y_loss_axis")
+				.attr("transform", "translate(" + this.chartWidth + ",0)")
+				.append("text")
+				.attr("fill", "steelblue")
+				.attr("transform", "rotate(-90)")
+				.attr("y", -5)
+				.attr("x", 0)
+				.attr("text-anchor", "end")
+				.text("Value");
 		},
 		updateChart: function(data) {
 			var line_x = d3.scaleLinear()
 				.rangeRound([0, this.chartWidth])
 				.domain(d3.extent(data, function(d) { return d.epoch; }));
-			var line_y = d3.scaleLinear()
+			var line_acc = d3.scaleLinear()
 				.rangeRound([this.chartHeight, 0])
-				.domain(d3.extent(
-					[].concat(data.map(function (item) {
-						return (item.acc);
-					}), data.map(function (item) {
-						return (item.loss);
-					}))
-				));
-				// d3.extent(data, function(d) { return d.loss; })
+				.domain(d3.extent(data, function(d) { return d.acc; }));
+			var line_loss = d3.scaleLinear()
+				.rangeRound([this.chartHeight, 0])
+				.domain(d3.extent(data, function(d) { return d.loss; }));
 
 			var valueline_acc = d3.line()
 				.x(function(d) {
 					return line_x(d.epoch);
 				})
 				.y(function(d) {
-					return line_y(d.acc);
+					return line_acc(d.acc);
 				});
 
 			var valueline_loss = d3.line()
@@ -224,14 +234,16 @@ define([
 					return line_x(d.epoch);
 				})
 				.y(function(d) {
-					return line_y(d.loss);
+					return line_loss(d.loss);
 				});
 
 			// Axes
 			d3.select("svg").select(".x_axis")
 				.call(d3.axisBottom(line_x));
-			d3.select("svg").select(".y_axis")
-				.call(d3.axisLeft(line_y));
+			d3.select("svg").select(".y_acc_axis")
+				.call(d3.axisLeft(line_acc));
+			d3.select("svg").select(".y_loss_axis")
+				.call(d3.axisRight(line_loss));
 
 			d3.selectAll("path.line_acc")
 				.datum(data)

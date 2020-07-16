@@ -18,7 +18,8 @@ define([
 			'click #predict_btn': 'onPredictClicked',
 			'change #input_word_counter': 'onWordCounterChanged',
 			'click #sample1_btn': 'onSample1Clicked',
-			'click #sample2_btn': 'onSample2Clicked'
+			'click #sample2_btn': 'onSample2Clicked',
+			'click #clear_btn': 'onClearClicked'
 		},
 		render: function() {
 			this.$el.empty();
@@ -33,19 +34,29 @@ define([
 
 		// Event handlers
 		onSample1Clicked: function() {
-			$('#training_text').text(this.sample_texts[0]);
+			$('#training_set').text(this.sample_texts[0]);
 		},
 		onSample2Clicked: function() {
-			$('#training_text').text(this.sample_texts[1]);
+			$('#training_set').text(this.sample_texts[1]);
+		},
+		onClearClicked: function() {
+			$('#training_set').text('');
 		},
 		onWordCounterChanged: function() {
 			this.input_words_counter = parseInt($('#input_word_counter').val());
 		},
-		onTrainClicked: async function() {
+		onTrainClicked: function() {
+			$('#status').val('Initializing...');
 			$('.ajax_loader').show();
 
+			let _self = this;
+			setTimeout(function() {
+				_self.initializeTraining();
+			}, 10);
+		},
+		initializeTraining: async function() {
 			console.log('Tokenizing text');
-			var tokens = this.tokenize($("#training_text").val());
+			var tokens = this.tokenize($("#training_set").val());
 
 			var X = [], y = [];
 			for (var i=0;i<(tokens.length-this.input_words_counter);i++) {
@@ -154,6 +165,7 @@ define([
 
 						this.updateChart(this.chartData);
 						acc = log.acc;
+						$('#status').val('Accuracy: ' + (parseInt(acc*10000)/100) + '%');
 					},
 					'onTrainEnd': async (logs) => {
 						console.log('Final accuracy: ' + (parseInt(acc*10000)/100) + '%');
@@ -168,7 +180,7 @@ define([
 
 		// Chart
 		initializeChart: function(data) {
-			var margin = {top: 20, right: 20, bottom: 20, left: 30},
+			var margin = {top: 20, right: 30, bottom: 20, left: 30},
 				svg = d3.select("svg"),
 				g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

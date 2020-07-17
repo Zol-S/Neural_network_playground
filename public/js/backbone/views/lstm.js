@@ -81,7 +81,15 @@ define([
 				X.push(this.token_dictionary[tokens[i]]);
 			}
 
-			// Apply Padding
+			// Padding
+			if (tokens.length < this.input_words_counter) {
+				for (let i = 0;i<(this.input_words_counter - tokens.length);i++) {
+					X.unshift(0);
+				}
+				console.log('Prediction input tokens is too short, adding elements to the beginning: ', X);
+			}
+
+			// Trimming
 			if (tokens.length > this.input_words_counter) {
 				X = X.slice(-this.input_words_counter)
 				console.log('Prediction input tokens is too long, keeping the last ' + this.input_words_counter + ' elements only.');

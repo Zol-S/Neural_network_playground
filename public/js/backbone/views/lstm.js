@@ -217,7 +217,7 @@ define([
 				.attr("y", 15)
 				.attr("x", 0)
 				.attr("text-anchor", "end")
-				.text("Percentage");
+				.text("Accuracy");
 
 			g.append("g")
 				.attr("class", "y_loss_axis")
@@ -228,7 +228,7 @@ define([
 				.attr("y", -5)
 				.attr("x", 0)
 				.attr("text-anchor", "end")
-				.text("Value");
+				.text("Loss");
 		},
 		updateChart: function(data) {
 			var line_x = d3.scaleLinear()

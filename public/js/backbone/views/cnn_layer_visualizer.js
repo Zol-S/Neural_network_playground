@@ -41,7 +41,39 @@ define([
 			this.$el.append(template());
 
 			// Populate camera select
-			navigator.mediaDevices.enumerateDevices().then(this.onMediaDevicesDetected)
+			//navigator.mediaDevices.enumerateDevices().then(this.onMediaDevicesDetected);
+			if (navigator.mediaDevices.getUserMedia) {
+				console.log('getUserMedia supported.');
+
+				const constraints = {video: true};
+				//let chunks = [];
+
+				let onSuccess = function (stream) {
+					if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+						console.log("enumerateDevices() not supported.");
+						return false;
+					}
+
+					navigator.mediaDevices.enumerateDevices().then(function (devices) {
+						devices.forEach(function (device) {
+
+							if (device.kind === "videoinput") {
+								$('#camera_selector').append('<option value="' + device.deviceId + '">' + device.label + '</option>');
+							}
+						});
+					}).catch(function (err) {
+						console.log(err.name + ": " + err.message);
+					});
+				}
+
+				let onError = function (err) {
+					console.log('The following error occured: ' + err);
+				}
+
+				navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+			} else {
+				console.log('getUserMedia not supported on your browser!');
+			}		
 		},
 		onModelSelected: async function() {
 			this.onStopClicked();
@@ -102,13 +134,6 @@ define([
 
 			$('#start_btn').removeAttr('disabled');
 			$('.ajax_loader').hide();
-		},
-		onMediaDevicesDetected: function(mediaDevices) {
-			mediaDevices.forEach(mediaDevice => {
-				if (mediaDevice.kind == 'videoinput') {
-					$('#camera_selector').append('<option value="' + mediaDevice.deviceId + '">' + mediaDevice.label + '</option>');
-				}
-			});
 		},
 		onStartClicked: function() {
 			$('.ajax_loader').show();

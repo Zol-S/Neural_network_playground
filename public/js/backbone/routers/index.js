@@ -15,8 +15,9 @@ define([
 	'backbone/views/face_detector',
 	'backbone/views/clustering',
 	'backbone/views/cnn_layer_visualizer',
+	'backbone/views/cnn_activation_maximizer',
 	'backbone/views/lstm'
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, LSTMView) {
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, CNNActivationMaximizerView, LSTMView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -35,8 +36,9 @@ define([
 			'face_detector': 'face_detector',
 			'clustering': 'clustering',
 			'cnn_layer_visualizer': 'cnn_layer_visualizer',
+			'cnn_activation_maximizer': 'cnn_activation_maximizer',
 			'lstm': 'lstm',
-			'*default': 'lstm'
+			'*default': 'cnn_activation_maximizer'
 		},
 
 		// Routes
@@ -95,6 +97,10 @@ define([
 		cnn_layer_visualizer: function() {
 			var cnnLayerVisualizerView = new CNNLayerVisualizerView();
 			this.changeView(cnnLayerVisualizerView);
+		},
+		cnn_activation_maximizer: function() {
+			var cnnActivationMaximizerView = new CNNActivationMaximizerView();
+			this.changeView(cnnActivationMaximizerView);
 		},
 		lstm: function() {
 			var lstmView = new LSTMView();

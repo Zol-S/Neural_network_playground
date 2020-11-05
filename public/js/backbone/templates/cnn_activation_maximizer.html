@@ -1,0 +1,37 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col col-lg-12">
+			<h5>CNN activation maximizer</h5>
+			Inspired by <a href="https://keras.io/examples/vision/visualizing_what_convnets_learn/" target="_blank">Visualizing what convnets learn</a>  by <i>François Chollet</i>. MNIST Tensorflow model is loaded initially. Click on <i>Start</i> button to generate a noisy image. Wait till it shows the activation map that maximises the output on the layer after it. Generates an image that maximizes the selected output value.
+			<!-- Use custom picked images to calculate the activation maps, show which image maximizes each filter -->
+
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-3">
+			<p><button id="start_btn" type="button" class="btn btn-primary">Start</button></p>
+
+			Prediction time: <i id="prediction_time"></i><br/>
+			Drawing time: <i id="draw_time"></i><br/>
+			Output:<br/>
+			<div id="prediction"></div>
+		</div>
+
+		<div class="col col-lg-9" id="layer_container">
+			<div class="card bg-light mb-3">
+				<div class="card-header">Input image<span id="input_image_header"></span></div>
+				<div class="card-body">
+					<p class="card-text">
+						<!-- Grayscale canvas -->
+						<canvas id="input_grayscale"></canvas>
+						<canvas id="input_grayscale_big" width="200" height="200" class="input_canvas"></canvas>
+
+						<!-- Black and White canvas -->
+						<canvas id="input_bw"></canvas>
+						<canvas id="input_bw_big" width="200" height="200" class="input_canvas"></canvas>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

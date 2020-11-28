@@ -17,8 +17,9 @@ define([
 			this.loadModel();
 		},
 		events: {
-			//'change #desired_output': 'onDesiredOutputChanged',
-			'click #start_btn': 'onStartButtonClicked'
+			'click #generate_btn': 'onGenerateButtonClicked',
+			'click #maximize_btn': 'onMaximizeButtonClicked',
+			'click .act_map': 'onActivationMapClicked'
 		},
 		render: function() {
 			this.$el.empty();
@@ -62,6 +63,7 @@ define([
 				if (layer_title != '') {
 					this.CNN_layers.push({
 						'name': layer.name,
+						'index': parseInt(i),
 						'input_shape': layer_input_shape,
 						'magnify_level': layer_magnify_level
 					});
@@ -70,24 +72,24 @@ define([
 				}
 			};
 
-			// Output selector
-			/*let output = '<select id="desired_output">';
-			for (let i=0;i<10;i++) {
-				output+= '<option value="' + i + '">' + i + '</option>';
-			}
-			output+= '</select>';
-			$('#dense_2').append(output);*/
-
 			$('.ajax_loader').hide();
 		},
-		createNoisyImage: function() {
-			var canvas = document.getElementById('input_bw');
+		createNoisyImage: function(size) {
+			let image_data = [];
+			for (let i=0;i<size;i++) {
+				image_data.push(Math.random()*255);
+			}
+
+			this.drawInputImage(image_data);
+		},
+		drawInputImage: function(image_data) {
+			let canvas = document.getElementById('input_bw');
 			canvas.width = canvas.height = 28;
-			var ctx = canvas.getContext('2d');
+			let ctx = canvas.getContext('2d');
 			var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 			for (var i = 0; i < imgData.data.length; i += 4) {
-				imgData.data[i] = imgData.data[i+1] = imgData.data[i+2] = Math.round(Math.random())*255;
+				imgData.data[i] = imgData.data[i+1] = imgData.data[i+2] = image_data[Math.floor(i/4)];
 				imgData.data[i+3] = 255; // alpha
 			}
 
@@ -99,9 +101,10 @@ define([
 				document.getElementById('input_bw_big').getContext("2d"), 200, 200
 			);
 		},
-		onStartButtonClicked: async function(e) {
+		onGenerateButtonClicked: async function(e) {
 			$('.ajax_loader').show();
-			this.createNoisyImage();
+			this.createNoisyImage(784);
+
 			let start_time = performance.now(), input_image_processed_data = this.getSelectedImageData('input_bw');
 
 			// Prediction
@@ -138,7 +141,99 @@ define([
 
 			end_time = performance.now();
 			$('#draw_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
+
 			$('.ajax_loader').hide();
+		},
+		onActivationMapClicked: function(e) {
+			let selected_id = $(e.target).attr('id');
+			let regex = /^(.*_[0-9]*)_act_([0-9]*)/gm;
+			let m = regex.exec(selected_id);
+
+			this.layer_name = m[1];
+			this.filter_index = parseInt(m[2]);
+			
+			this.drawSelectedFeatureMap();
+		},
+		drawSelectedFeatureMap: function() {
+			var result = this.CNN_layers.find(x => x.name === this.layer_name);
+  
+			$('#selected_layer_name').text(this.CNN_model.layers[result.index].name);
+			$('#selected_layer_index').text(result.index);
+			$('#selected_filter_index').text(this.filter_index);
+			$('#selected_filter_size').text(this.CNN_model.layers[result.index].output.shape[1] + 'x' + this.CNN_model.layers[result.index].output.shape[2] + 'px');
+			$('#selected_filter_number').text(this.CNN_model.layers[result.index].output.shape[3]);
+
+			let am_model = tf.model({inputs: this.CNN_model.inputs, outputs: this.CNN_model.layers[result.index].output});
+
+			let image2D = tf.tensor1d(this.getSelectedImageData('input_bw')).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]).expandDims(0);
+			let activations = am_model.predict(image2D).dataSync();
+
+			let ac_min = activations.reduce(function(a, b) { return Math.min(a, b);}), ac_max = activations.reduce(function(a, b) { return Math.max(a, b);});
+			let spread = Math.abs(ac_max - ac_min);
+
+			// Upscaling values to the RGB component range
+			let activations_flattened = new Array();
+			for (let i=0;i<activations.length;i++) {
+				activations_flattened.push(parseInt((activations[i]+Math.abs(ac_min))*255/spread));
+			}
+
+			let act_array = this._reshape(activations_flattened, [this.CNN_model.layers[result.index].output.shape[1], this.CNN_model.layers[result.index].output.shape[2], this.CNN_model.layers[result.index].output.shape[3]]);
+			document.getElementById('feature_map').getContext("2d").clearRect(0, 0, 200, 200);
+			this.drawPixels(act_array, this.filter_index, 'feature_map', [this.CNN_model.layers[result.index].output.shape[1], this.CNN_model.layers[result.index].output.shape[2]], result.magnify_level*3, false);
+		},
+		getSelectedFilterActivations: function(image_data) {
+			let current_layer = this.CNN_layers.find(x => x.name === this.layer_name);
+			let model = tf.model({inputs: this.CNN_model.inputs, outputs: this.CNN_model.layers[current_layer.index].output});
+
+			return model.predict(image_data).gather(this.filter_index, 3);
+		},
+		getSelectedFilterLoss: function(image_data) {
+			return tf.mean(this.getSelectedFilterActivations(image_data));
+		},
+		onMaximizeButtonClicked: function() {
+			let current_layer = this.CNN_layers.find(x => x.name === this.layer_name);
+			let input_image_tensor = tf.tensor1d(this.getSelectedImageData('input_bw')).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]).expandDims(0);
+
+			// Visualization
+			let filter_activations = this.getSelectedFilterActivations(input_image_tensor).arraySync()[0];
+			let ac_min = tf.min(filter_activations).dataSync()[0];
+			let spread = 255/Math.abs(tf.max(filter_activations).dataSync()[0] - ac_min);
+
+			var ctx = document.getElementById('feature_map_check').getContext("2d");
+			for (var i=0;i<filter_activations.length;i++) {
+				for (var k=0;k<filter_activations[0].length;k++) {
+					var color = this.convertComponent2Hex(parseInt(filter_activations[k][i]*spread + ac_min));
+					ctx.fillStyle="#" + color + color + color;
+					ctx.fillRect(i*25, k*25, 25, 25);
+				}
+			}
+
+			// Loss
+			let loss = this.getSelectedFilterLoss(input_image_tensor).dataSync()[0];
+			$('#loss').text(loss);
+			console.log('Loss: ', loss);
+
+			// Gradients
+			const grad_func = tf.grad(this.getSelectedFilterLoss.bind(this));
+			let grads = grad_func(input_image_tensor);//.gather(0, 3);
+
+			// Normalization trick
+			const eps = tf.sqrt(tf.add(tf.mean(tf.square(grads)), 1e-5));
+			grads = tf.div(grads, eps);
+
+			input_image_tensor = tf.add(input_image_tensor, tf.mul(grads, 1));
+
+			// deprocess
+			ac_min = tf.min(input_image_tensor).dataSync()[0];
+			spread = 255/Math.abs(tf.max(input_image_tensor).dataSync()[0] - ac_min);
+			let output_image_data = tf.mul(tf.add(input_image_tensor.gather(0, 3), Math.abs(ac_min)), spread).dataSync();
+
+			this.drawInputImage(output_image_data);
+
+			// https://fairyonice.github.io/Visualization%20of%20Filters%20with%20Keras.html
+			// https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html
+			// https://js.tensorflow.org/api/latest/#grads
+			// https://stackoverflow.com/questions/54728772/computing-the-gradient-of-the-loss-using-tensorflow-js
 		},
 		getSelectedImageData: function(selected_image) {
 			let input_source = '', input_canvas = document.getElementById(selected_image);
@@ -150,11 +245,6 @@ define([
 
 			return output;
 		},
-		/*onDesiredOutputChanged: function() {
-			let desired_output = $("#desired_output option:selected").val();
-			console.log('Desired output: ', desired_output);
-			console.log(this.CNN_model.layers[11]);
-		},*/
 		drawZoomedImage: function(source_ctx, sw, sh, target_ctx, tw, th) {
 			let source = source_ctx.getImageData(0, 0, sw, sh);
 			let sdata = source.data;
@@ -189,20 +279,6 @@ define([
 
 			target_ctx.putImageData(target, 0, 0);
 		},
-		displayActivationMap: function(current_activation_map, l) {
-			//let i = 9, target = 'max_pooling2d_3_act_2';
-			let input_image_processed_data = this.getSelectedImageData('input_grayscale_big');
-			this.displayActivationMaps(this.CNN_model, this.CNN_layers[l].name, input_image_processed_data, this.CNN_layers[l].name, this.CNN_layers[l].magnify_level);
-
-			this.drawZoomedImage(
-				document.getElementById(current_activation_map).getContext("2d"),
-				$('#' + current_activation_map).height(),
-				$('#' + current_activation_map).width(),
-				document.getElementById('activation_map_canvas').getContext("2d"),
-				100,
-				100
-			);
-		},
 		displayActivationMaps: function(model, layer, imageData, outputDiv, scale) {
 			// https://medium.com/tensorflow/a-gentle-introduction-to-tensorflow-js-dba2e5257702
 
@@ -230,7 +306,7 @@ define([
 				activations_flattened.push(parseInt((activations[i]+Math.abs(ac_min))*255/spread));
 			}
 
-			// Draw activatons
+			// Draw activations
 			$('#' + outputDiv).empty();
 			if (is_flattened) {
 				$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act" height="' + scale[1] + '" width="1024"></canvas>');
@@ -247,7 +323,6 @@ define([
 					this.drawPixels(act_array, i, outputDiv + '_act_' + i, [layerOutputShape[1], layerOutputShape[2]], scale, is_flattened);
 				}
 			}
-			//console.log(outputDiv, layerOutputShape[1], layerOutputShape[2], scale);
 		},
 		draw1DPixels: function(color_array, id, scale) {
 			var ctx = document.getElementById(id).getContext("2d");

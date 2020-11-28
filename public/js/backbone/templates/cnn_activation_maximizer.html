@@ -2,19 +2,35 @@
 	<div class="row">
 		<div class="col col-lg-12">
 			<h5>CNN activation maximizer</h5>
-			Inspired by <a href="https://keras.io/examples/vision/visualizing_what_convnets_learn/" target="_blank">Visualizing what convnets learn</a>  by <i>François Chollet</i>. MNIST Tensorflow model is loaded initially. Click on <i>Start</i> button to generate a noisy image. Wait till it shows the activation map that maximises the output on the layer after it. Generates an image that maximizes the selected output value.
-			<!-- Use custom picked images to calculate the activation maps, show which image maximizes each filter -->
-
+			Inspired by <a href="https://keras.io/examples/vision/visualizing_what_convnets_learn/" target="_blank">Visualizing what convnets learn</a> by <i>François Chollet</i>. MNIST Tensorflow model is loaded initially. Click on <i>Generate</i> button to generate a noisy image. Click on any of the convolutional or pooling layer filters to select the filter that you wish to maximize, then click on <i>Maximize</i> button to start the find the input image that maximizes the selected filter.
 		</div>
 	</div>
 	<div class="row">
 		<div class="col col-lg-3">
-			<p><button id="start_btn" type="button" class="btn btn-primary">Start</button></p>
+			<p>
+				<button id="generate_btn" type="button" class="btn btn-primary">Generate</button>
+				<button id="maximize_btn" type="button" class="btn btn-primary">Maximize</button>
+			</p>
 
 			Prediction time: <i id="prediction_time"></i><br/>
 			Drawing time: <i id="draw_time"></i><br/>
 			Output:<br/>
-			<div id="prediction"></div>
+			<div id="prediction"></div><br/>
+
+			<!-- Feature map -->
+			<p>
+				Layer name: <i id="selected_layer_name"></i><br/>
+				Layer index: <i id="selected_layer_index"></i><br/>
+				Filter index: <i id="selected_filter_index"></i><br/>
+				Filter size: <i id="selected_filter_size"></i><br/>
+				Filter number: <i id="selected_filter_number"></i>
+			</p>
+			<canvas id="feature_map"></canvas>
+			<canvas id="feature_map_check"></canvas>
+
+			<p>
+				Loss: <i id="loss"></i>
+			</p>
 		</div>
 
 		<div class="col col-lg-9" id="layer_container">
@@ -23,10 +39,6 @@
 				<div class="card-body">
 					<p class="card-text">
 						<!-- Grayscale canvas -->
-						<canvas id="input_grayscale"></canvas>
-						<canvas id="input_grayscale_big" width="200" height="200" class="input_canvas"></canvas>
-
-						<!-- Black and White canvas -->
 						<canvas id="input_bw"></canvas>
 						<canvas id="input_bw_big" width="200" height="200" class="input_canvas"></canvas>
 					</p>
@@ -35,3 +47,4 @@
 		</div>
 	</div>
 </div>
+<!-- https://fairyonice.github.io/achieving-top-23-in-kaggles-facial-keypoints-detection-with-keras-tensorflow.html -->

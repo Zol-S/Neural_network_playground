@@ -56,41 +56,7 @@
 						</div>
 					</div>
 				</div>
-
-				<!-- Prediction -->
-				<div class="card">
-					<div class="card-header" id="heading_prediction">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_prediction">Prediction</button>
-						</h5>
-					</div>
-
-					<div id="collapse_prediction" class="collapse" data-parent="#accordion">
-						<div class="card-body">
-
-							Prediction time: <i id="prediction_time"></i><br/>
-							Output:<br/>
-							<div id="prediction"></div>
-
-						</div>
-					</div>
-				</div>
 			</div>
-
-			<!-- Feature map -->
-			<!--p>
-				Layer name: <i id="selected_layer_name"></i><br/>
-				Layer index: <i id="selected_layer_index"></i><br/>
-				Filter index: <i id="selected_filter_index"></i><br/>
-				Filter size: <i id="selected_filter_size"></i><br/>
-				Filter number: <i id="selected_filter_number"></i>
-			</p>
-			<canvas id="feature_map"></canvas>
-			<canvas id="feature_map_check"></canvas>
-
-			<p>
-				Loss: <i id="loss"></i>
-			</p-->
 		</div>
 
 		<div class="col col-lg-9" id="layer_container">
@@ -99,12 +65,11 @@
 				<div class="card-body">
 					<p class="card-text">
 						<!-- Grayscale canvas -->
-						<canvas id="input_bw"></canvas>
-						<canvas id="input_bw_big" width="200" height="200" class="input_canvas"></canvas>
+						<canvas id="input_image"></canvas>
+
 					</p>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<!-- https://fairyonice.github.io/achieving-top-23-in-kaggles-facial-keypoints-detection-with-keras-tensorflow.html -->

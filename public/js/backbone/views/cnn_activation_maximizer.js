@@ -31,6 +31,8 @@ define([
 			this.$el.append(template());
 
 			$('#progress_bar').hide();
+			document.getElementById("start_btn").disabled = true;
+			document.getElementById("iteration_counter").disabled = true;
 		},
 
 		// Model selection/initialization
@@ -48,7 +50,7 @@ define([
 				this.buildLayers(this.CNN_model);
 			}
 		},
-		buildLayers: async function(model) {
+		buildLayers: function(model) {
 			this.CNN_layers = [];
 			for (let i in model.layers) {
 				let layer = model.layers[i], u_pos = layer.name.lastIndexOf('_');
@@ -85,40 +87,11 @@ define([
 		},
 
 		// Input generator
-		onGenerateButtonClicked: async function(e) {
-			$('.ajax_loader').show();
+		onGenerateButtonClicked: function(e) {
 			this.createNoisyImage(28, 28);
 
-			let start_time = performance.now(), input_image_processed_data = this.getInputImageData('input_bw');
-
-			// Prediction
-			let image2D = tf.tensor1d(input_image_processed_data).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]);
-			let prediction = this.CNN_model.predict(image2D.expandDims(0));
-			let probabilities = await prediction.as1D().data();
-
-			let probabilities_array = new Array();
-			for (let i=0;i<probabilities.length;i++) {
-				probabilities_array.push({
-					number: i,
-					probability: probabilities[i]
-				});
-			}
-
-			probabilities_array.sort(
-				function(a, b) {
-					return b.probability - a.probability;
-				}
-			);
-
-			$('#prediction').empty();
-			for (let i=0;i<3;i++) {
-				$('#prediction').append(probabilities_array[i].number + ': ' + parseInt(probabilities_array[i].probability*1000000)/10000 +'%<br/>');
-			}
-
-			let end_time = performance.now();
-			$('#prediction_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
-
-			$('.ajax_loader').hide();
+			document.getElementById("start_btn").disabled = false;
+			document.getElementById("iteration_counter").disabled = false;
 		},
 		createNoisyImage: function(size_x, size_y) {
 			$('#input_image_header').text(size_x + 'x' + size_y + 'px');
@@ -131,7 +104,7 @@ define([
 			this.drawInputImage(image_data);
 		},
 		drawInputImage: function(image_data) {
-			let canvas = document.getElementById('input_bw');
+			let canvas = document.getElementById('input_image');
 			canvas.width = canvas.height = 28;
 			let ctx = canvas.getContext('2d');
 			let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -142,12 +115,6 @@ define([
 			}
 
 			ctx.putImageData(imgData, 0, 0);
-
-			// Zoomed image
-			this.drawZoomedImage(
-				document.getElementById('input_bw').getContext("2d"), 28, 28,
-				document.getElementById('input_bw_big').getContext("2d"), 200, 200
-			);
 		},
 
 		// Filter maximum
@@ -162,11 +129,6 @@ define([
 			return tf.mean(this.getFilterActivationMap(image_data));
 		},
 		onStartButtonClicked: function() {
-			// https://fairyonice.github.io/Visualization%20of%20Filters%20with%20Keras.html
-			// https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html
-			// https://js.tensorflow.org/api/latest/#grads
-			// https://stackoverflow.com/questions/54728772/computing-the-gradient-of-the-loss-using-tensorflow-js
-
 			let filter_count = 0, iteration_counter = $('#iteration_counter').val();
 			for (let l in this.CNN_layers) {
 				filter_count += this.CNN_layers[l].filter_count;
@@ -180,6 +142,7 @@ define([
 				}
 			}
 
+			// UI update, more models
 			console.log('Total number of filters: ', filter_count);
 
 			// Progress bar
@@ -193,7 +156,7 @@ define([
 				for (let i=0;i<this.CNN_layers[l].filter_count;i++) {
 					this.filter_index = i;
 					
-					let input_image_tensor = tf.tensor1d(this.getInputImageData('input_bw')).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]).expandDims(0);
+					let input_image_tensor = tf.tensor1d(this.getInputImageData('input_image')).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]).expandDims(0);
 					for (let j=0;j<iteration_counter;j++) {
 						// Gradients
 						const grad_func = tf.grad(this.getFilterLoss.bind(this));
@@ -211,7 +174,7 @@ define([
 					let spread = 255/Math.abs(tf.max(input_image_tensor).dataSync()[0] - ac_min);
 					let output_image_data = tf.mul(tf.add(input_image_tensor.gather(this.filter_index, 3), Math.abs(ac_min)), spread).arraySync()[0];
 
-					this.drawImage(this.CNN_layers[l].name + '_filter_' + i, output_image_data, 5);
+					this.drawImage(this.CNN_layers[l].name + '_filter_' + i, output_image_data, 2);
 
 					$('#progress_bar .progress-bar').css('width', parseInt(++c/filter_count*100)+'%');
 				}
@@ -224,7 +187,7 @@ define([
 			let input_image_data = input_canvas.getContext('2d').getImageData(0, 0, input_canvas.width, input_canvas.height), output = [];
 
 			for (let i=0, k=0; i < input_image_data.data.length; i+=4,k++) {
-				output[k] = input_image_data.data[i]/255;
+				output[k] = (input_image_data.data[i]-128)/255;
 			}
 
 			return output;
@@ -251,52 +214,6 @@ define([
 			var hex = c.toString(16);
 			return hex.length == 1 ? "0" + hex : hex;
 		},
-		drawZoomedImage: function(source_ctx, sw, sh, target_ctx, tw, th) {
-			let source = source_ctx.getImageData(0, 0, sw, sh);
-			let sdata = source.data;
-
-			let target = target_ctx.createImageData(tw, th);
-			let tdata = target.data;
-
-			let mapx = [];
-			let ratiox = sw / tw, px = 0;
-			for (let i = 0; i < tw; ++i) {
-				mapx[i] = 4 * Math.floor(px);
-				px += ratiox;
-			}
-
-			let mapy = [];
-			let ratioy = sh / th, py = 0;
-			for (let i = 0; i < th; ++i) {
-				mapy[i] = 4 * sw * Math.floor(py);
-				py += ratioy;
-			}
-
-			let tp = 0;
-			for (py = 0; py < th; ++py) {
-				for (px = 0; px < tw; ++px) {
-					let sp = mapx[px] + mapy[py];
-					tdata[tp++] = sdata[sp++];
-					tdata[tp++] = sdata[sp++];
-					tdata[tp++] = sdata[sp++];
-					tdata[tp++] = sdata[sp++];
-				}
-			}
-
-			target_ctx.putImageData(target, 0, 0);
-		},
-		_reshape: function(array, sizes) {
-			var accumulator = [];
-
-			if (sizes.length === 0) {
-				return array.shift();
-			}
-			for (var i = 0; i < sizes[0]; i += 1) {
-				accumulator.push(this._reshape(array, sizes.slice(1)));
-			}
-
-			return accumulator;
-		},
 		destroy: function() {
 			this.undelegateEvents();
 			this.$el.empty();
@@ -307,3 +224,8 @@ define([
 
 	return view;
 });
+// https://fairyonice.github.io/achieving-top-23-in-kaggles-facial-keypoints-detection-with-keras-tensorflow.html
+// https://fairyonice.github.io/Visualization%20of%20Filters%20with%20Keras.html
+// https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html
+// https://js.tensorflow.org/api/latest/#grads
+// https://stackoverflow.com/questions/54728772/computing-the-gradient-of-the-loss-using-tensorflow-js

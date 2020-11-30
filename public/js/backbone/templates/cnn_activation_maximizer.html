@@ -7,18 +7,78 @@
 	</div>
 	<div class="row">
 		<div class="col col-lg-3">
-			<p>
-				<button id="generate_btn" type="button" class="btn btn-primary">Generate</button>
-				<button id="maximize_btn" type="button" class="btn btn-primary">Maximize</button>
-			</p>
+			<div id="accordion">
+				<!-- Model -->
+				<div class="card">
+					<div class="card-header" id="heading_model">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#collapse_model">Model</button>
+						</h5>
+					</div>
 
-			Prediction time: <i id="prediction_time"></i><br/>
-			Drawing time: <i id="draw_time"></i><br/>
-			Output:<br/>
-			<div id="prediction"></div><br/>
+					<div id="collapse_model" class="collapse show" data-parent="#accordion">
+						<div class="card-body">
+
+							<label for="fps_selector">Model:</label>
+							<select class="form-control" id="model_selector">
+								<option></option>
+								<option value="mnist_28x28">MNIST (725 kB)</option>
+							</select><br/>
+
+							<p id="model_description"></p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Activation map -->
+				<div class="card">
+					<div class="card-header" id="heading_activation_map">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_activation_map">Activation map</button>
+						</h5>
+					</div>
+
+					<div id="collapse_activation_map" class="collapse" data-parent="#accordion">
+						<div class="card-body">
+
+							<p>
+								<button id="generate_btn" type="button" class="btn btn-primary">Generate noisy input</button>
+							</p>
+							<p>
+								Number of iterations: <input id="iteration_counter" type="number" min="1" max="20" value="10"><br/>
+								<button id="start_btn" type="button" class="btn btn-primary">Start</button>
+							</p>
+							
+							
+							<div class="progress" id="progress_bar">
+								<div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Prediction -->
+				<div class="card">
+					<div class="card-header" id="heading_prediction">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_prediction">Prediction</button>
+						</h5>
+					</div>
+
+					<div id="collapse_prediction" class="collapse" data-parent="#accordion">
+						<div class="card-body">
+
+							Prediction time: <i id="prediction_time"></i><br/>
+							Output:<br/>
+							<div id="prediction"></div>
+
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<!-- Feature map -->
-			<p>
+			<!--p>
 				Layer name: <i id="selected_layer_name"></i><br/>
 				Layer index: <i id="selected_layer_index"></i><br/>
 				Filter index: <i id="selected_filter_index"></i><br/>
@@ -30,12 +90,12 @@
 
 			<p>
 				Loss: <i id="loss"></i>
-			</p>
+			</p-->
 		</div>
 
 		<div class="col col-lg-9" id="layer_container">
 			<div class="card bg-light mb-3">
-				<div class="card-header">Input image<span id="input_image_header"></span></div>
+				<div class="card-header">Input image: <span id="input_image_header"></span></div>
 				<div class="card-body">
 					<p class="card-text">
 						<!-- Grayscale canvas -->

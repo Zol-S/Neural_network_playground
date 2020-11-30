@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col col-lg-12">
 			<h5>CNN activation maximizer</h5>
-			Inspired by <a href="https://keras.io/examples/vision/visualizing_what_convnets_learn/" target="_blank">Visualizing what convnets learn</a> by <i>François Chollet</i>. MNIST Tensorflow model is loaded initially. Click on <i>Generate</i> button to generate a noisy image. Click on any of the convolutional or pooling layer filters to select the filter that you wish to maximize, then click on <i>Maximize</i> button to start the find the input image that maximizes the selected filter.
+			Inspired by <a href="https://keras.io/examples/vision/visualizing_what_convnets_learn/" target="_blank">Visualizing what convnets learn</a> by <i>François Chollet</i>. First select a model to load, then click on <i>Generate input</i> button to generate a noisy input image. Hit <i>Start</i> button to visualize the maximum of each filter within the convolutional and pooling layers after the specified number of iterations.
 		</div>
 	</div>
 	<div class="row">
@@ -42,7 +42,7 @@
 						<div class="card-body">
 
 							<p>
-								<button id="generate_btn" type="button" class="btn btn-primary">Generate noisy input</button>
+								<button id="generate_btn" type="button" class="btn btn-primary">Generate input</button>
 							</p>
 							<p>
 								Number of iterations: <input id="iteration_counter" type="number" min="1" max="20" value="10"><br/>

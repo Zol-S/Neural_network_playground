@@ -33,6 +33,7 @@ define([
 
 			$('#progress_bar').hide();
 			document.getElementById("start_btn").disabled = true;
+			document.getElementById("stop_btn").disabled = true;
 			document.getElementById("iteration_counter").disabled = true;
 		},
 
@@ -92,6 +93,7 @@ define([
 			this.createNoisyImage(28, 28);
 
 			document.getElementById("start_btn").disabled = false;
+			document.getElementById("stop_btn").disabled = false;
 			document.getElementById("iteration_counter").disabled = false;
 		},
 		createNoisyImage: function(size_x, size_y) {
@@ -127,6 +129,7 @@ define([
 			});
 		},
 		onStopButtonClicked: function() {
+			document.getElementById("iteration_counter").disabled = false;
 			clearInterval(this.interval_id);
 		},
 		onStartButtonClicked: function() {
@@ -157,17 +160,10 @@ define([
 				this.calculateFilterGradients.bind(this),
 				0
 			);
+
+			document.getElementById("iteration_counter").disabled = true;
 		},
 		calculateFilterGradients: function() {
-			if (
-				(this.layer_index == (this.CNN_layers.length-1)) &&
-				(this.filter_index == (this.CNN_layers[this.layer_index].filter_count-1))
-			) {
-				$('#progress_bar .progress-bar').css('width', '100%');
-				clearInterval(this.interval_id);
-				return;
-			}
-
 			// Calculation
 			let input_image_tensor = tf.tensor1d(this.getInputImageData('input_image')).reshape([this.CNN_model.layers[0].input.shape[1], this.CNN_model.layers[0].input.shape[2], 1]).expandDims(0);
 
@@ -191,7 +187,18 @@ define([
 			this.drawImage(this.CNN_layers[this.layer_index].name + '_filter_' + this.filter_index, output_image_data, 2);
 
 			$('#progress_bar .progress-bar').css('width', parseInt(++this.counter/this.total_filter_count*100)+'%');
+			$('#progress_bar .progress-bar').text(parseInt(this.counter/this.total_filter_count*100)+'%');
 
+			// Loop handling
+			if (
+				(this.layer_index == (this.CNN_layers.length-1)) &&
+				(this.filter_index == (this.CNN_layers[this.layer_index].filter_count-1))
+			) {
+				clearInterval(this.interval_id);
+				document.getElementById("iteration_counter").disabled = false;
+				return;
+			}
+			
 			if ((this.CNN_layers[this.layer_index].filter_count-1) < ++this.filter_index) {
 				this.filter_index = 0;
 				this.layer_index++;

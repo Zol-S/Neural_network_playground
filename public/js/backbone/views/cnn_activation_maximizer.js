@@ -3,7 +3,7 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/cnn_activation_maximizer.html',
-	'tfjs132',
+	'tfjs174',
 	'bootstrap'
 ], function ($, _, Backbone, CNNActivationMaximizerTemplate, tf) {
 	'use strict';
@@ -22,6 +22,7 @@ define([
 		events: {
 			'click #generate_btn': 'onGenerateButtonClicked',
 			'click #start_btn': 'onStartButtonClicked',
+			'click #stop_btn': 'onStopButtonClicked',
 			'change #model_selector': 'onModelSelected'
 		},
 		render: function() {
@@ -54,32 +55,32 @@ define([
 			this.CNN_layers = [];
 			for (let i in model.layers) {
 				let layer = model.layers[i], u_pos = layer.name.lastIndexOf('_');
-				let layer_type = '', layer_input_shape = [], layer_magnify_level, filter_count;
+				let layer_title = '', layer_output_shape = [], layer_magnify_level, filter_count;
 
 				switch (layer.name.substring(0, u_pos)) {
 					case 'conv2d':
-							layer_type = 'Convolutional layer';
-							layer_input_shape = [model.layers[i].input.shape[1], model.layers[i].input.shape[2]];
-							layer_magnify_level = Math.floor(this.magnification_size/model.layers[i].input.shape[1]);
-							filter_count = model.layers[i].outputShape[3];
+							layer_title = 'Convolutional layer';
+							layer_output_shape = [layer.output.shape[1], layer.output.shape[2]];
+							filter_count = layer.output.shape[3];
+							layer_magnify_level = Math.floor(this.magnification_size/layer.input.shape[1]);
 						break;
 					case 'max_pooling2d':
-							layer_type = 'Max pooling layer';
-							layer_input_shape = [model.layers[i].input.shape[1], model.layers[i].input.shape[2]];
-							layer_magnify_level = Math.floor(this.magnification_size/model.layers[i].input.shape[1]);
-							filter_count = model.layers[i].outputShape[3];
+							layer_title = 'Max pooling layer';
+							layer_output_shape = [layer.output.shape[1], layer.output.shape[2]];
+							filter_count = layer.output.shape[3];
+							layer_magnify_level = Math.floor(this.magnification_size/layer.input.shape[1]);
 				}
 
-				if (layer_type != '') {
+				if (layer_title != '') {
 					this.CNN_layers.push({
 						'name': layer.name,
 						'index': parseInt(i),
-						'input_shape': layer_input_shape,
+						'output_shape': layer_output_shape,
 						'filter_count': filter_count,
 						'magnify_level': layer_magnify_level
 					});
 
-					$('#layer_container').append('<div class="card bg-light mb-3 cnn_layer"><div class="card-header">' + layer_type + ' ' + layer.name.substring(u_pos+1) + ': ' + (typeof layer.kernelSize === 'undefined'?'':layer.kernelSize[0] + 'x' + layer.kernelSize[1] + ' kernel, ') + 'activation map size: ' + layer.output.shape[1] + 'x' + layer.output.shape[2] + 'px' + '<span></span></div><div class="card-body"><p id="' + layer.name + '" class="card-text"></p></div></div>');
+					$('#layer_container').append('<div class="card bg-light mb-3 cnn_layer"><div class="card-header">' + layer_title + ' ' + layer.name.substring(u_pos+1) + ': ' + (typeof layer.kernelSize === 'undefined'?'':layer.kernelSize[0] + 'x' + layer.kernelSize[1] + ' kernel, ') + 'activation map size: ' + layer.output.shape[3] + ' x ' + layer.output.shape[1] + 'x' + layer.output.shape[2] + 'px' + '<span></span></div><div class="card-body"><p id="' + layer.name + '" class="card-text"></p></div></div>');
 				}
 			};
 
@@ -117,77 +118,91 @@ define([
 			ctx.putImageData(imgData, 0, 0);
 		},
 
-		// Filter maximum
-		getFilterActivationMap: function(image_data) {
+		// Maximize filter mean
+		getFilterLoss: function(image_data) {
 			return tf.tidy(() => {
 				let model = tf.model({inputs: this.CNN_model.inputs, outputs: this.CNN_model.layers[this.layer_index].output});
 
-				return model.predict(image_data).gather(this.filter_index, 3);
+				return tf.mean(model.predict(image_data).gather(this.filter_index, 3));
 			});
 		},
-		getFilterLoss: function(image_data) {
-			return tf.mean(this.getFilterActivationMap(image_data));
+		onStopButtonClicked: function() {
+			clearInterval(this.interval_id);
 		},
 		onStartButtonClicked: function() {
-			let filter_count = 0, iteration_counter = $('#iteration_counter').val();
+			this.counter = 0;
+			this.total_filter_count = 0;
+
 			for (let l in this.CNN_layers) {
-				filter_count += this.CNN_layers[l].filter_count;
+				this.total_filter_count += this.CNN_layers[l].filter_count;
 
 				// Canvas
 				for (let i=0;i<this.CNN_layers[l].filter_count;i++) {
-					let filter_name = this.CNN_layers[l].name + '_filter_' + i;
 					let node = document.createElement("canvas");
-					node.setAttribute("id", filter_name);
+					node.setAttribute("id", this.CNN_layers[l].name + '_filter_' + i);
+					node.width = node.height = node.style.width = node.style.heigth = 0;
 					document.getElementById(this.CNN_layers[l].name).appendChild(node);
 				}
 			}
 
-			// UI update, more models
-			console.log('Total number of filters: ', filter_count);
+			// add more models
+			console.log('Total number of filters: ', this.total_filter_count);
 
 			// Progress bar
 			$('#progress_bar').show();
-			$('#progress_bar .progress-bar').addClass('progress-bar-animated');
 
-			let c = 0;
-			for (let l in this.CNN_layers) {
-				this.layer_index = l;
-				
-				for (let i=0;i<this.CNN_layers[l].filter_count;i++) {
-					this.filter_index = i;
-					
-					let input_image_tensor = tf.tensor1d(this.getInputImageData('input_image')).reshape([this.CNN_layers[0].input_shape[0], this.CNN_layers[0].input_shape[1], 1]).expandDims(0);
-					for (let j=0;j<iteration_counter;j++) {
-						// Gradients
-						const grad_func = tf.grad(this.getFilterLoss.bind(this));
-						let grads = grad_func(input_image_tensor);
-
-						// Normalization trick
-						const eps = tf.sqrt(tf.add(tf.mean(tf.square(grads)), 1e-5));
-						grads = tf.div(grads, eps);
-
-						input_image_tensor = tf.add(input_image_tensor, tf.mul(grads, 1));
-					}
-
-					// Deprocess
-					let ac_min = tf.min(input_image_tensor).dataSync()[0];
-					let spread = 255/Math.abs(tf.max(input_image_tensor).dataSync()[0] - ac_min);
-					let output_image_data = tf.mul(tf.add(input_image_tensor.gather(this.filter_index, 3), Math.abs(ac_min)), spread).arraySync()[0];
-
-					this.drawImage(this.CNN_layers[l].name + '_filter_' + i, output_image_data, 2);
-
-					$('#progress_bar .progress-bar').css('width', parseInt(++c/filter_count*100)+'%');
-				}
+			this.layer_index = 0;
+			this.filter_index = 0;
+			this.interval_id = setInterval(
+				this.calculateFilterGradients.bind(this),
+				0
+			);
+		},
+		calculateFilterGradients: function() {
+			if (
+				(this.layer_index == (this.CNN_layers.length-1)) &&
+				(this.filter_index == (this.CNN_layers[this.layer_index].filter_count-1))
+			) {
+				$('#progress_bar .progress-bar').css('width', '100%');
+				clearInterval(this.interval_id);
+				return;
 			}
 
-			$('#progress_bar .progress-bar').removeClass('progress-bar-animated');
+			// Calculation
+			let input_image_tensor = tf.tensor1d(this.getInputImageData('input_image')).reshape([this.CNN_model.layers[0].input.shape[1], this.CNN_model.layers[0].input.shape[2], 1]).expandDims(0);
+
+			for (let j=0;j<$('#iteration_counter').val();j++) {
+				// Gradients
+				const grad_func = tf.grad(this.getFilterLoss.bind(this));
+				let grads = grad_func(input_image_tensor);
+
+				// Normalization trick
+				const eps = tf.sqrt(tf.add(tf.mean(tf.square(grads)), 1e-5));
+				grads = tf.div(grads, eps);
+
+				input_image_tensor = tf.add(input_image_tensor, tf.mul(grads, 1));
+			}
+
+			// Deprocess
+			let ac_min = tf.min(input_image_tensor).dataSync()[0];
+			let spread = 255/Math.abs(tf.max(input_image_tensor).dataSync()[0] - ac_min);
+			let output_image_data = tf.mul(tf.add(input_image_tensor.gather(this.filter_index, 3), Math.abs(ac_min)), spread).arraySync()[0];
+
+			this.drawImage(this.CNN_layers[this.layer_index].name + '_filter_' + this.filter_index, output_image_data, 2);
+
+			$('#progress_bar .progress-bar').css('width', parseInt(++this.counter/this.total_filter_count*100)+'%');
+
+			if ((this.CNN_layers[this.layer_index].filter_count-1) < ++this.filter_index) {
+				this.filter_index = 0;
+				this.layer_index++;
+			}
 		},
 		getInputImageData: function(input_image_id) {
 			let input_source = '', input_canvas = document.getElementById(input_image_id);
 			let input_image_data = input_canvas.getContext('2d').getImageData(0, 0, input_canvas.width, input_canvas.height), output = [];
 
 			for (let i=0, k=0; i < input_image_data.data.length; i+=4,k++) {
-				output[k] = (input_image_data.data[i]-128)/255;
+				output[k] = (input_image_data.data[i]-127)/255;
 			}
 
 			return output;

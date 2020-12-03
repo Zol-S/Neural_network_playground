@@ -17,9 +17,8 @@ require.config({
 		synaptic: 'vendor/synaptic-1.1.4.min',
 		numeric: 'vendor/numeric-1.2.6.min',
 		tfjs10: 'vendor/tfjs-0.10.0.min',
-		tfjs112: 'vendor/tfjs-1.1.2.min',
 		tfjs132: 'vendor/tfjs-1.3.2.min',
-		KerasJS: 'vendor/keras-0.3.0.min'
+		tfjs270: 'vendor/tfjs-2.7.0.min'
 	},
 	shim: {
 		jquery: {
@@ -51,15 +50,12 @@ require.config({
 		numeric: {
 			exports: 'numeric'
 		},
-		tfjs10: {
+		/*tfjs10: {
 			exports: 'tf'
-		},
-		tfjs112: {
+		},*/
+		tfjs27: {
 			exports: 'tf'
-		}/*,
-		KerasJS: {
-			exports: 'KerasJS'
-		}*/
+		}
 	}
 });
 

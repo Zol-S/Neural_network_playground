@@ -7,8 +7,7 @@ define([
 	'backbone/views/nnc',
 	'backbone/views/classify_2d',
 	'backbone/views/pooling',
-	'backbone/views/digit_recognizer_basic',
-	'backbone/views/digit_recognizer_advanced',
+	'backbone/views/digit_recognizer',
 	'backbone/views/convolutional_layers',
 	'backbone/views/loss_functions',
 	'backbone/views/mnist_pca',
@@ -17,7 +16,7 @@ define([
 	'backbone/views/cnn_layer_visualizer',
 	'backbone/views/cnn_activation_maximizer',
 	'backbone/views/lstm'
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerBasicView, DigitRecognizerAdvancedView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, CNNActivationMaximizerView, LSTMView) {
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, CNNActivationMaximizerView, LSTMView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -28,8 +27,7 @@ define([
 			'nnc': 'nnc',
 			'classify_2d': 'classify_2d',
 			'pooling': 'pooling',
-			'digit_recognizer_basic': 'digit_recognizer_basic',
-			'digit_recognizer_advanced': 'digit_recognizer_advanced',
+			'digit_recognizer': 'digit_recognizer',
 			'convolutional_layers': 'convolutional_layers',
 			'loss_functions': 'loss_functions',
 			'mnist_pca': 'mnist_pca',
@@ -66,13 +64,9 @@ define([
 			var poolingView = new PoolingView();
 			this.changeView(poolingView);
 		},
-		digit_recognizer_basic: function() {
-			var digitRecognizerBasicView = new DigitRecognizerBasicView();
-			this.changeView(digitRecognizerBasicView);
-		},
-		digit_recognizer_advanced: function() {
-			var digitRecognizerAdvancedView = new DigitRecognizerAdvancedView();
-			this.changeView(digitRecognizerAdvancedView);
+		digit_recognizer: function() {
+			var digitRecognizerView = new DigitRecognizerView();
+			this.changeView(digitRecognizerView);
 		},
 		convolutional_layers: function() {
 			var convolutionalLayerView = new ConvolutionalLayerView();

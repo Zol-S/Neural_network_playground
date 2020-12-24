@@ -2,8 +2,8 @@ define([
 	'jquery',
 	'underscore',
 	'backbonejs',
-	'text!backbone/templates/digit_recognizer_advanced.html',
-	'tfjs10',
+	'text!backbone/templates/digit_recognizer.html',
+	'tfjs270',
 	'bootstrap'
 ], function ($, _, Backbone, digitRecognizerTemplate, tf) {
 	'use strict';
@@ -22,13 +22,15 @@ define([
 			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.455,0.957,0.447,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.169,0.184,0.184,0.133,0,0.455,0.992,0.808,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.075,0.643,0.965,0.992,0.988,0.918,0.129,0.455,0.992,0.682,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.235,0.737,0.988,0.988,0.992,0.988,0.988,0.176,0.824,0.918,0.067,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.29,0.957,0.988,0.988,0.576,0.58,0.824,0.086,0.549,0.98,0.902,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0.992,0.804,0.082,0,0.251,0.549,0.663,0.914,0.992,0.62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.992,0.988,0.604,0.035,0,0,0.267,0.988,0.988,0.698,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.537,0.988,0.988,0.769,0.188,0.192,0.894,0.988,0.89,0.188,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.02,0.694,0.988,0.988,0.91,0.914,0.988,0.89,0.196,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.059,0.537,0.988,0.988,0.992,0.906,0.188,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.318,0.992,0.992,1,0.812,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.2,0.894,0.988,0.906,0.91,0.925,0.173,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.192,0.894,0.988,0.89,0.188,0.541,0.988,0.596,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.914,0.988,0.89,0.196,0,0.541,0.988,0.816,0.067,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.62,0.992,0.988,0.31,0,0,0.541,0.988,0.867,0.098,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.365,0.992,1,0.565,0,0,0,0.584,0.992,0.678,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.651,0.988,0.976,0.294,0,0,0.169,0.992,0.875,0.098,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.812,0.988,0.929,0.275,0.275,0.439,0.965,0.992,0.682,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.647,0.988,0.992,0.988,0.988,0.988,0.988,0.588,0.067,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.2,0.537,0.992,0.988,0.784,0.824,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 8
 			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.043,0.725,1,0.992,0.992,0.902,0.518,0.518,0.122,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.035,0.278,0.949,0.988,0.988,0.894,0.906,0.988,0.988,0.988,0.655,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.11,0.651,0.988,0.988,0.922,0.361,0,0.055,0.557,0.988,0.988,0.588,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.047,0.8,0.988,0.918,0.596,0.173,0,0,0.188,0.882,0.988,0.706,0.063,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.047,0.643,0.988,0.91,0.239,0,0,0,0.024,0.702,0.988,0.988,0.235,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.192,0.988,0.988,0.298,0,0,0,0.173,0.78,0.988,0.988,0.988,0.235,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.349,0.988,0.894,0.125,0,0,0.388,0.906,0.957,0.863,0.988,0.796,0.047,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.663,0.988,0.812,0.38,0.38,0.808,0.918,0.953,0.125,0.616,0.988,0.569,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.235,0.988,0.988,0.988,0.988,0.988,0.784,0.086,0.043,0.776,0.906,0.161,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.102,0.514,0.878,0.988,0.988,0.557,0.043,0,0.322,0.988,0.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.051,0.992,0.992,0.553,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.322,0.988,0.863,0.141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.816,0.988,0.376,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.094,0.992,0.969,0.306,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.475,0.992,0.78,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.125,0.847,0.957,0.102,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.812,0.988,0.945,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.129,0.784,0.976,0.988,0.361,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.333,0.988,0.988,0.557,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.333,0.988,0.784,0.043,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] // 9
 		],
-		draw_state: 0, // 0 - not drawing, 1 - draw, 2 - erase
 		initialize: async function() {
+			console.log('Digit recognizer');
 			this.size = 28;
+			this.draw_state = 0; // 0 - not drawing, 1 - draw, 2 - erase
 
-			document.model = await tf.loadModel('public/js/neural/mnist_28x28/model.json');
+			this.showTensorflowInformation('Tensorflow state before initialization');
+			this.CNN_model = await tf.loadLayersModel('public/js/neural/mnist_28x28/model.json');
+			this.showTensorflowInformation('Tensorflow state after model is loaded');
 			$('#recognize_btn').removeAttr('disabled');
-			console.log('Model is loaded');
 		},
 		events: {
 			'click #canvas div': 'onPixelClicked',
@@ -47,9 +49,9 @@ define([
 				public_directory: window.public_directory
 			}));
 
-			this.drawMap();
+			this.drawDigitBoard();
 		},
-		drawMap: function() {
+		drawDigitBoard: function() {
 			$('#canvas').empty();
 
 			for (var i=0;i<this.size;i++) {
@@ -81,124 +83,6 @@ define([
 		onClearDrawState: function(e) {
 			this.draw_state = 0;
 		},
-		onRecognizeClicked: async function() {
-			var start_time = performance.now();
-
-			// Creating image array
-			var imageData = new Array(784);
-			for (var i=0;i<this.size;i++) {
-				for (var k=0;k<this.size;k++) {
-					if ($('#rect_' + i + '_' + k).hasClass('pixel_on')) {
-						imageData[this.size*i+k] = 1;
-					} else {
-						imageData[this.size*i+k] = 0;
-					}
-				}
-			}
-
-			// Prediction
-			let image2D = tf.tensor1d(imageData).reshape([28, 28, 1]);
-			let prediction = document.model.predict(image2D.expandDims(0).toFloat());
-			//prediction.argMax().print();
-			let probabilities = await prediction.as1D().data();
-
-			let probabilities_array = new Array();
-			for (var i=0;i<probabilities.length;i++) {
-				probabilities_array.push({
-					number: i,
-					probability: probabilities[i]
-				});
-			}
-
-			probabilities_array.sort(
-				function(a, b) {
-					return b.probability - a.probability;
-				}
-			);
-
-			$('#inference').empty();
-			for (var i=0;i<3;i++) {
-				$('#inference').append(probabilities_array[i].number + ': ' + parseInt(probabilities_array[i].probability*1000000)/10000 +'%<br/>');
-			}
-
-			var end_time = performance.now();
-			$('#inference_time').text(parseInt((end_time-start_time)*100)/100 + ' ms');
-
-			this.displayActivationMaps(document.model, "conv2d_1", imageData, "conv2d_1", 1);
-			this.displayActivationMaps(document.model, "max_pooling2d_1", imageData, "max_pooling2d_1", 2);
-			this.displayActivationMaps(document.model, "conv2d_2", imageData, "conv2d_2", 2);
-			this.displayActivationMaps(document.model, "max_pooling2d_2", imageData, "max_pooling2d_2", 5);
-			this.displayActivationMaps(document.model, "flatten_1", imageData, "flatten_1", [1, 10]);
-			this.displayActivationMaps(document.model, "dense_1", imageData, "dense_1", [4, 10]);
-			this.displayActivationMaps(document.model, "dense_2", imageData, "dense_2", [10, 10]);
-			/*
-			conv2d_1
-			max_pooling2d_1
-			conv2d_2
-			max_pooling2d_2
-			dropout_1
-			flatten_1
-			dense_1
-			activation_1
-			dropout_2
-			dense_2
-			activation_2  
-			*/
-		},
-		displayActivationMaps: function(model, layer, imageData, outputDiv, scale) {
-			// https://medium.com/tensorflow/a-gentle-introduction-to-tensorflow-js-dba2e5257702
-			/*console.log('Input shape: ' + document.model.inputs[0].shape);
-			console.log('Output shape: ' + document.model.outputs[0].shape);
-			console.log('Number of layers in the neural network: ' + document.model.layers.length);
-			console.log(document.model);
-			console.log('Layer:');
-			console.log(document.model.getLayer("conv2d_1"));
-			console.log('Layer\'s kernel');
-			console.log(await document.model.getLayer("conv2d_1").kernel.val.data());
-			console.log('Layer\'s output:');
-			console.log(await document.model.getLayer("conv2d_1").output);
-			let weights = document.model.getLayer("conv2d_1").getWeights();
-			console.log(await weights[0].as1D().data());*/
-
-			// Title
-			var layerOutputShape = model.getLayer(layer).output.shape;
-			var kernelShape = model.getLayer(layer).kernelSize;
-			var is_flattened = false;
-			var titleText = (typeof kernelShape!='undefined'?layerOutputShape[3] + ' ' + kernelShape[0] + 'x' + kernelShape[1] + ' kernel, ':'');
-			if (typeof layerOutputShape[2] == 'undefined') {
-				is_flattened = true;
-			}
-			titleText += 'activation map size: ' + layerOutputShape[1] + (!is_flattened?'x' + layerOutputShape[2]:'') + 'px';
-			$('#' + outputDiv).parent().siblings('.card-header').find('span').empty().append(' - ' + titleText);
-
-			// Create a new NN
-			var am_model = tf.model({inputs: model.inputs, outputs: model.getLayer(layer).output});
-			var image2D = tf.tensor1d(imageData).reshape([28, 28, 1]).expandDims(0).toFloat();
-			var activations = am_model.predict(image2D).dataSync();
-			var ac_min = activations.reduce(function(a, b) { return Math.min(a, b);}), ac_max = activations.reduce(function(a, b) { return Math.max(a, b);});
-			var spread = Math.abs(ac_max - ac_min);
-
-			// Upscaling values to the RGB component range
-			var activations_flattened = new Array();
-			for (var i=0;i<activations.length;i++) {
-				activations_flattened.push(parseInt((activations[i]+Math.abs(ac_min))*255/spread));
-			}
-
-			// Draw activatons
-			$('#' + outputDiv).empty();
-			if (is_flattened) {
-				$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act" height="' + scale[1] + '" width="1024"></canvas>');
-				this.draw1DPixels(activations_flattened, outputDiv + '_act', scale);
-			} else {
-				var act_array = this._reshape(activations_flattened, [layerOutputShape[1], layerOutputShape[2], layerOutputShape[3]]);
-
-				for (var i=0;i<layerOutputShape[3];i++) {
-					$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act_' + i + '" height="' + layerOutputShape[2]*scale + '" width="' + layerOutputShape[1]*scale + '"></canvas>');
-
-					this.drawPixels(act_array, i, outputDiv + '_act_' + i, [layerOutputShape[1], layerOutputShape[2]], scale, is_flattened);
-				}
-			}
-		},
 		onClearClicked: function() {
 			$('#canvas div').removeClass('pixel_on');
 		},
@@ -213,47 +97,145 @@ define([
 				}
 			}
 		},
-		draw1DPixels: function(color_array, id, scale) {
-			var ctx = document.getElementById(id).getContext("2d");
+		onRecognizeClicked: function() {
+			let start_time = performance.now();
 
-			for (var i=0;i<color_array.length;i++) {
-				var color = this.convertComponent2Hex(color_array[i]);
+			// Creating image array
+			let imageData = new Array(784);
+			for (let i=0;i<this.size;i++) {
+				for (let k=0;k<this.size;k++) {
+					if ($('#rect_' + i + '_' + k).hasClass('pixel_on')) {
+						imageData[this.size*i+k] = 1;
+					} else {
+						imageData[this.size*i+k] = 0;
+					}
+				}
+			}
+
+			// Prediction
+			let image2D = tf.tensor1d(imageData).reshape([28, 28, 1]);
+			let prediction = this.CNN_model.predict(image2D.expandDims(0).toFloat());
+			let probabilities = prediction.dataSync();
+			let probabilities_array = new Array();
+			for (let i=0;i<probabilities.length;i++) {
+				probabilities_array.push({
+					number: i,
+					probability: probabilities[i]
+				});
+			}
+
+			probabilities_array.sort(
+				function(a, b) {
+					return b.probability - a.probability;
+				}
+			);
+
+			$('#inference').empty();
+			for (let i=0;i<3;i++) {
+				$('#inference').append(probabilities_array[i].number + ': ' + parseInt(probabilities_array[i].probability*1000000)/10000 +'%<br/>');
+			}
+
+			$('#inference_time').text(parseInt((performance.now()-start_time)*100)/100 + ' ms');
+
+			this.displayActivationMaps("conv2d_1", imageData, "conv2d_1", 1);
+			this.displayActivationMaps("max_pooling2d_1", imageData, "max_pooling2d_1", 2);
+			this.displayActivationMaps("conv2d_2", imageData, "conv2d_2", 2);
+			this.displayActivationMaps("max_pooling2d_2", imageData, "max_pooling2d_2", 5);
+			this.displayActivationMaps("flatten_1", imageData, "flatten_1", [1, 10]);
+			this.displayActivationMaps("dense_1", imageData, "dense_1", [4, 10]);
+			this.displayActivationMaps("dense_2", imageData, "dense_2", [10, 10]);
+		},
+		displayActivationMaps: async function(layer, imageData, outputDiv, scale) {
+			// Title
+			let layerOutputShape = this.CNN_model.getLayer(layer).output.shape;
+			let kernelShape = await this.CNN_model.getLayer(layer).kernelSize;
+			let is_flattened = false;
+			let titleText = (typeof kernelShape!='undefined'?layerOutputShape[3] + ' ' + kernelShape[0] + 'x' + kernelShape[1] + ' kernel, ':'');
+			if (typeof layerOutputShape[2] == 'undefined') {
+				is_flattened = true;
+			}
+			titleText += 'activation map size: ' + layerOutputShape[1] + (!is_flattened?'x' + layerOutputShape[2]:'') + 'px';
+			$('#' + outputDiv).parent().siblings('.card-header').find('span').empty().append(' - ' + titleText);
+
+			// Create a new NN
+			let _self = this, output_image_data;
+			tf.tidy(() => {
+				let model = tf.model({inputs: _self.CNN_model.inputs, outputs: _self.CNN_model.model.getLayer(layer).output});
+
+				let activations = model.predict(tf.tensor1d(imageData).reshape([_self.size, _self.size, 1]).expandDims(0).toFloat());
+
+				let ac_min = tf.min(activations).dataSync()[0];
+				let spread = 255/Math.abs(tf.max(activations).dataSync()[0] - ac_min);
+				output_image_data = tf.mul(tf.add(activations, Math.abs(ac_min)), spread).arraySync()[0];
+			});
+
+			// Draw activatons
+			$('#' + outputDiv).empty();
+			if (is_flattened) {
+				$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act" height="' + scale[1] + '" width="1024"></canvas>');
+				this.draw1DPixels(outputDiv + '_act', output_image_data, scale);
+			} else {
+				for (let i=0;i<layerOutputShape[3];i++) {
+					$('#' + outputDiv).append('<canvas id="' + outputDiv + '_act_' + i + '" height="' + layerOutputShape[2]*scale + '" width="' + layerOutputShape[1]*scale + '"></canvas>');
+
+					this.drawPixels(outputDiv + '_act_' + i, output_image_data, i, scale);
+				}
+			}
+		},
+		drawPixels: function(id, data_array, index, scale) {
+			let ctx = document.getElementById(id).getContext("2d");
+
+			for (let i=0;i<data_array.length;i++) {
+				for (let k=0;k<data_array[0].length;k++) {
+					let color = this.convertComponent2Hex(data_array[i][k][index]);
+					ctx.fillStyle="#" + color + color + color;
+					ctx.fillRect(k*scale, i*scale, scale, scale);
+				}
+			}
+		},
+		draw1DPixels: function(id, data_array, scale) {
+			let ctx = document.getElementById(id).getContext("2d");
+
+			for (let i=0;i<data_array.length;i++) {
+				let color = this.convertComponent2Hex(data_array[i]);
 				ctx.fillStyle="#" + color + color + color;
 				ctx.fillRect(i*scale[0], 0, scale[0], scale[1]);
 			}
 		},
-		drawPixels: function(image_array, item, id, shape, size, is_flattened) {
-			var ctx = document.getElementById(id).getContext("2d");
-
-			for (var i=0;i<shape[0];i++) {
-				for (var k=0;k<shape[1];k++) {
-					var color = this.convertComponent2Hex(image_array[k][i][item]);
-					ctx.fillStyle="#" + color + color + color;
-					ctx.fillRect(i*size, k*size, size, size);
-				}
-			}
-		},
 		convertComponent2Hex: function(c) {
-			var hex = c.toString(16);
+			var hex = parseInt(c).toString(16);
 			return hex.length == 1 ? "0" + hex : hex;
 		},
-		_reshape: function(array, sizes) {
-			var accumulator = [];
-
-			if (sizes.length === 0) {
-				return array.shift();
-			}
-			for (var i = 0; i < sizes[0]; i += 1) {
-				accumulator.push(this._reshape(array, sizes.slice(1)));
-			}
-
-			return accumulator;
-		},
 		destroy: function() {
+			this.showTensorflowInformation('Tensorflow state before model disposal');
+			tf.disposeVariables();
+			this.CNN_model.dispose();
+			this.showTensorflowInformation('Tensorflow state after disposal');
+
 			this.undelegateEvents();
 			this.$el.empty();
 			this.stopListening();
 			return this;
+		},
+		showTensorflowInformation: function(msg) {
+			console.group(msg);
+			console.log('Number of bytes allocated:', this.getReadableFileSizeString(tf.memory().numBytes));
+			console.log('Number of Tensors in memory: ', tf.memory().numTensors);
+			console.log('Number of unique data buffers allocated:', tf.memory().numDataBuffers);
+			if (tf.memory().unreliable) {
+				console.log('Reasons why the memory is unreliable:', tf.memory().reasons);
+			}
+			console.groupEnd();
+		},
+		getReadableFileSizeString: function(fileSizeInBytes) {
+			let i = -1;
+			let byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+			do {
+				fileSizeInBytes = fileSizeInBytes / 1024;
+				i++;
+			} while (fileSizeInBytes > 1024);
+
+			return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
 		}
 	});
 

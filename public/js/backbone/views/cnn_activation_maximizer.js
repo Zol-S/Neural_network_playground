@@ -14,9 +14,14 @@ define([
 			'mnist_28x28': {
 				title: 'MNIST 28x28',
 				description: 'The model of MNIST database of handwritten digits. It has a training set of 60,000 examples, and a test set of 10,000 examples. The digits have been size-normalized and centered in a fixed-size image.'
+			},
+			'vgg16': {
+				title: 'VGG16 ?x?',
+				description: 'VGG16'
 			}
 		},
 		initialize: function() {
+			console.log('CNN activation maximizer');
 			this.magnification_size = 64; // set magnification level automatically, get the face recognizer layer
 		},
 		events: {
@@ -45,9 +50,10 @@ define([
 			let selected_model = $('#model_selector').children("option:selected").val();
 
 			if (selected_model != '') {
+				this.showTensorflowInformation('Tensorflow state before initialization');
 				this.CNN_model = await tf.loadLayersModel(window.public_directory + '/js/neural/' + selected_model + '/model.json');
 				$('#model_description').text(this.models[selected_model].description);
-				console.log(this.models[selected_model].title + ' model is loaded');
+				this.showTensorflowInformation('Tensorflow state after `' + this.models[selected_model].title + '` model is loaded');
 
 				this.buildLayers(this.CNN_model);
 			}
@@ -225,22 +231,46 @@ define([
 
 			for (let i=0;i<data_array.length;i++) {
 				for (let k=0;k<data_array[0].length;k++) {
-					let color = this.convertComponent2Hex(parseInt(data_array[i][k]));
+					let color = this.convertComponent2Hex(data_array[i][k]);
 					ctx.fillStyle="#" + color + color + color;
 					ctx.fillRect(i*size, k*size, size, size);
 				}
 			}
 		},
-
 		convertComponent2Hex: function(c) {
-			var hex = c.toString(16);
+			var hex = parseInt(c).toString(16);
 			return hex.length == 1 ? "0" + hex : hex;
 		},
 		destroy: function() {
+			this.showTensorflowInformation('Tensorflow state before model disposal');
+			tf.disposeVariables();
+			this.CNN_model.dispose();
+			this.showTensorflowInformation('Tensorflow state after disposal');
+
 			this.undelegateEvents();
 			this.$el.empty();
 			this.stopListening();
 			return this;
+		},
+		showTensorflowInformation: function(msg) {
+			console.group(msg);
+			console.log('Number of bytes allocated:', this.getReadableFileSizeString(tf.memory().numBytes));
+			console.log('Number of Tensors in memory: ', tf.memory().numTensors);
+			console.log('Number of unique data buffers allocated:', tf.memory().numDataBuffers);
+			if (tf.memory().unreliable) {
+				console.log('Reasons why the memory is unreliable:', tf.memory().reasons);
+			}
+			console.groupEnd();
+		},
+		getReadableFileSizeString: function(fileSizeInBytes) {
+			let i = -1;
+			let byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+			do {
+				fileSizeInBytes = fileSizeInBytes / 1024;
+				i++;
+			} while (fileSizeInBytes > 1024);
+
+			return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
 		}
 	});
 

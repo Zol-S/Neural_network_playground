@@ -1,5 +1,5 @@
-### LSTM (2020.07.14) ###
-Train LSTM with custom texts to predict the next word in it. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#lstm) for the demo.
+### CNN activation maximizer (2020.12.23) ###
+Support multiple models. A generated noise is sent to the neural network to visualize the maximum of each filter within the convolutional and pooling layers after the specified number of iterations. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#cnn_activation_maximizer) for the demo.
 
 # Neural network playground
 Neural network tests, applications implemented in Javascript.
@@ -22,14 +22,14 @@ OR gate implemented by 3-layer neural network with sigmoid activation and MSE lo
 Demonstrates minimum search with [unnormalized gradient descent](http://caza.la/synaptic) algorithm. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#loss_functions) for the demo.
 ### PCA on MNIST digits ###
 PCA performed on MNIST digits. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#mnist_pca) for the demo.
+### LSTM (2020.07.14) ###
+Train LSTM with custom texts to predict the next word in it. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#lstm) for the demo.
 
 ## Convolutional networks ##
 ### Pooling ###
 Max and average pooling MNIST 28x28 images down to 14x14 and 7x7 images using different spatial striding. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#pooling) for the demo.
-### Digit recognizer - basic ###
-Draw a digit to a square of 28x28 pixels or click on any of the buttons below to show a nice digit of the MNIST dataset to feed the data of the drawn image to the convolutional network. The top 3 results will be shown below with the probability percentages. The application is implemented by using <a href="https://js.tensorflow.org/" target="_blank">Tensorflow.js</a>. The model has an accuracy of 98.96% and the size of the model and the weights are as little as 725 kB. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#digit_recognizer_basic) for the demo.
-### Digit recognizer - advanced ###
-Does everything as the basic digit recognizer plus shows the activation maps for each layer. The application is implemented by using <a href="https://js.tensorflow.org/" target="_blank">Tensorflow.js</a>. The model has an accuracy of 98.96% and the size of the model and the weights are as little as 725 kB. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#digit_recognizer_advanced) for the demo.
+### Digit recognizer ###
+Draw a digit, which is fed into a neural network, that was trained on the MNIST dataset. Shows the activation maps for each layer. The application is implemented by using <a href="https://js.tensorflow.org/" target="_blank">Tensorflow.js</a>. The model has an accuracy of 98.96% and the size of the model and the weights are as little as 725 kB. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#digit_recognizer) for the demo.
 ### Convolutional layers ###
 In this interactive tutorial, convolutional and pooling layers can be linked together and send them colourful images. Convolutional and pooling layers can be inserted to the end of the network. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#convolutional_layers) for the demo.
 ### Face detector ###

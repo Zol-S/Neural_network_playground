@@ -3,7 +3,7 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/lstm.html',
-	'tfjs132',
+	'tfjs270',
 	'd3',
 	'bootstrap'
 ], function ($, _, Backbone, lstmTemplate, tf, d3) {

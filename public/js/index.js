@@ -16,8 +16,7 @@ require.config({
 		colorbrewer: 'vendor/colorbrewer-1.0.0.min',
 		synaptic: 'vendor/synaptic-1.1.4.min',
 		numeric: 'vendor/numeric-1.2.6.min',
-		tfjs10: 'vendor/tfjs-0.10.0.min',
-		tfjs132: 'vendor/tfjs-1.3.2.min',
+		tfjs174: 'vendor/tfjs-1.7.4.min',
 		tfjs270: 'vendor/tfjs-2.7.0.min'
 	},
 	shim: {
@@ -49,12 +48,6 @@ require.config({
 		},
 		numeric: {
 			exports: 'numeric'
-		},
-		/*tfjs10: {
-			exports: 'tf'
-		},*/
-		tfjs27: {
-			exports: 'tf'
 		}
 	}
 });

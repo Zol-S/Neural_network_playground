@@ -7,6 +7,7 @@ require.config({
 		underscore: 'vendor/underscore-1.8.3.min',
 		backbonejs: 'vendor/backbone-1.1.2.min',
 		text: 'vendor/require_text-2.0.12',
+		json: 'vendor/require_json-0.4.0',
 		mathjs: 'vendor/math-3.17.0.min',
 		d3: 'vendor/d3.v4.min',
 		mathjs: 'vendor/math-3.17.0.min',
@@ -17,7 +18,9 @@ require.config({
 		synaptic: 'vendor/synaptic-1.1.4.min',
 		numeric: 'vendor/numeric-1.2.6.min',
 		tfjs174: 'vendor/tfjs-1.7.4.min',
-		tfjs270: 'vendor/tfjs-2.7.0.min'
+		tfjs270: 'vendor/tfjs-2.7.0.min',
+		heatmap: 'vendor/heatmap-2.0.5.min',
+		random_sampler: 'tfjs_layer_random_sampler'
 	},
 	shim: {
 		jquery: {
@@ -48,6 +51,11 @@ require.config({
 		},
 		numeric: {
 			exports: 'numeric'
+		},
+		random_sampler: {
+			deps: [
+				'tfjs270'
+			]
 		}
 	}
 });

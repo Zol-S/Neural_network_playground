@@ -126,14 +126,6 @@ define([
 			ctx.putImageData(imgData, 0, 0);
 		},
 
-		// Maximize filter mean
-		getFilterLoss: function(image_data) {
-			return tf.tidy(() => {
-				let model = tf.model({inputs: this.CNN_model.inputs, outputs: this.CNN_model.layers[this.layer_index].output});
-
-				return tf.mean(model.predict(image_data).gather(this.filter_index, 3));
-			});
-		},
 		onStopButtonClicked: function() {
 			document.getElementById("iteration_counter").disabled = false;
 			clearInterval(this.interval_id);
@@ -168,6 +160,14 @@ define([
 			);
 
 			document.getElementById("iteration_counter").disabled = true;
+		},
+		// Maximize filter mean
+		getFilterLoss: function(image_data) {
+			return tf.tidy(() => {
+				let model = tf.model({inputs: this.CNN_model.inputs, outputs: this.CNN_model.layers[this.layer_index].output});
+
+				return tf.mean(model.predict(image_data).gather(this.filter_index, 3));
+			});
 		},
 		calculateFilterGradients: function() {
 			// Calculation

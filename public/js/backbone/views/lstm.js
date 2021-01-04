@@ -286,10 +286,35 @@ define([
 				.attr("d", valueline_loss);
 		},
 		destroy: function() {
+			this.showTensorflowInformation('Tensorflow state before model disposal');
+			tf.disposeVariables();
+			this.model.dispose();
+			this.showTensorflowInformation('Tensorflow state after disposal');
+
 			this.undelegateEvents();
 			this.$el.empty();
 			this.stopListening();
 			return this;
+		},
+		showTensorflowInformation: function(msg) {
+			console.group(msg);
+			console.log('Number of bytes allocated:', this.getReadableFileSizeString(tf.memory().numBytes));
+			console.log('Number of Tensors in memory: ', tf.memory().numTensors);
+			console.log('Number of unique data buffers allocated:', tf.memory().numDataBuffers);
+			if (tf.memory().unreliable) {
+				console.log('Reasons why the memory is unreliable:', tf.memory().reasons);
+			}
+			console.groupEnd();
+		},
+		getReadableFileSizeString: function(fileSizeInBytes) {
+			let i = -1;
+			let byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+			do {
+				fileSizeInBytes = fileSizeInBytes / 1024;
+				i++;
+			} while (fileSizeInBytes > 1024);
+
+			return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
 		}
 	});
 

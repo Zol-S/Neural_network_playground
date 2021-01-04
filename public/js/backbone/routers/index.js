@@ -15,8 +15,9 @@ define([
 	'backbone/views/clustering',
 	'backbone/views/cnn_layer_visualizer',
 	'backbone/views/cnn_activation_maximizer',
-	'backbone/views/lstm'
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, CNNActivationMaximizerView, LSTMView) {
+	'backbone/views/lstm',
+	'backbone/views/vae_latent_space_visualizer'
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, CNNActivationMaximizerView, LSTMView, VAELatentSpaceVisualizerView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -35,6 +36,7 @@ define([
 			'clustering': 'clustering',
 			'cnn_layer_visualizer': 'cnn_layer_visualizer',
 			'cnn_activation_maximizer': 'cnn_activation_maximizer',
+			'vae_latent_space_visualizer': 'vae_latent_space_visualizer',
 			'lstm': 'lstm',
 			'*default': 'cnn_activation_maximizer'
 		},
@@ -95,6 +97,9 @@ define([
 		cnn_activation_maximizer: function() {
 			var cnnActivationMaximizerView = new CNNActivationMaximizerView();
 			this.changeView(cnnActivationMaximizerView);
+		},
+		vae_latent_space_visualizer: function() {
+			this.changeView(new VAELatentSpaceVisualizerView());
 		},
 		lstm: function() {
 			var lstmView = new LSTMView();

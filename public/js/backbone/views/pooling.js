@@ -11,7 +11,7 @@ define([
 	let view = Backbone.View.extend({
 		el: '#main',
 		events: {
-			'click #change_btn': 'onChangeClicked'
+			'click #refresh_btn': 'onRefreshClicked'
 		},
 		mnist_digit_width: 28,
 		render: function() {
@@ -22,7 +22,7 @@ define([
 
 			this.drawImages();
 		},
-		onChangeClicked: function() {
+		onRefreshClicked: function() {
 			this.drawImages();
 		},
 		getAllIndexes: function(arr, val) {

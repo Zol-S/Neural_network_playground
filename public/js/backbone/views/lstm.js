@@ -3,13 +3,13 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/lstm.html',
-	'tfjs270',
+	'tfjs174',
 	'd3',
 	'bootstrap'
 ], function ($, _, Backbone, lstmTemplate, tf, d3) {
 	'use strict';
 
-	var view = Backbone.View.extend({
+	let view = Backbone.View.extend({
 		el: '#main',
 		input_words_counter: 3,
 		sample_texts: ['Jack and Jill went up the hill\nTo fetch a pail of water\nJack fell down and broke his crown\nAnd Jill came tumbling after\nJill is clever', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'],
@@ -56,9 +56,9 @@ define([
 		},
 		initializeTraining: async function() {
 			console.log('Tokenizing text');
-			var tokens = this.tokenize($("#training_set").val());
+			let tokens = this.tokenize($("#training_set").val());
 
-			var X = [], y = [];
+			let X = [], y = [];
 			for (var i=0;i<(tokens.length-this.input_words_counter);i++) {
 				var x = [];
 				for (var j=0;j<this.input_words_counter;j++) {

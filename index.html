@@ -9,6 +9,7 @@
 		<title>Neural Networks</title>
 
 		<!-- CSS -->
+		<link rel="stylesheet" href="public/css/bootstrap-5.0.2.min.css">
 		<link rel="stylesheet" href="public/css/style.css">
 
 		<!-- FavIcon -->
@@ -21,72 +22,66 @@
 	<body>
 		<div>
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
-				<span class="navbar-brand mb-0 h1">Neural network playground</span>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+				<div class="container-fluid">
+					<a class="navbar-brand" href="#">Neural network playground</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarToggler">
+						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Unsupervised learning
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+									<p class="ms-3 fw-bold">Clustering</p>
+									<li><a class="dropdown-item" href="#neighbor">k-Nearest Neighbor</a></li>
+									<li><a class="dropdown-item" href="#clustering">Clustering algorithms</a></li>
+									<li><hr class="dropdown-divider"></li>
+									<p class="ms-3 fw-bold">Dimension reduction</p>
+									<a class="dropdown-item" href="#mnist_pca">PCA on MNIST digits</a>
+								</ul>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Supervised learning
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+									<p class="ms-3 fw-bold">Classification</p>
+									<li><a class="dropdown-item" href="#nnc">Nearest Neighbor Image Classifier</a></li>
+									<li><a class="dropdown-item" href="#classify_2d">2D data classification</a></li>
+									<li><hr class="dropdown-divider"></li>
+									<p class="ms-3 fw-bold">Neural networks</p>
+									<li><a class="dropdown-item" href="#xor">XOR gate</a></li>
+									<li><a class="dropdown-item" href="#backpropagate">Backpropagation</a></li>
+									<li><a class="dropdown-item" href="#loss_functions">Loss functions</a></li>
+									<li><a class="dropdown-item" href="#pooling">Pooler</a></li>
+									<li><a class="dropdown-item" href="#digit_recognizer">Digit recognizer</a></li>
+									<li><a class="dropdown-item" href="#convolutional_layers">Convolutional layers</a></li>
+									<li><a class="dropdown-item" href="#face_detector">Face detector</a></li>
+									<li><a class="dropdown-item" href="#cnn_layer_visualizer">CNN layer visualizer</a></li>
+									<li><a class="dropdown-item" href="#cnn_activation_maximizer">CNN activation maximizer</a></li>
+									<li><a class="dropdown-item" href="#vae_latent_space_visualizer">VAE latent space visualizer</a></li>
+									<li><a class="dropdown-item" href="#lstm">Text learning LSTM</a></li>
 
-				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav mr-auto">
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Nearest Neighbors
-							</a>
-							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" href="#neighbor">k-Nearest Neighbor</a><!-- Fix -->
-								<a class="dropdown-item" href="#nnc">Nearest Neighbor Image Classifier</a>
-								<a class="dropdown-item" href="#clustering">Clustering algorithms</a>
-							</div>
-						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Neural networks
-							</a>
-							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" href="#xor">XOR gate</a>
-								<a class="dropdown-item" href="#backpropagate">Backpropagation</a><!-- Improve -->
-								<a class="dropdown-item" href="#classify_2d">2D data classification</a>
-								<a class="dropdown-item" href="#loss_functions">Loss functions</a>
-								<a class="dropdown-item" href="#mnist_pca">PCA on MNIST digits</a>
-								<a class="dropdown-item" href="#lstm">Text learning LSTM</a>
-							</div>
-						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Convolutional networks
-							</a>
-							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" href="#pooling">Pooler</a>
-								<a class="dropdown-item" href="#digit_recognizer">Digit recognizer</a>
-								<a class="dropdown-item" href="#convolutional_layers">Convolutional layers</a>
-								<a class="dropdown-item" href="#face_detector">Face detector</a>
-								<a class="dropdown-item" href="#cnn_layer_visualizer">CNN layer visualizer</a>
-								<a class="dropdown-item" href="#cnn_activation_maximizer">CNN activation maximizer</a>
-								<a class="dropdown-item" href="#vae_latent_space_visualizer">VAE latent space visualizer</a>
+									<!-- Digit recognizer => Show Class activation map https://medium.com/@mohamedchetoui/grad-cam-gradient-weighted-class-activation-mapping-ffd72742243a-->
+									<!-- Other model to the CNN activation maximizer -->
+									<!-- kullback leibler MNIST training, show the outputs of the NN realtime -->
+									<!-- facial point detection, style transfer -->
 
-								<!-- Digit recognizer => Show Class activation map -->
-								<!-- Other model to the CNN activation maximizer -->
-								<!-- kullback leibler MNIST training, show the outputs of the NN realtime -->
-								<!-- facial point detection, style transfer -->
-
-								<!-- Autoencoder https://transcranial.github.io/keras-js/#/mnist-vae -->
-								<!-- https://transcranial.github.io/keras-js/#/mnist-acgan -->
-								<!-- https://awesomeopensource.com/project/tensorflow/tfjs-examples -->
-								<!-- http://jlin.xyz/advis/ -->
-								<!-- https://teachablemachine.withgoogle.com/train/image -->
-							</div>
-						</li>
-						<!--li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Other
-							</a>
-							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" href="#epidemic_simulator">Epidemic simulator</a>
-							</div>
-						</li-->
-					</ul>
-					<img src="public/img/ajax-loader.gif" class="ajax_loader">
-					<span class="navbar-text"><i>2021.01.04</i></span>
+									<!-- Autoencoder https://transcranial.github.io/keras-js/#/mnist-vae -->
+									<!-- https://transcranial.github.io/keras-js/#/mnist-acgan -->
+									<!-- https://awesomeopensource.com/project/tensorflow/tfjs-examples -->
+									<!-- http://jlin.xyz/advis/ -->
+									<!-- https://teachablemachine.withgoogle.com/train/image -->
+								</ul>
+							</li>
+						</ul>
+						<form class="d-flex">
+							<img src="public/img/ajax-loader.gif" class="ajax_loader">
+							<span class="navbar-text"><i>2021.11.05</i></span>
+						</form>
+					</div>
 				</div>
 			</nav>
 
@@ -97,3 +92,11 @@
 		<script data-main="public/js/index.js" src="public/js/vendor/require-2.3.5.min.js"></script>
 	</body>
 </html>
+
+<!--
+- Restructure menu
+- XOR gate cols
+- Properly dispose variables
+
+- VAE latent space visualizer
+-->

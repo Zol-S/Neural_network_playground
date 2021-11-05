@@ -15,19 +15,44 @@ define([
 		},
 		events: {
 			'click #train_btn': 'onTrainBtnClicked',
-			'change #model_selector': 'onModelSelected'
+			'click #load_btn': 'onLoadBtnClicked'
 		},
 		render: function() {
 			this.$el.empty();
 
 			let template = _.template(VAELatentSpaceVisualizerTemplate);
 			this.$el.append(template());
+
+			$('#progress_bar').hide();
 		},
-		onModelSelected: function() {
-			let e = document.getElementById('model_selector');
-			console.log(e.options[e.selectedIndex].value);
+		// https://jakearchibald.com/2016/streams-ftw/
+		onLoadBtnClicked: async function() {
+			let request = new XMLHttpRequest(), _self = this;
+
+			request.addEventListener('readystatechange', function(e) {
+				if (request.readyState == 2 && request.status == 200) {
+					$('#progress_bar').show();
+					$('#progress_bar .progress-bar').css('width', '0%');
+					$('#progress_bar .progress-bar').text('0%');
+				} else if(request.readyState == 4) {
+					_self.dataset = JSON.parse(request.responseText); 
+				}
+			});
+			
+			request.addEventListener('progress', function(e) {
+				let percent_complete = (e.loaded / e.total)*100;
+				$('#progress_bar .progress-bar').css('width', parseInt(percent_complete)+'%');
+				$('#progress_bar .progress-bar').text(parseInt(percent_complete)+'%');
+			});
+			
+			//request.responseType = 'blob';
+
+			const ds = document.getElementById('dataset_selector');
+			request.open('get', 'public/js/neural/mnist_dataset/mnist_dataset_' + ds.options[ds.selectedIndex].value + '.json'); 
+			request.send(); 
 		},
 		onTrainBtnClicked: function() {
+			console.log(this.dataset);
 			// encoder
 			let vae_input = tf.input({shape: 784});
 			let vae_x = tf.layers.dense({units: 2, activation: 'relu'}).apply(vae_input);
@@ -58,14 +83,17 @@ define([
 			def custom_loss(y_true, y_pred):
 				return keras.backend.mean(keras.backend.square(y_true - y_pred), axis=-1)
 			*/
-			let reconstruction_loss = tf.metrics.meanAbsoluteError(vae_input, latent_output);
+			/*let reconstruction_loss = tf.metrics.meanAbsoluteError(vae_input, latent_output);
 			reconstruction_loss = tf.mul(reconstruction_loss, 784);
 			let kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var);
 			kl_loss = tf.sum(kl_loss, -1);
 			kl_loss = tf.mul(kl_loss, -0.5);
 			let vae_loss = tf.mean(reconstruction_loss + kl_loss);
-			vae_model.compile({optimizer: 'adam', loss: vae_loss});
+			vae_model.compile({optimizer: 'adam', loss: vae_loss});*/
+			vae_model.compile({optimizer: 'adam', loss: 'meanSquaredError'});
 			vae_model.summary();
+
+			vae_model.fit(this.dataset.train_data, this.dataset.train_label);
 		},
 		destroy: function() {
 			this.showTensorflowInformation('Tensorflow state before model disposal');

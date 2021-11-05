@@ -17,13 +17,19 @@
 
 					<div id="collapse_trainset" class="collapse show" data-parent="#accordion">
 						<div class="card-body">
-							<select class="form-control" id="model_selector">
+							<select class="form-control" id="dataset_selector">
 								<option></option>
-								<option value="mnist_100">MNIST (519 kB)</option>
-								<option value="mnist_500">MNIST (2.53 MB)</option>
-								<option value="mnist_5000">MNIST (25.3 MB)</option>
-								<option value="mnist_all">MNIST (178 MB)</option>
-							</select>
+								<option value="100">MNIST (519 kB)</option>
+								<option value="500">MNIST (2.53 MB)</option>
+								<option value="5000">MNIST (25.3 MB)</option>
+								<option value="all">MNIST (178 MB)</option>
+							</select><br/>
+
+							<button type="button" class="btn btn-primary" id="load_btn">Load</button>
+
+							<div class="progress" id="progress_bar">
+								<div class="progress-bar" role="progressbar" style="width: 0%"></div>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -19,19 +19,15 @@
 	</div>
 	<div class="row">
 		<div class="col col-lg-3">
-			<!--img src="<%= public_directory %>/img/ajax-loader.gif" class="ajax_loader"-->
-
 			<div id="accordion">
 				<!-- Model -->
-				<div class="card">
-					<div class="card-header" id="heading_model">
-						<h5 class="mb-0">
-							<button class="btn btn-link" data-toggle="collapse" data-target="#collapse_model">Model</button>
-						</h5>
-					</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="heading_model">
+						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_model">Model</button>
+					</h2>
 
-					<div id="collapse_model" class="collapse show" data-parent="#accordion">
-						<div class="card-body">
+					<div id="collapse_model" class="accordion-collapse collapse show" data-bs-parent="#accordion">
+						<div class="accordion-body">
 
 							<label for="fps_selector">Model:</label>
 							<select class="form-control" id="model_selector">
@@ -47,15 +43,13 @@
 				</div>
 
 				<!-- Camera -->
-				<div class="card">
-					<div class="card-header" id="heading_camera">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_camera">Camera</button>
-						</h5>
-					</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="heading_camera">
+						<button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_camera">Camera</button>
+					</h2>
 
-					<div id="collapse_camera" class="collapse" data-parent="#accordion">
-						<div class="card-body">
+					<div id="collapse_camera" class="accordion-collapse collapse" data-bs-parent="#accordion">
+						<div class="accordion-body">
 
 							<label for="camera_selector">Camera:</label>
 							<select class="form-control" id="camera_selector"></select>
@@ -84,15 +78,13 @@
 				</div>
 
 				<!-- Prediction -->
-				<div class="card">
-					<div class="card-header" id="heading_prediction">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_prediction">Prediction</button>
-						</h5>
-					</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="heading_prediction">
+						<button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_prediction">Prediction</button>
+					</h2>
 
-					<div id="collapse_prediction" class="collapse" data-parent="#accordion">
-						<div class="card-body">
+					<div id="collapse_prediction" class="accordion-collapse collapse" data-bs-parent="#accordion">
+						<div class="accordion-body">
 
 							Input source: <i id="prediction_input"></i><br/>
 							Prediction time: <i id="prediction_time"></i><br/>
@@ -105,16 +97,13 @@
 				</div>
 
 				<!-- Activation map -->
-				<div class="card">
-					<div class="card-header" id="heading_activation_map">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_activation_map">Activation map</button>
-						</h5>
-					</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="heading_activation_map">
+						<button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_activation_map">Activation map</button>
+					</h2>
 
-					<div id="collapse_activation_map" class="collapse" data-parent="#accordion">
-						<div class="card-body">
-
+					<div id="collapse_activation_map" class="accordion-collapse collapse" data-bs-parent="#accordion">
+						<div class="accordion-body">
 							<p>
 								Selected activation map: <i id="activation_map_name"></i>
 							</p>
@@ -123,6 +112,7 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
 

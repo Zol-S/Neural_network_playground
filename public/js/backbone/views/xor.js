@@ -9,7 +9,7 @@ define([
 ], function ($, _, Backbone, xorTemplate, math, d3) {
 	'use strict';
 
-	var xorView = Backbone.View.extend({
+	let xorView = Backbone.View.extend({
 		el: '#main',
 		events: {
 			'click #submit_btn': 'onSubmitClicked'
@@ -17,7 +17,7 @@ define([
 		render: function() {
 			this.$el.empty();
 
-			var template = _.template(xorTemplate);
+			let template = _.template(xorTemplate);
 			this.$el.append(template());
 
 			this.drawNeuralNetwork();
@@ -29,17 +29,17 @@ define([
 			this.drawNeuralNetwork();
 
 			// Calculate result
-			var input = math.matrix([[parseInt($('#input_1').val()), parseInt($('#input_2').val())]]);
+			let input = math.matrix([[parseInt($('#input_1').val()), parseInt($('#input_2').val())]]);
 
-			var weight1 = math.matrix([[parseInt($('#weight1_1_1').val()), parseInt($('#weight1_1_2').val())], [parseInt($('#weight1_2_1').val()), parseInt($('#weight1_2_2').val())]]);
-			var bias1 = math.matrix([[parseInt($('#bias1_1').val()), parseInt($('#bias1_2').val())]]);
+			let weight1 = math.matrix([[parseInt($('#weight1_1_1').val()), parseInt($('#weight1_1_2').val())], [parseInt($('#weight1_2_1').val()), parseInt($('#weight1_2_2').val())]]);
+			let bias1 = math.matrix([[parseInt($('#bias1_1').val()), parseInt($('#bias1_2').val())]]);
 
-			var weight2 = math.matrix([[parseInt($('#weight2_1').val())], [parseInt($('#weight2_2').val())]]);
+			let weight2 = math.matrix([[parseInt($('#weight2_1').val())], [parseInt($('#weight2_2').val())]]);
 
-			var XW = math.multiply(input, weight1);
-			var XWC = math.add(XW, bias1);
+			let XW = math.multiply(input, weight1);
+			let XWC = math.add(XW, bias1);
 
-			var h = math.map(XWC, function(value) {
+			let h = math.map(XWC, function(value) {
 				if (value < 0) {
 					return 0;
 				}
@@ -50,14 +50,14 @@ define([
 			$('#hidden_1').val(h.toArray()[0][0]);
 			$('#hidden_2').val(h.toArray()[0][1]);
 
-			var output = math.multiply(h, weight2);
+			let output = math.multiply(h, weight2);
 			$('#output').val(output.toArray()[0][0]);
 		},
 		drawNeuralNetwork: function() {
-			var width = $("#stage").width(), height = 500, nodeSize = 25;
-			var svg = d3.select("#stage").append("svg").attr("width", width).attr("height", height);
+			let width = $("#stage").width(), height = 500, nodeSize = 25;
+			let svg = d3.select("#stage").append("svg").attr("width", width).attr("height", height);
 
-			var nodes = [
+			let nodes = [
 				{"id": 1, "label": "i1", "layer": 1},
 				{"id": 2, "label": "i2", "layer": 1},
 				{"id": 3, "label": "h1", "layer": 2, "bias": parseInt($('#bias1_1').val())},
@@ -65,7 +65,7 @@ define([
 				{"id": 5, "label": "o", "layer": 3}
 			];
 
-			var links = [
+			let links = [
 				{
 					'source_id': 1,
 					'target_id': 3,
@@ -98,7 +98,7 @@ define([
 				},
 			];
 
-			var netsize = {};
+			let netsize = {};
 			nodes.forEach(function (d) {
 				if (d.layer in netsize) {
 					netsize[d.layer] += 1;
@@ -108,24 +108,24 @@ define([
 				d["lidx"] = netsize[d.layer];
 			});
 
-			var xDist = width / Object.keys(netsize).length;
+			let xDist = width / Object.keys(netsize).length;
 
 			nodes.map(function(d) {
-				var layerSize = netsize[d.layer], yDist = height / layerSize;
+				let layerSize = netsize[d.layer], yDist = height / layerSize;
 
 				d["x"] = (d.layer - 0.5) * xDist;
 				d["y"] = (d.lidx - 0.5) * yDist;
 			});
 
-			var colorScaleBlue = d3.scaleLinear()
+			let colorScaleBlue = d3.scaleLinear()
 				.domain([0, 10])
 				.range([d3.rgb('#F2F2FF'), d3.rgb('#0000FF')]);
 
-			var colorScaleRed = d3.scaleLinear()
+			let colorScaleRed = d3.scaleLinear()
 				.domain([0, 10])
 				.range([d3.rgb('#FFF2F2'), d3.rgb('#FF0000')]);
 
-			var div = d3.select("body").append("div")
+			let div = d3.select("body").append("div")
 				.attr("class", "tooltip")
 				.style("opacity", 0);
 
@@ -141,7 +141,7 @@ define([
 				};
 			});
 
-			var link = svg.selectAll('path.link')
+			let link = svg.selectAll('path.link')
 				.data(links)
 				.enter()
 				.insert('path', "g")
@@ -182,15 +182,15 @@ define([
 			}
 
 			// Nodes
-			var _self = this;
-			var node = svg.selectAll(".node")
+			let _self = this;
+			let node = svg.selectAll(".node")
 				.data(nodes)
 				.enter().append("g")
 				.attr("transform", function(d) {
 					return "translate(" + d.x + "," + d.y + ")";
 				});
 
-			var circle = node.append("circle")
+			let circle = node.append("circle")
 				.attr("class", "node")
 				.attr("r", nodeSize)
 				.attr("stroke", function(d) {
@@ -205,7 +205,7 @@ define([
 					return "black";
 				})
 				.on("mouseover", function(d) {
-					var circleData = _self.getCircleData(d.id), textOutput = "";
+					let circleData = _self.getCircleData(d.id), textOutput = "";
 					if (typeof circleData.weight != "undefined") {
 						textOutput += "Weight: <strong>" + circleData.weight + "</strong>";
 					}
@@ -238,7 +238,7 @@ define([
 				.attr("text-anchor", "middle").attr("y", 5);
 		},
 		getCircleData: function(id) {
-			var perceptron = {};
+			let perceptron = {};
 
 			switch(id) {
 				case 1:

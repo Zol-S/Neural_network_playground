@@ -9,15 +9,13 @@
 		<div class="col col-lg-3">
 			<div id="accordion">
 				<!-- Model -->
-				<div class="card">
-					<div class="card-header" id="heading_model">
-						<h5 class="mb-0">
-							<button class="btn btn-link" data-toggle="collapse" data-target="#collapse_model">Model</button>
-						</h5>
-					</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="heading_model">
+						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_model">Model</button>
+					</h2>
 
-					<div id="collapse_model" class="collapse show" data-parent="#accordion">
-						<div class="card-body">
+					<div id="collapse_model" class="accordion-collapse collapse show" data-bs-parent="#accordion">
+						<div class="accordion-body">
 
 							<label for="fps_selector">Model:</label>
 							<select class="form-control" id="model_selector">
@@ -32,15 +30,13 @@
 				</div>
 
 				<!-- Activation map -->
-				<div class="card">
-					<div class="card-header" id="heading_activation_map">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_activation_map">Activation map</button>
-						</h5>
-					</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="heading_activation_map">
+						<button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_activation_map">Activation map</button>
+					</h2>
 
-					<div id="collapse_activation_map" class="collapse" data-parent="#accordion">
-						<div class="card-body">
+					<div id="collapse_activation_map" class="accordion-collapse collapse" data-bs-parent="#accordion">
+						<div class="accordion-body">
 
 							<p>
 								<button id="generate_btn" type="button" class="btn btn-primary">Generate input</button>

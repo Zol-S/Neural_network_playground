@@ -3,7 +3,6 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/face_detector.html',
-	//'tfjs270',
 	'tfjs4220',
 	'bootstrap'
 ], function ($, _, Backbone, faceDetectorTemplate, tf) {

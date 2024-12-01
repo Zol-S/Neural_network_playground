@@ -3,7 +3,6 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/cnn_layer_visualizer.html',
-	//'tfjs270',
 	'tfjs4220',
 	'bootstrap'
 ], function ($, _, Backbone, CNNLayerVisualizerTemplate, tf) {

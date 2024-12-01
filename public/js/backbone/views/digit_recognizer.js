@@ -3,7 +3,8 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/digit_recognizer.html',
-	'tfjs270',
+	//'tfjs270',
+	'tfjs4220',
 	'heatmap',
 	'json!neural/mnist_dataset/mnist_dataset_100.json',
 	'bootstrap'

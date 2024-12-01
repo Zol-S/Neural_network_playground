@@ -3,7 +3,8 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/cnn_activation_maximizer.html',
-	'tfjs174',
+	//'tfjs174',
+	'tfjs4220',
 	'bootstrap'
 ], function ($, _, Backbone, CNNActivationMaximizerTemplate, tf) {
 	'use strict';

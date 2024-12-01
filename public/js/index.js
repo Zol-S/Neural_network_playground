@@ -55,11 +55,11 @@ require.config({
 		numeric: {
 			exports: 'numeric'
 		},
-		random_sampler: {
+		/*random_sampler: {
 			deps: [
 				'tfjs270'
 			]
-		},
+		},*/
 		bootstrap_dropdown: {
 			deps: [
 				'bootstrap'

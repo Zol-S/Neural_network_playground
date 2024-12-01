@@ -3,7 +3,6 @@ define([
 	'backbonejs',
 	'text!backbone/templates/vae_latent_space_visualizer.html',
 	'tfjs4220',
-	'random_sampler',
 	'bootstrap'
 ], function(_,Backbone, VAELatentSpaceVisualizerTemplate, tf, RandomSampler) {
 	'use strict';

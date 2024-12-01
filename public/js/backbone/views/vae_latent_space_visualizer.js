@@ -2,7 +2,7 @@ define([
 	'underscore',
 	'backbonejs',
 	'text!backbone/templates/vae_latent_space_visualizer.html',
-	'tfjs270',
+	'tfjs4220',
 	'random_sampler',
 	'bootstrap'
 ], function(_,Backbone, VAELatentSpaceVisualizerTemplate, tf, RandomSampler) {

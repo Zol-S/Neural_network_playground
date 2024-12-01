@@ -7,7 +7,7 @@ define([
 		static className = 'RandomSampler';
 
 		constructor() {
-			console.log('RandomSampler construtor called');
+			console.log('RandomSampler constructor called');
 			super({});
 			this.supportsMasking = true;
 		}

@@ -1,5 +1,5 @@
 define([
-	'tfjs270'
+	'tfj4220'
 ], function (tf) {
 	'use strict';
 

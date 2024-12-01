@@ -18,8 +18,7 @@ require.config({
 		synaptic: 'vendor/synaptic-1.1.4.min',
 		numeric: 'vendor/numeric-1.2.6.min',
 		tfjs4220: 'vendor/tfjs-4.22.0.min',
-		heatmap: 'vendor/heatmap-2.0.5.min',
-		random_sampler: 'tfjs_layer_random_sampler'
+		heatmap: 'vendor/heatmap-2.0.5.min'
 	},
 	shim: {
 		jquery: {

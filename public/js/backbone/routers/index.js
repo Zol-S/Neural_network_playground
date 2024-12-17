@@ -16,8 +16,9 @@ define([
 	'backbone/views/cnn_layer_visualizer',
 	'backbone/views/cnn_activation_maximizer',
 	'backbone/views/lstm',
-	'backbone/views/vae_latent_space_visualizer'
-], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, CNNActivationMaximizerView, LSTMView, VAELatentSpaceVisualizerView) {
+	'backbone/views/vae_latent_space_visualizer',
+	'backbone/views/clt'
+], function ($, Backbone, BackpropagateView, XorView, NeighborView, NNCView, Classify2DView, PoolingView, DigitRecognizerView, ConvolutionalLayerView, LossFunctionsView, MnistPCAView, FaceDetectorView, ClusteringView, CNNLayerVisualizerView, CNNActivationMaximizerView, LSTMView, VAELatentSpaceVisualizerView, CentralLimitTheoremView) {
 	'use strict';
 
 	var router = Backbone.Router.extend({
@@ -38,6 +39,7 @@ define([
 			'cnn_activation_maximizer': 'cnn_activation_maximizer',
 			'vae_latent_space_visualizer': 'vae_latent_space_visualizer',
 			'lstm': 'lstm',
+			'clt': 'clt',
 			'*default': 'cnn_activation_maximizer'
 		},
 
@@ -104,6 +106,10 @@ define([
 		lstm: function() {
 			var lstmView = new LSTMView();
 			this.changeView(lstmView);
+		},
+		clt: function() {
+			var cltiew = new CentralLimitTheoremView();
+			this.changeView(cltiew);
 		},
 
 		changeView: function(view) {

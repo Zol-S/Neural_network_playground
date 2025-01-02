@@ -10,13 +10,13 @@ This phenomenon is termed the central limit theorem. It says that the means draw
 			<select id="distribution-selector"class="form-select" aria-label="Distribution selector">
 				<option selected>-</option>
 				<option value="uniform">Uniform</option>
-				<option value="exponential">Exponential</option>
-				<option value="weibull">Weibull</option>
+				<option value="exponential">Exponential (rate = 5)</option>
+				<option value="weibull">Weibull (k = 3, lambda = 1)</option>
 			</select>
 
 			<div class="mb-3">
 				<label for="number_of_samples" class="form-label">Number of samples:</label>
-				<input type="number" class="form-control" id="number_of_samples" value="1000">
+				<input type="number" class="form-control" id="number_of_samples" value="100">
 			</div>
 			<div class="mb-3">
 				<label for="number_of_items_within_samples" class="form-label">Number of items within samples:</label>
@@ -24,11 +24,18 @@ This phenomenon is termed the central limit theorem. It says that the means draw
 			</div>
 			<button id="start_btn" type="button" class="btn btn-primary">Start</button>
 		</div>
-		<div id="chart" class="col col-lg-5">
+		<div id="chart" class="col col-lg-6">
 			&nbsp;
 		</div>
-		<div id="output_chart" class="col col-lg-5">
-			&nbsp;
+	</div>
+	<div class="row">
+		<div class="col col-lg-6">
+			<div class="progress" id="progress_bar">
+				<div class="progress-bar" role="progressbar" style="width: 0%"></div>
+			</div>
+			<div id="output_chart">
+				&nbsp;
+			</div>
 		</div>
 	</div>
 </div>

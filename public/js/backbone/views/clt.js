@@ -10,7 +10,9 @@ define([
 
 	var view = Backbone.View.extend({
 		el: '#main',
-		isChartInitialized: false,
+		isHistogramInitialized: false,
+		isMeanChartInitialized: false,
+		chartUpdateDelay: 25,
 		events: {
 			'change #distribution-selector': 'onDistributionSelected',
 			'click #start_btn': 'onStartClicked'
@@ -28,11 +30,11 @@ define([
 		randomExponential: function(rate = 5) {
 			return -Math.log(Math.random())/rate;
 		},
-		randomWeibull: function(k = 2.75, lambda = 1.0) {
+		randomWeibull: function(k = 3, lambda = 1) {
 			let x = Math.random();
 			return (k / lambda) * Math.pow(x / lambda, k - 1) * Math.exp(-Math.pow(x / lambda, k));
 		},
-		initializeChart() {
+		initializeHistogram() {
 			let margin = {top: 10, right: 30, bottom: 30, left: 40};
 			this.width = 460 - margin.left - margin.right,
 			this.height = 400 - margin.top - margin.bottom;
@@ -78,9 +80,9 @@ define([
 			}
 
 			// Chart initialization
-			if (!this.isChartInitialized) {
-				this.initializeChart();
-				this.isChartInitialized = true;
+			if (!this.isHistogramInitialized) {
+				this.initializeHistogram();
+				this.isHistogramInitialized = true;
 			}
 
 			// Drawing the chart
@@ -132,68 +134,101 @@ define([
 			return arr.reduce((a, b) => a + b) / arr.length;
 		},
 		onStartClicked: function() {
-			let mean_of_drawn_samples = [];
+			this.mean_of_drawn_samples = [];
 
-			for (let i=0;i<$("#number_of_samples").val();i++) {
-				mean_of_drawn_samples.push(
-					this.calculateMean(
-						this.getSampleFromArray(this.sample, $("#number_of_items_within_samples").val())
-					)
-				);
-			}
+			// Mean Chart initialization
+			let margin = {top: 10, right: 30, bottom: 30, left: 40};
+			this.meanWidth = 460 - margin.left - margin.right,
+			this.meanHeight = 400 - margin.top - margin.bottom;
 
-			let margin = {top: 10, right: 30, bottom: 30, left: 40},
-				width = 460 - margin.left - margin.right,
-				height = 400 - margin.top - margin.bottom;
-
-			let svg = d3.select("#output_chart")
+			this.meanSVG = d3.select("#output_chart")
 				.append("svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
+				.attr("width", this.meanWidth + margin.left + margin.right)
+				.attr("height", this.meanHeight + margin.top + margin.bottom)
 				.append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			let x = d3.scaleLinear()
-				.domain([0, 1])
-				.range([0, width]);
+			this.meanX = d3.scaleLinear()
+				.domain([0, 1]) // d3.max(data, function(d) { return +d })
+				.range([0, this.meanWidth]);
 
-			let xAxis = svg.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(d3.axisBottom(x));
+			this.meanXAxis = this.meanSVG.append("g")
+				.attr("transform", "translate(0," + this.meanHeight + ")")
+				.call(d3.axisBottom(this.meanX));
 
-			let y = d3.scaleLinear()
-				.range([height, 0]);
-			let yAxis = svg.append("g");
+			this.meanY = d3.scaleLinear()
+				.range([this.meanHeight, 0]);
+			this.meanYAxis = this.meanSVG.append("g");
 
+			// Start updating the chart
+			window.setTimeout(this.updateMeanChart.bind(this), this.chartUpdateDelay);
+		},
+		updateMeanChart: function() {
+			const total_samples = parseInt($("#number_of_samples").val());
+
+			// Draw samples
+			this.mean_of_drawn_samples.push(
+				this.calculateMean(
+					this.getSampleFromArray(this.sample, $("#number_of_items_within_samples").val())
+				)
+			);
+
+			// Update progressbar
+			let percent_complete = (this.mean_of_drawn_samples.length / total_samples)*100;
+			$('#progress_bar .progress-bar').css('width', parseInt(percent_complete)+'%');
+			$('#progress_bar .progress-bar').text(parseInt(percent_complete)+'%');
+
+			// Update chart
 			let histogram = d3.histogram()
 				.value(function(d) { return d; })
-				.domain(x.domain())
-				.thresholds(x.ticks(100));
+				.domain(this.meanX.domain())
+				.thresholds(this.meanX.ticks(100));
 
-			let bins = histogram(mean_of_drawn_samples);
-			y.domain([0, d3.max(bins, function(d) { return d.length; })]);
-			yAxis
+			let bins = histogram(this.mean_of_drawn_samples);
+			this.meanY.domain([0, d3.max(bins, function(d) { return d.length; })]);
+			this.meanYAxis
 				.transition()
-				.duration(500)
-				.call(d3.axisLeft(y));
+				.duration(this.chartUpdateDelay)
+				.call(d3.axisLeft(this.meanY));
 
-			let bar = svg
+			let bar = this.meanSVG
 				.selectAll("rect")
 				.data(bins);
 
+			let self = this;
 			bar.enter()
 				.append("rect")
 				.attr("x", 1)
-				.attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-				.attr("width", function(d) { return d3.max([0, x(d.x1) - x(d.x0)-1]); })
-				.attr("height", function(d) { return height - y(d.length); })
+				.attr("transform", function(d) {return "translate(" + self.meanX(d.x0) + "," + self.meanY(d.length) + ")"; })
+				.attr("width", function(d) { return d3.max([0, self.meanX(d.x1) - self.meanX(d.x0)-1]); })
+				.attr("height", function(d) { return self.meanHeight - self.meanY(d.length); })
 				.style("fill", "#69b3a2");
 
-			let h = [];
+			bar.transition()
+				.duration(this.chartUpdateDelay)
+				.attr("x", 1)
+				.attr("transform", function(d) {
+					return "translate(" + self.meanX(d.x0) + "," + self.meanY(d.length) + ")";
+				})
+				.attr("width", function(d) {
+					if (self.meanX(d.x1) - self.meanX(d.x0) > 1) {
+						return self.meanX(d.x1) - self.meanX(d.x0) -1;
+					}
+					return self.meanX(d.x1) - self.meanX(d.x0);
+				})
+				.attr("height", function(d) {
+					return self.meanHeight - self.meanY(d.length);
+				});
+
+			/*let h = [];
 			bins.forEach(function(currentValue, index, arr) {
 				h.push(currentValue.length);
 			});
-			console.log(h);
+			console.log(h);*/
+
+			if (this.mean_of_drawn_samples.length < total_samples) {
+				window.setTimeout(this.updateMeanChart.bind(this), this.chartUpdateDelay);
+			}
 		},
 		destroy: function() {
 			this.undelegateEvents();

@@ -40,7 +40,7 @@ define([
 			'vae_latent_space_visualizer': 'vae_latent_space_visualizer',
 			'lstm': 'lstm',
 			'clt': 'clt',
-			'*default': 'cnn_activation_maximizer'
+			'*default': 'clt'
 		},
 
 		// Routes

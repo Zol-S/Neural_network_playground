@@ -177,7 +177,7 @@ define([
 			// Draw samples
 			this.mean_of_drawn_samples.push(
 				this.calculateMean(
-					this.getSampleFromArray(this.sample, $("#number_of_items_within_samples").val())
+					this.getSampleFromArray(this.sample, $("#number_of_values_within_samples").val())
 				)
 			);
 

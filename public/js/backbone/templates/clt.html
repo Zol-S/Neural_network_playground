@@ -2,11 +2,15 @@
 	<div class="row">
 		<div class="col col-lg-12">
 			<h5>Central Limit Theorem</h5>
-This phenomenon is termed the central limit theorem. It says that the means drawn from multiple samples will resemble the familiar bell-shaped normal curve (see “Normal Distribution”), even if the source population is not normally distributed, provided that the sample size is large enough and the departure of the data from normality is not too great. The central limit theorem allows normal-approximation formulas like the t-distribution to be used in calculating sampling distributions for inference — that is, confidence intervals and hypothesis tests.
+<p>This phenomenon is termed the central limit theorem. It says that the means drawn from multiple samples will resemble the familiar bell-shaped normal curve (see “Normal Distribution”), even if the source population is not normally distributed, provided that the sample size is large enough and the departure of the data from normality is not too great. The central limit theorem allows normal-approximation formulas like the t-distribution to be used in calculating sampling distributions for inference — that is, confidence intervals and hypothesis tests.</p>
+<p>Choose a distribution from the dropdown menu to generate 100&thinsp;000 random values, which will be added to the chart based on the selected distribution.</p>
+<p>Then set the <i>number of samples</i> and <i>number of values within samples</i> to be taken from the generated population and click start to draw a number of samples from the generated distribution. The histogram of drawn from the mean of the samples will start to resemble the bell-shaped curve of the normal distribution after a while.</p>
 		</div>
 	</div>
+
 	<div class="row">
 		<div id="stage" class="col col-lg-2">
+			<label for="distribution-selector" class="form-label">Distribution:</label>
 			<select id="distribution-selector"class="form-select" aria-label="Distribution selector">
 				<option selected>-</option>
 				<option value="uniform">Uniform</option>
@@ -19,18 +23,16 @@ This phenomenon is termed the central limit theorem. It says that the means draw
 				<input type="number" class="form-control" id="number_of_samples" value="100">
 			</div>
 			<div class="mb-3">
-				<label for="number_of_items_within_samples" class="form-label">Number of items within samples:</label>
-				<input type="number" class="form-control" id="number_of_items_within_samples" value="25">
+				<label for="number_of_values_within_samples" class="form-label">Number of values within samples:</label>
+				<input type="number" class="form-control" id="number_of_values_within_samples" value="25">
 			</div>
 			<button id="start_btn" type="button" class="btn btn-primary">Start</button>
 		</div>
-		<div id="chart" class="col col-lg-6">
-			&nbsp;
-		</div>
-	</div>
-	<div class="row">
-		<div class="col col-lg-6 my-3">
-			<div class="progress" id="progress_bar">
+
+		<div id="chart" class="col col-lg-5"></div>
+
+		<div class="col col-lg-5">
+			<div class="progress my-3" id="progress_bar">
 				<div class="progress-bar" role="progressbar" style="width: 0%"></div>
 			</div>
 			<div id="output_chart">

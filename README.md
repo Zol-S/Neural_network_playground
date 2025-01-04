@@ -1,3 +1,6 @@
+### Central Limit Theorem (2024.01.03) ###
+Visualization of the Central Limit Theorem. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#clt) for the demo.
+
 ### CNN activation maximizer (2020.12.23) ###
 Support multiple models. A generated noise is sent to the neural network to visualize the maximum of each filter within the convolutional and pooling layers after the specified number of iterations. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#cnn_activation_maximizer) for the demo.
 

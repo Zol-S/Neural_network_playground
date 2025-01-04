@@ -12,7 +12,7 @@ define([
 		el: '#main',
 		isHistogramInitialized: false,
 		isMeanChartInitialized: false,
-		chartUpdateDelay: 25,
+		startChartUpdateDelay: 25,
 		events: {
 			'change #distribution-selector': 'onDistributionSelected',
 			'click #start_btn': 'onStartClicked'
@@ -130,11 +130,19 @@ define([
 			}
 			return shuffled.slice(min);
 		},
+		easeInOutCirc(x) {
+			return x < 0.5
+				? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+				: (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2;
+		},
 		calculateMean: function(arr) {
 			return arr.reduce((a, b) => a + b) / arr.length;
 		},
 		onStartClicked: function() {
 			this.mean_of_drawn_samples = [];
+
+			// Emptying the div
+			$("#output_chart").empty();
 
 			// Mean Chart initialization
 			let margin = {top: 10, right: 30, bottom: 30, left: 40};
@@ -161,7 +169,7 @@ define([
 			this.meanYAxis = this.meanSVG.append("g");
 
 			// Start updating the chart
-			window.setTimeout(this.updateMeanChart.bind(this), this.chartUpdateDelay);
+			window.setTimeout(this.updateMeanChart.bind(this), this.startChartUpdateDelay);
 		},
 		updateMeanChart: function() {
 			const total_samples = parseInt($("#number_of_samples").val());
@@ -178,6 +186,8 @@ define([
 			$('#progress_bar .progress-bar').css('width', parseInt(percent_complete)+'%');
 			$('#progress_bar .progress-bar').text(parseInt(percent_complete)+'%');
 
+			let nextChartUpdateDelay = this.startChartUpdateDelay - this.startChartUpdateDelay * this.easeInOutCirc(this.mean_of_drawn_samples.length / total_samples);
+
 			// Update chart
 			let histogram = d3.histogram()
 				.value(function(d) { return d; })
@@ -188,7 +198,7 @@ define([
 			this.meanY.domain([0, d3.max(bins, function(d) { return d.length; })]);
 			this.meanYAxis
 				.transition()
-				.duration(this.chartUpdateDelay)
+				.duration(nextChartUpdateDelay)
 				.call(d3.axisLeft(this.meanY));
 
 			let bar = this.meanSVG
@@ -205,7 +215,7 @@ define([
 				.style("fill", "#69b3a2");
 
 			bar.transition()
-				.duration(this.chartUpdateDelay)
+				.duration(nextChartUpdateDelay)
 				.attr("x", 1)
 				.attr("transform", function(d) {
 					return "translate(" + self.meanX(d.x0) + "," + self.meanY(d.length) + ")";
@@ -227,7 +237,7 @@ define([
 			console.log(h);*/
 
 			if (this.mean_of_drawn_samples.length < total_samples) {
-				window.setTimeout(this.updateMeanChart.bind(this), this.chartUpdateDelay);
+				window.setTimeout(this.updateMeanChart.bind(this), nextChartUpdateDelay);
 			}
 		},
 		destroy: function() {

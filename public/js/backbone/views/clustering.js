@@ -44,6 +44,19 @@ define([
 
 		// Event handlers
 		onDataTypeChanged: function(e) {
+			// Cardinality
+			switch($(e.target).val()) {
+				case 'smiley':
+						$('#data_cardinality').attr('disabled', 'disabled');
+					break;
+				case 'random':
+				case 'circular':
+				case 'clusters':
+				case 'tangential':
+						$('#data_cardinality').removeAttr('disabled');
+			}
+
+			// Number of clusters
 			switch($(e.target).val()) {
 				case 'smiley':
 				case 'random':

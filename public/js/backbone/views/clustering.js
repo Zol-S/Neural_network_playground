@@ -45,6 +45,7 @@ define([
 		// Event handlers
 		onDataTypeChanged: function(e) {
 			switch($(e.target).val()) {
+				case 'smiley':
 				case 'random':
 						$('#data_cluster_number').attr('disabled', 'disabled');
 					break;
@@ -85,6 +86,18 @@ define([
 							cluster: 0,
 							x: Math.floor(Math.random()*(_self.width-2*_self.padding)+_self.padding),
 							y: Math.floor(Math.random()*(_self.height-2*_self.padding)+_self.padding)
+						};
+					});
+					break;
+				case 'smiley':
+						x_arr = [0.25, 0.75];
+						y_arr = [0.75, 0.75];
+
+
+						this.nodes = d3.range(cardinality).map(function() { return {
+							cluster: 0,
+							x: x_arr,
+							y: y_arr
 						};
 					});
 					break;

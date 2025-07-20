@@ -44,18 +44,6 @@ define([
 
 		// Event handlers
 		onDataTypeChanged: function(e) {
-			// Cardinality
-			switch($(e.target).val()) {
-				case 'smiley':
-						$('#data_cardinality').attr('disabled', 'disabled');
-					break;
-				case 'random':
-				case 'circular':
-				case 'clusters':
-				case 'tangential':
-						$('#data_cardinality').removeAttr('disabled');
-			}
-
 			// Number of clusters
 			switch($(e.target).val()) {
 				case 'smiley':
@@ -72,9 +60,19 @@ define([
 			switch($(e.target).val()) {
 				case 'k-means':
 						$('#cluster_cluster_number').removeAttr('disabled');
+						$('#epsilon').attr('disabled', 'disabled');
+						$('#min_points').attr('disabled', 'disabled');
 					break;
 				case 'mean_shift_clustering':
 						$('#cluster_cluster_number').attr('disabled', 'disabled');
+						$('#epsilon').attr('disabled', 'disabled');
+						$('#min_points').attr('disabled', 'disabled');
+					break;
+				case 'dbscan':
+						$('#cluster_cluster_number').attr('disabled', 'disabled');
+						$('#epsilon').removeAttr('disabled');
+						$('#min_points').removeAttr('disabled');
+					break;
 			}
 		},
 		onLogClearClicked: function() {
@@ -103,16 +101,45 @@ define([
 					});
 					break;
 				case 'smiley':
-						x_arr = [0.25, 0.75];
-						y_arr = [0.75, 0.75];
+					for (let i=0;i<cardinality;i++) {
+						// Left eye
+						if (i < cardinality*0.05) {
+							cx = Math.floor(_self.width*0.4+Math.random()*_self.padding*2-_self.padding/2);
+							cy = Math.floor(_self.height*0.405+Math.random()*_self.padding*2-_self.padding/2);
+						}
 
+						// Right eye
+						if (cardinality*0.05 <= i && i < cardinality*0.1) {
+							cx = Math.floor(_self.width*0.6+Math.random()*_self.padding*2-_self.padding/2);
+							cy = Math.floor(_self.height*0.405+Math.random()*_self.padding*2-_self.padding/2);
+						}
 
-						this.nodes = d3.range(cardinality).map(function() { return {
+						// Mouth
+						if (cardinality*0.1 <= i && i < cardinality*0.3) {
+							cx = Math.floor(_self.width*0.6+Math.random()*_self.padding*10-_self.padding*10);
+							cy = Math.floor(_self.height*0.6+Math.random()*_self.padding*2-_self.padding/2);
+						}
+						// Head
+						if (cardinality*0.3 <= i && i < cardinality*0.95) {
+							const radius = 150;
+							let alpha = 2 * Math.PI * Math.random();
+
+							cx = Math.floor(radius * Math.cos(alpha) + Math.random()*20 + _self.width*0.5);
+							cy = Math.floor(radius * Math.sin(alpha) + Math.random()*20 + _self.height*0.5);
+						}
+
+						if (cardinality*0.95 <= i) {
+							cx = Math.floor(Math.random()*(_self.width-2*_self.padding)+_self.padding);
+							cy = Math.floor(Math.random()*(_self.height-2*_self.padding)+_self.padding);
+						}
+
+						this.nodes.push({
 							cluster: 0,
-							x: x_arr,
-							y: y_arr
-						};
-					});
+							x: cx,
+							y: cy
+						});
+					}
+
 					break;
 				case 'clusters':
 						var spread = 150, cx, cy;
@@ -176,16 +203,17 @@ define([
 				.attr("width", this.width)
 				.attr("height", this.height);
 
-			svg.selectAll("circle")
+			svg.selectAll("circle#point")
 				.data(this.nodes)
 				.enter()
 				.append("svg:circle")
+				.attr("id", "point")
 				.attr("r", 5)
 				.attr("cx", function(d) { return d.x;})
 				.attr("cy", function(d) { return d.y;})
 				.style("fill", '#BBB');
 		},
-		onStartClicked: function() { // Add new functions here
+		onStartClicked: function() {
 			$('#step_btn').removeAttr('disabled');
 			$('#start_btn').attr('disabled', 'disabled');
 			var cluster_number = $('#cluster_cluster_number').val(), type = $('#cluster_type').val(), _self = this;
@@ -207,6 +235,13 @@ define([
 								y: this.nodes[i].y
 							});
 						}
+					break;
+				case 'dbscan':
+						this.epsilon = parseInt($('#epsilon').val());
+						this.min_points = parseInt($('#min_points').val());
+
+						this.current_cluster_id = 1;
+						this.unvisited_points = this.shuffleArray([...Array(parseInt($('#data_cardinality').val())).keys()]);
 					break;
 			}
 
@@ -282,20 +317,77 @@ define([
 							this.getUniqueCenters();
 						}
 						break;
+					case 'dbscan':
+							// https://www.kdnuggets.com/2022/08/implementing-dbscan-python.html
+							// 1) Randomly selecting any point p. It is also called core point if there are more data points than minPts in a neighborhood. 
+							// 2) It will use eps and minPts to identify all density reachable points.
+							// 3) It will create a cluster using eps and minPts if p is a core point. 
+							// 4) It will move to the next data point if p is a border point. A data point is called a border point if it has fewer points than minPts in the neighborhood. 
+							// 5) The algorithm will continue until all points are visited.
+							let current_point_id = this.unvisited_points[0];
+
+							// Drawing a circle around the current point
+							d3.select("#stage svg #dbscan_circle").remove();
+
+							d3.select("#stage svg")
+							    .append("circle")
+							    .attr("id", "dbscan_circle")
+							    .style("stroke", "red")
+							    .style("fill", "transparent")
+							    .attr("r", this.epsilon)
+							    .attr("cx", this.nodes[current_point_id].x)
+							    .attr("cy", this.nodes[current_point_id].y);
+
+							// Checking the current point's vicinity
+							this.current_cluster_ids = [];
+							this.discoverCluster(current_point_id);
+							this.current_cluster_ids = this.current_cluster_ids.filter((value, index, array) => array.indexOf(value) === index);
+
+							if (this.current_cluster_ids.length >= this.min_points) {
+								for (let k in this.current_cluster_ids) {
+									this.nodes[this.current_cluster_ids[k]].cluster = this.current_cluster_id;
+								}
+							}
+							
+							// Removing points from unvisited array
+							for (let i in this.current_cluster_ids) {
+								const index = this.unvisited_points.indexOf(this.current_cluster_ids[i]);
+								if (index > -1) {
+							  		this.unvisited_points.splice(index, 1);
+								}
+							}
+							this.current_cluster_id += 1;
+
+							// Recolor points
+							let _self = this;
+							d3.select("#stage svg").selectAll("circle#point")
+								.filter(function(d) {
+									return d.cluster > 0
+								})
+								.style("fill", function(d, i) {
+									return _self.colorize(d.cluster);
+								});
+
+							if (this.unvisited_points.length > 0) {
+								isFinished = false;
+							}
+						break;
 				}
 
-				var crosses = stage.selectAll("path").data(this.centers, function(d) { return d.cluster; });
-				crosses.exit().remove();
-
-				crosses.transition()
-					.duration(500)
-					.attr("d", function(d) {
-						return "M" + d.x + "," + d.y +"L" + (d.x+10) + "," + (d.y+10) + "M" + (d.x+10) + "," + d.y + "L" + d.x + "," + (d.y+10);
-					});
-
-				if (type == 'k-means') {
+				switch (type) {
+					case 'k-means':
 						this.colorizeNodes();
 						this.updateStats();
+					case 'mean_shift_clustering':
+							let crosses = stage.selectAll("path").data(this.centers, function(d) { return d.cluster; });
+							crosses.exit().remove();
+
+							crosses.transition()
+								.duration(500)
+								.attr("d", function(d) {
+									return "M" + d.x + "," + d.y +"L" + (d.x+10) + "," + (d.y+10) + "M" + (d.x+10) + "," + d.y + "L" + d.x + "," + (d.y+10);
+								});
+						break;
 				}
 
 				// Log
@@ -316,13 +408,44 @@ define([
 			var _self = this;
 
 			// Put nodes into clusters
-			d3.select("#stage svg").selectAll("circle")
+			d3.select("#stage svg").selectAll("circle#point")
 				.style("fill", function(d, i) {
 					return _self.colorize(_self.getClosestClusterCenter(d, i));
 				});
 		},
 
 		// Algorithm helpers
+		discoverCluster: function(current_point_id) {
+			/*
+			 * Discover all points of the cluster
+			 * Return all the points within cluster
+			 */
+			let point_ids_in_vicinity_list = [];
+			for (let k=0;k<this.nodes.length;k++) {
+				let distance = Math.sqrt(Math.pow(this.nodes[k].x - this.nodes[current_point_id].x, 2) + Math.pow(this.nodes[k].y - this.nodes[current_point_id].y, 2));
+
+				if (
+						(distance <= this.epsilon) && 
+						(!point_ids_in_vicinity_list.includes(k))
+				) {
+					point_ids_in_vicinity_list.push(k);
+				}
+			}
+
+			for (let i in point_ids_in_vicinity_list) {
+				if (!this.current_cluster_ids.includes(point_ids_in_vicinity_list[i])) {
+					this.current_cluster_ids.push(point_ids_in_vicinity_list[i]);
+					if (current_point_id != point_ids_in_vicinity_list[i]) {
+						this.discoverCluster(point_ids_in_vicinity_list[i]);
+					}
+				}
+			}
+		},
+		shuffleArray: function(arr) {
+		    if (arr.length === 1) {return arr};
+		    const rand = Math.floor(Math.random() * arr.length);
+		    return [arr[rand], ...this.shuffleArray(arr.filter((_, i) => i != rand))];
+		},
 		getClosestClusterCenter: function(node, k) {
 			var closestClusterCenter = {
 				cluster: 0,

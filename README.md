@@ -1,8 +1,5 @@
-### Central Limit Theorem (2024.01.03) ###
-Visualization of the Central Limit Theorem. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#clt) for the demo.
-
-### CNN activation maximizer (2020.12.23) ###
-Support multiple models. A generated noise is sent to the neural network to visualize the maximum of each filter within the convolutional and pooling layers after the specified number of iterations. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#cnn_activation_maximizer) for the demo.
+### DBSCAN added to clustering (2025.07.27) ###
+Added smiley to the data to be clustered and DBSCAN to the algorithms. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#clustering) for the demo.
 
 # Neural network playground
 Neural network tests, applications implemented in Javascript.
@@ -39,3 +36,9 @@ In this interactive tutorial, convolutional and pooling layers can be linked tog
 Trained a convolutional network with [Tensorflow](https://www.tensorflow.org)/[Keras](https://keras.io) on a very few samples of faces an other things, then exported the weights to [Tensorflow JS](https://github.com/tomasreimers/tensorflowjs).Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#face_detector) for the demo.
 ### CNN layer visualizer (2020.02.09) ###
 The live stream of your webcam is sent to a CNN, then the output of the layers are printed out. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#cnn_layer_visualizer) for the demo.
+### CNN activation maximizer (2020.12.23) ###
+Support multiple models. A generated noise is sent to the neural network to visualize the maximum of each filter within the convolutional and pooling layers after the specified number of iterations. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#cnn_activation_maximizer) for the demo.
+
+# Other #
+### Central Limit Theorem (2024.01.03) ###
+Visualization of the Central Limit Theorem. Click [here](https://rawgit.com/Zol-S/Neural_network_playground/master/index.html#clt) for the demo.

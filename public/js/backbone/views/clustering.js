@@ -397,9 +397,13 @@ define([
 						this.initializeStats();
 					}
 
-					var dt = new Date();
+					let dt = new Date(), log_string = 'Cluster centers are found after';
+					if (type == 'dbscan') {
+						log_string = 'Clusters are found after'
+					}
 
-					$('#log').append(dt.getFullYear() + "/" + (dt.getMonth()>9?"":"0") + dt.getMonth() + "/" + (dt.getDay()>9?"":"0") + dt.getDay() + " " + (dt.getHours()>9?"":"0") + dt.getHours() + ":" + (dt.getMinutes()>9?"":"0") + dt.getMinutes() + ":" + (dt.getSeconds()>9?"":"0") + dt.getSeconds() + ' - Cluster centers are found after ' + this.counter + ' steps\n');
+					$('#log').append(dt.getFullYear() + "/" + (dt.getMonth()>9?"":"0") + dt.getMonth() + "/" + (dt.getDay()>9?"":"0") + dt.getDay() + " " + (dt.getHours()>9?"":"0") + dt.getHours() + ":" + (dt.getMinutes()>9?"":"0") + dt.getMinutes() + ":" + (dt.getSeconds()>9?"":"0") + dt.getSeconds() + ' - ' + log_string + ' ' + this.counter + ' steps\n');
+
 					this.isFinished = true;
 				}
 			}
